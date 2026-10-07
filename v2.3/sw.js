@@ -1,13 +1,14 @@
 // VisionSafe TRD Engineering Dictionary V2.3 Service Worker
-// Version: visionsafe-v23-cache-v1
-const CACHE_NAME = 'visionsafe-v23-cache-v1';
+// Version: visionsafe-v23-cache-v2
+const CACHE_NAME = 'visionsafe-v23-cache-v2';
 
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
   './icons/icon-192.png',
-  './icons/icon-512.png'
+  './icons/icon-512.png',
+  './icons/App_icon.png'
 ];
 
 self.addEventListener('install', event => {
