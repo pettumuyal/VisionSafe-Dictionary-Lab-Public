@@ -6,13 +6,14 @@
   <title>VisionSafe TRD Engineering Dictionary</title>
   
   <!-- PWA & Mobile Web App Meta -->
-  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="manifest" href="./manifest.webmanifest">
   <meta name="theme-color" content="#0E090A">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="VisionSafe TRD">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png">
   <style>
     /* ==========================================================================
        VisionSafe TRD Engineering Dictionary - Self-Contained Stylesheet
@@ -79452,7 +79453,7 @@ function switchTier(newTier, updateUrl = true) {
       // PWA Service Worker Registration Guard (Shell-only, offline capable, safe on file://)
       if ("serviceWorker" in navigator && window.location.protocol.startsWith("http")) {
         window.addEventListener("load", () => {
-          navigator.serviceWorker.register("./sw.js")
+          navigator.serviceWorker.register("./sw.js", { scope: "./" })
             .then(reg => {
               console.log("[VisionSafe PWA] Service Worker registered:", reg.scope);
             })
