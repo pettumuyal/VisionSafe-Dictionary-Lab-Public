@@ -6865,9 +6865,8 @@
           </div>
         </div>
         <div class="safety-notice-actions">
-          <button type="button" class="safety-enter-btn" id="safetyNoticeAckBtn" disabled aria-disabled="true" aria-describedby="safetyTimerStatus">
+          <button type="button" class="safety-enter-btn" id="safetyNoticeAckBtn" disabled aria-disabled="true">
             <span class="safety-enter-label">ENTER</span>
-            <span class="safety-timer-subtext" id="safetyTimerStatus" aria-live="polite">Available in 5 seconds</span>
           </button>
         </div>
         <div class="safety-disclaimer-credit">
@@ -79173,16 +79172,10 @@ function switchTier(newTier, updateUrl = true) {
       }
 
       // =========================================================================
-      // MANDATORY OPERATIONAL SAFETY NOTICE: 15-SECOND GATED ACKNOWLEDGEMENT GATE
+      // MANDATORY OPERATIONAL SAFETY NOTICE: ACKNOWLEDGEMENT GATE
       // =========================================================================
-      const GATE_DURATION_MS = 5000; // Authoritative 5-second delay
       let isStartupSafetyFlow = true;
       let hasReachedBottom = false;
-      let isCountdownRunning = false;
-      let isCountdownComplete = false;
-      let countdownStartTime = null;
-      let countdownTimerId = null;
-      let countdownRemainingSeconds = 5;
       let isEntering = false;
 
       const safetyNoticeOverlay = document.getElementById("safetyNoticeOverlay");
@@ -79191,7 +79184,6 @@ function switchTier(newTier, updateUrl = true) {
       const safetyAckCheckbox = document.getElementById("safetyAckCheckbox");
       const safetyScrollHint = document.getElementById("safetyScrollHint");
       const safetyNoticeAckBtn = document.getElementById("safetyNoticeAckBtn");
-      const safetyTimerStatus = document.getElementById("safetyTimerStatus");
 
       function isMobileNoticeLayout() {
         return window.innerWidth <= 600;
@@ -79241,91 +79233,17 @@ function switchTier(newTier, updateUrl = true) {
 
       function updateEnterButtonUI() {
         if (!safetyNoticeAckBtn) return;
-        const isChecked = safetyAckCheckbox && safetyAckCheckbox.checked;
+        const isChecked = Boolean(safetyAckCheckbox && safetyAckCheckbox.checked);
 
-        if (!isChecked) {
-          safetyNoticeAckBtn.disabled = true;
-          safetyNoticeAckBtn.setAttribute("aria-disabled", "true");
-          safetyNoticeAckBtn.classList.remove("active");
-          if (safetyTimerStatus) {
-            safetyTimerStatus.style.display = "block";
-            safetyTimerStatus.textContent = "Available in 5 seconds";
-          }
-          return;
-        }
-
-        if (isCountdownComplete) {
-          // Gate fully cleared!
+        if (isChecked) {
           safetyNoticeAckBtn.disabled = false;
           safetyNoticeAckBtn.removeAttribute("aria-disabled");
           safetyNoticeAckBtn.classList.add("active");
-          if (safetyTimerStatus) {
-            safetyTimerStatus.style.display = "none";
-            safetyTimerStatus.textContent = "";
-          }
         } else {
-          // Countdown active
           safetyNoticeAckBtn.disabled = true;
           safetyNoticeAckBtn.setAttribute("aria-disabled", "true");
           safetyNoticeAckBtn.classList.remove("active");
-          if (safetyTimerStatus) {
-            safetyTimerStatus.style.display = "block";
-            safetyTimerStatus.textContent = "Available in " + countdownRemainingSeconds + " second" + (countdownRemainingSeconds === 1 ? "" : "s");
-          }
         }
-      }
-
-      function tickCountdown() {
-        if (!isCountdownRunning || countdownStartTime === null) return;
-
-        const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : Date.now();
-        const elapsedMs = now - countdownStartTime;
-        const remainingMs = Math.max(0, GATE_DURATION_MS - elapsedMs);
-        countdownRemainingSeconds = Math.ceil(remainingMs / 1000);
-
-        if (remainingMs <= 0) {
-          completeCountdown();
-        } else {
-          updateEnterButtonUI();
-        }
-      }
-
-      function startCountdown() {
-        if (isCountdownRunning) return;
-        isCountdownRunning = true;
-        isCountdownComplete = false;
-        countdownStartTime = (typeof performance !== "undefined" && performance.now) ? performance.now() : Date.now();
-        countdownRemainingSeconds = Math.ceil(GATE_DURATION_MS / 1000);
-
-        updateEnterButtonUI();
-
-        if (countdownTimerId) {
-          clearInterval(countdownTimerId);
-        }
-        countdownTimerId = setInterval(tickCountdown, 100);
-      }
-
-      function completeCountdown() {
-        if (countdownTimerId) {
-          clearInterval(countdownTimerId);
-          countdownTimerId = null;
-        }
-        isCountdownRunning = false;
-        isCountdownComplete = true;
-        countdownRemainingSeconds = 0;
-        updateEnterButtonUI();
-      }
-
-      function resetCountdown() {
-        if (countdownTimerId) {
-          clearInterval(countdownTimerId);
-          countdownTimerId = null;
-        }
-        isCountdownRunning = false;
-        isCountdownComplete = false;
-        countdownStartTime = null;
-        countdownRemainingSeconds = Math.ceil(GATE_DURATION_MS / 1000);
-        updateEnterButtonUI();
       }
 
       function openSafetyNoticeOverlay() {
@@ -79347,7 +79265,7 @@ function switchTier(newTier, updateUrl = true) {
           safetyScrollHint.style.display = "flex";
         }
 
-        resetCountdown();
+        updateEnterButtonUI();
         overlay.style.display = "flex";
 
         if (safetyNoticeContent) {
@@ -79368,7 +79286,6 @@ function switchTier(newTier, updateUrl = true) {
         if (overlay) {
           overlay.style.display = "none";
         }
-        resetCountdown();
       }
 
       function handleEnterAction(e) {
@@ -79387,18 +79304,6 @@ function switchTier(newTier, updateUrl = true) {
         const isMobile = isMobileNoticeLayout();
         const scrollable = isNoticeScrollable();
         if (isMobile && scrollable && !hasReachedBottom) return;
-
-        // 4. Elapsed time verification
-        if (!isCountdownComplete) {
-          if (countdownStartTime !== null) {
-            const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : Date.now();
-            if ((now - countdownStartTime) < GATE_DURATION_MS) {
-              return;
-            }
-          } else {
-            return;
-          }
-        }
 
         // All gates passed!
         isEntering = true;
@@ -79441,11 +79346,7 @@ function switchTier(newTier, updateUrl = true) {
             return;
           }
 
-          if (safetyAckCheckbox.checked) {
-            startCountdown();
-          } else {
-            resetCountdown();
-          }
+          updateEnterButtonUI();
         });
       }
 
@@ -79476,7 +79377,7 @@ function switchTier(newTier, updateUrl = true) {
               return;
             }
             // For any other Enter press in modal, must not bypass gate
-            if (!isCountdownComplete || !safetyAckCheckbox || !safetyAckCheckbox.checked) {
+            if (!safetyAckCheckbox || !safetyAckCheckbox.checked) {
               e.preventDefault();
               e.stopPropagation();
               return;
@@ -79485,7 +79386,7 @@ function switchTier(newTier, updateUrl = true) {
           }
           if (e.key === " ") {
             // Prevent Space on disabled ENTER button from triggering anything
-            if (document.activeElement === safetyNoticeAckBtn && (!isCountdownComplete || !safetyAckCheckbox || !safetyAckCheckbox.checked)) {
+            if (document.activeElement === safetyNoticeAckBtn && (!safetyAckCheckbox || !safetyAckCheckbox.checked)) {
               e.preventDefault();
               e.stopPropagation();
               return;
@@ -79494,18 +79395,11 @@ function switchTier(newTier, updateUrl = true) {
         });
       }
 
-      // Tab visibility: evaluate actual monotonic elapsed time upon return
-      document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === "visible" && isCountdownRunning) {
-          tickCountdown();
-        }
-      });
-
       // Responsive resize handling:
       window.addEventListener("resize", () => {
         if (!safetyNoticeOverlay || safetyNoticeOverlay.style.display === "none") return;
 
-        // If user already checked and countdown is active or completed, do not interrupt
+        // If user already checked, do not interrupt
         if (safetyAckCheckbox && safetyAckCheckbox.checked) return;
 
         // If bottom already reached, keep it
