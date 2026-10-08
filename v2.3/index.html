@@ -5884,14 +5884,16 @@
       padding-top: 2px;
     }
 
-    /* Appearance Theme in Popover */
-    .settings-theme-row {
+    /* Appearance Theme and Language in Popover */
+    .settings-theme-row,
+    .settings-lang-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 6px;
     }
 
-    .settings-theme-btn {
+    .settings-theme-btn,
+    .settings-lang-btn {
       min-height: 44px;
       padding: 0.5rem 0.35rem;
       font-size: 0.72rem;
@@ -5908,12 +5910,14 @@
       transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
     }
 
-    .settings-theme-btn:hover {
+    .settings-theme-btn:hover,
+    .settings-lang-btn:hover {
       background: var(--bg-hover);
       color: var(--text-main);
     }
 
-    .settings-theme-btn.active {
+    .settings-theme-btn.active,
+    .settings-lang-btn.active {
       background: var(--bg-surface);
       border-color: var(--border-strong);
       color: var(--text-main);
@@ -5921,9 +5925,36 @@
       font-weight: 700;
     }
 
-    .settings-theme-btn:focus-visible {
+    .settings-theme-btn:focus-visible,
+    .settings-lang-btn:focus-visible {
       outline: 2px solid var(--accent-railway-blue);
       outline-offset: 2px;
+    }
+
+    /* Language Disclaimer Banner */
+    .language-disclaimer-banner {
+      margin: 1rem 0;
+      padding: 0.75rem 1rem;
+      background: var(--bg-inset);
+      border: 1px solid var(--border-subtle);
+      border-left: 3px solid var(--accent-railway-blue);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      line-height: 1.4;
+      color: var(--text-muted);
+    }
+
+    .language-disclaimer-banner .disclaimer-icon {
+      font-size: 0.85rem;
+      line-height: 1.2;
+      flex-shrink: 0;
+    }
+
+    .language-disclaimer-banner .disclaimer-text {
+      flex: 1;
     }
 
     /* Popover Footer */
@@ -6737,6 +6768,23 @@
                 </button>
               </div>
             </div>
+            <!-- Language Section in Popover -->
+            <div class="settings-section">
+              <div class="settings-section-header">
+                <span class="settings-section-title" id="settingsLanguageTitle">Language</span>
+              </div>
+              <div class="settings-lang-row" role="radiogroup" aria-label="Language options">
+                <button type="button" class="settings-lang-btn active" id="langOptionEn" data-lang-val="en" role="radio" aria-checked="true" aria-label="English (Default)">
+                  <span>English</span>
+                </button>
+                <button type="button" class="settings-lang-btn" id="langOptionHi" data-lang-val="hi" role="radio" aria-checked="false" aria-label="Hindi (हिन्दी)">
+                  <span>हिन्दी</span>
+                </button>
+                <button type="button" class="settings-lang-btn" id="langOptionTa" data-lang-val="ta" role="radio" aria-checked="false" aria-label="Tamil (தமிழ்)">
+                  <span>தமிழ்</span>
+                </button>
+              </div>
+            </div>
             <!-- Reading Size Section -->
             <div class="settings-section">
               <div class="settings-section-header">
@@ -6897,7 +6945,7 @@
         </div>
 
         <div class="learning-section-box" id="learningModalSimpleBox" style="display: none;">
-          <div class="learning-section-label">IN SIMPLE TERMS</div>
+          <div class="learning-section-label" id="learningModalSimpleLabel">IN SIMPLE TERMS</div>
           <p class="learning-section-text" id="learningModalSimple"></p>
         </div>
 
@@ -7010,6 +7058,12 @@
 
       <div id="detailContent">
         <!-- Rendered term detail populated by JS -->
+      </div>
+
+      <!-- Language Disclaimer Banner -->
+      <div class="language-disclaimer-banner" id="langDisclaimerBanner" style="display: none;">
+        <span class="disclaimer-icon">ℹ️</span>
+        <span class="disclaimer-text" id="langDisclaimerText"></span>
       </div>
     </section>
 
@@ -76296,6 +76350,297 @@
       let activeRegisterId = "OHE-01";
       let activeFieldId = "WK-OHE-ATD-001";
 
+      // Localization State & Infrastructure (Option C Hybrid Architecture)
+      const LANGUAGE_STORAGE_KEY = "visionsafe_language";
+      let currentLanguage = "en";
+
+      // FNV-1a 32-bit Hash (Deterministic English Source Binding)
+      function computeEnglishHash(str) {
+        if (typeof str !== "string") return "";
+        const normalized = str.trim().replace(/\s+/g, " ");
+        let hash = 0x811c9dc5;
+        for (let i = 0; i < normalized.length; i++) {
+          hash ^= normalized.charCodeAt(i);
+          hash = Math.imul(hash, 0x01000193);
+        }
+        return (hash >>> 0).toString(16).padStart(8, "0");
+      }
+
+      // Hybrid Localization Repository (Option C)
+      const VS_I18N = {
+        activeLang: "en",
+
+        // 1. UI Chrome, Navigation, Labels, and Alerts
+        UI: {
+          en: {
+            "brand.subtitle": { text: "ENGINEERING DICTIONARY", status: "PASS" },
+            "nav.concepts": { text: "CONCEPTS", status: "PASS" },
+            "nav.field": { text: "FIELD", status: "PASS" },
+            "nav.register": { text: "REGISTER", status: "PASS" },
+            "settings.title": { text: "Application Settings", status: "PASS" },
+            "settings.theme": { text: "Appearance Theme", status: "PASS" },
+            "settings.reading_size": { text: "Reading Size", status: "PASS" },
+            "settings.language": { text: "Language", status: "PASS" },
+            "section.simple_terms": { text: "In Simple Terms", status: "PASS" },
+            "section.simple_terms_sub": { text: "Conceptual Summary • Non-Statutory", status: "PASS" },
+            "field.purpose_label": { text: "PURPOSE", status: "PASS" },
+            "disclaimer.text": {
+              text: "English is the authoritative technical reference. Hindi and Tamil translations are provided solely for accessibility and conceptual understanding. All safety instructions and statutory limits remain in official English.",
+              status: "PASS"
+            }
+          },
+          hi: {
+            "brand.subtitle": { text: "इंजीनियरिंग डिक्शनरी", status: "PASS" },
+            "nav.concepts": { text: "अवधारणाएं", status: "PASS" },
+            "nav.field": { text: "फील्ड प्रोटोकॉल", status: "PASS" },
+            "nav.register": { text: "रजिस्टर", status: "PASS" },
+            "settings.title": { text: "एप्लिकेशन सेटिंग्स", status: "PASS" },
+            "settings.theme": { text: "थीम (दिखावट)", status: "PASS" },
+            "settings.reading_size": { text: "पढ़ने का आकार", status: "PASS" },
+            "settings.language": { text: "भाषा (Language)", status: "PASS" },
+            "section.simple_terms": { text: "सरल शब्दों में", status: "PASS" },
+            "section.simple_terms_sub": { text: "वैचारिक सारांश • गैर-सांविधिक", status: "PASS" },
+            "field.purpose_label": { text: "उद्देश्य (PURPOSE)", status: "PASS" },
+            "disclaimer.text": {
+              text: "अंग्रेजी आधिकारिक तकनीकी संदर्भ है। हिन्दी अनुवाद केवल सुलभता और वैचारिक समझ के लिए प्रदान किया गया है। सभी सुरक्षा निर्देश और वैधानिक नियम आधिकारिक अंग्रेजी में ही मान्य हैं।",
+              status: "PASS"
+            }
+          },
+          ta: {
+            "brand.subtitle": { text: "பொறியியல் அகராதி", status: "PASS" },
+            "nav.concepts": { text: "கருத்துக்கள்", status: "PASS" },
+            "nav.field": { text: "கள நெறிமுறைகள்", status: "PASS" },
+            "nav.register": { text: "பதிவேடுகள்", status: "PASS" },
+            "settings.title": { text: "பயன்பாட்டு அமைப்புகள்", status: "PASS" },
+            "settings.theme": { text: "வண்ண தீம்", status: "PASS" },
+            "settings.reading_size": { text: "எழுத்து அளவு", status: "PASS" },
+            "settings.language": { text: "மொழி (Language)", status: "PASS" },
+            "section.simple_terms": { text: "எளிய விளக்கம்", status: "PASS" },
+            "section.simple_terms_sub": { text: "கருத்து சுருக்கம் • சட்டபூர்வமற்றது", status: "PASS" },
+            "field.purpose_label": { text: "நோக்கம் (PURPOSE)", status: "PASS" },
+            "disclaimer.text": {
+              text: "ஆங்கில பதிப்பே அதிகாரப்பூர்வ தொழில்நுட்ப குறிப்பு ஆகும். தமிழ் மொழிபெயர்ப்பு எளிதில் புரிந்துகொள்வதற்காக மட்டுமே வழங்கப்பட்டுள்ளது. அனைத்து பாதுகாப்பு வழிமுறைகளும் அதிகாரப்பூர்வ ஆங்கிலத்திலேயே பொருந்தும்.",
+              status: "PASS"
+            }
+          }
+        },
+
+        // 2. Controlled Explanatory Overlays with en_hash Freshness Binding
+        EXPLANATIONS: {
+          hi: {
+            // Case A: Valid Concept simple_terms (matching hash 0f6f2a65)
+            "atd": {
+              simple_terms: "ऑटो टेंशनिंग डिवाइस (ATD) एक पुली और वजन वाली प्रणाली है जो मौसम के अनुसार तार के फैलाव या सिकुड़न के बावजूद ओवरहेड तार (OHE) के तनाव को एक समान बनाए रखती है।",
+              status: "PASS",
+              en_hash: "0f6f2a65"
+            },
+            // Case A: Valid Field purpose (matching hash f68a425b)
+            "WK-OHE-ATDANTIFALL-001": {
+              purpose: "तार की रस्सी टूटने की स्थिति में 400-660 किलोग्राम के काउंटरवेट को रोकने और पकड़ने के लिए डिज़ाइन किए गए एंटी-फॉलिंग तंत्र की कार्यात्मक तत्परता की जांच करें।",
+              status: "PASS",
+              en_hash: "f68a425b"
+            },
+            // Case C: Deliberately incorrect en_hash test entry (concept 'vcb' with wrong hash -> fails closed to English)
+            "vcb": {
+              simple_terms: "वैक्यूम सर्किट ब्रेकर (गलत हैश परीक्षण)।",
+              status: "PASS",
+              en_hash: "deadbeef"
+            },
+            // Case E: Deliberately non-PASS / unreviewed draft test entry (concept 'tss' with REVIEW status -> fails closed to English)
+            "tss": {
+              simple_terms: "ट्रैक्शन सब-स्टेशन (अस्वीकृत मसौदा)।",
+              status: "REVIEW",
+              en_hash: "00000000"
+            },
+            // Case D: Deliberately missing en_hash test entry (concept 'ohe' with no en_hash -> fails closed to English)
+            "ohe": {
+              simple_terms: "ओवरहेड उपकरण (अनुपस्थित हैश परीक्षण)।",
+              status: "PASS"
+            }
+            // Case J: "cantilever-assembly" is deliberately absent in Hindi -> tests missing Hindi translation fallback
+          },
+          ta: {
+            // Case A: Valid Concept simple_terms (matching hash 0f6f2a65)
+            "atd": {
+              simple_terms: "தானியங்கி டென்ஷனிங் சாதனம் (ATD) என்பது புல்லிகள் மற்றும் எடைகளைக் கொண்ட ஒரு அமைப்பாகும். இது வெப்பநிலை மாற்றங்களால் கம்பி விரிவடையும் போதும் சுருங்கும் போதும் மேல்நிலை கம்பியின் (OHE) இழுவிசையை சீராக பராமரிக்கிறது.",
+              status: "PASS",
+              en_hash: "0f6f2a65"
+            },
+            // Case A: Valid Field purpose (matching hash f68a425b)
+            "WK-OHE-ATDANTIFALL-001": {
+              purpose: "கம்பி கயிறு அறுந்து விழும் சூழ்நிலையில் 400-660 கிலோ எதிர் எடைகளைத் தாங்கிப் பிடிக்கும் பாதுகாப்பு அமைப்பின் செயல்பாட்டுத் தயார்நிலையை உறுதி செய்யவும்.",
+              status: "PASS",
+              en_hash: "f68a425b"
+            },
+            // Case J: Concept present in Tamil with matching hash 4c5b27b5, absent in Hindi
+            "cantilever-assembly": {
+              simple_terms: "கேண்டிலீவர் அசெம்பிளி என்பது மின்கம்பத்தில் மேல்நிலை கம்பிகளை சரியான உயரத்தில் தாங்கிப் பிடிக்கும் எளிதில் சுழலக்கூடிய சட்டகம் ஆகும்.",
+              status: "PASS",
+              en_hash: "4c5b27b5"
+            }
+            // Case J: "vcb" is deliberately absent in Tamil -> tests missing Tamil translation fallback
+          }
+        }
+      };
+
+      // Fail-closed UI translation accessor
+      function t(key, defaultVal) {
+        if (currentLanguage === "en") return defaultVal;
+        const langUI = VS_I18N.UI[currentLanguage];
+        if (!langUI) return defaultVal;
+        const item = langUI[key];
+        if (!item || item.status !== "PASS") return defaultVal;
+        return item.text || defaultVal;
+      }
+
+      // Fail-closed Concept simple_terms accessor with en_hash validation
+      function getLocalizedSimpleTerms(entry) {
+        if (!entry || !entry.simple_terms) return "";
+        if (currentLanguage === "en") return entry.simple_terms;
+
+        const langExp = VS_I18N.EXPLANATIONS[currentLanguage];
+        if (!langExp) return entry.simple_terms;
+
+        const item = langExp[entry.id];
+        // Fail-closed gate: must exist, must have status PASS, must have en_hash, and en_hash must match
+        if (item && item.status === "PASS" && typeof item.en_hash === "string" && item.en_hash.length === 8) {
+          const currentHash = computeEnglishHash(entry.simple_terms);
+          if (item.en_hash.toLowerCase() === currentHash.toLowerCase() && item.simple_terms) {
+            return item.simple_terms;
+          }
+        }
+
+        // Fail-closed fallback to authoritative English
+        return entry.simple_terms;
+      }
+
+      // Fail-closed Field purpose accessor with en_hash validation
+      function getLocalizedFieldPurpose(item) {
+        if (!item || !item.purpose) return "";
+        if (currentLanguage === "en") return item.purpose;
+
+        const langExp = VS_I18N.EXPLANATIONS[currentLanguage];
+        if (!langExp) return item.purpose;
+
+        const exp = langExp[item.id];
+        // Fail-closed gate: must exist, must have status PASS, must have en_hash, and en_hash must match
+        if (exp && exp.status === "PASS" && typeof exp.en_hash === "string" && exp.en_hash.length === 8) {
+          const currentHash = computeEnglishHash(item.purpose);
+          if (exp.en_hash.toLowerCase() === currentHash.toLowerCase() && exp.purpose) {
+            return exp.purpose;
+          }
+        }
+
+        // Fail-closed fallback to authoritative English
+        return item.purpose;
+      }
+
+      // Synchronize static UI DOM elements on language change
+      function updateStaticLocalizedUI() {
+        const brandSub = document.querySelector(".brand-title-secondary");
+        if (brandSub) brandSub.textContent = t("brand.subtitle", "ENGINEERING DICTIONARY");
+
+        const conceptsTitle = document.querySelector("#tierBtnConcepts .tier-nav-title");
+        if (conceptsTitle) conceptsTitle.textContent = t("nav.concepts", "CONCEPTS");
+        const fieldTitle = document.querySelector("#tierBtnField .tier-nav-title");
+        if (fieldTitle) fieldTitle.textContent = t("nav.field", "FIELD");
+        const regTitle = document.querySelector("#tierBtnRegisters .tier-nav-title");
+        if (regTitle) regTitle.textContent = t("nav.register", "REGISTER");
+
+        const langTitle = document.getElementById("settingsLanguageTitle");
+        if (langTitle) langTitle.textContent = t("settings.language", "Language");
+
+        const learningSimpleLabel = document.getElementById("learningModalSimpleLabel");
+        if (learningSimpleLabel) learningSimpleLabel.textContent = t("section.simple_terms", "IN SIMPLE TERMS");
+
+        const banner = document.getElementById("langDisclaimerBanner");
+        const bannerText = document.getElementById("langDisclaimerText");
+        if (banner && bannerText) {
+          if (currentLanguage === "en") {
+            banner.style.display = "none";
+            bannerText.textContent = "";
+          } else {
+            banner.style.display = "flex";
+            bannerText.textContent = t("disclaimer.text", "English is the authoritative technical reference. Hindi and Tamil translations are provided solely for accessibility and conceptual understanding. All safety instructions and statutory limits remain in official English.");
+          }
+        }
+      }
+
+      // Set active language and trigger immediate UI re-rendering
+      function setLanguage(lang, saveToStorage = true) {
+        if (lang !== "en" && lang !== "hi" && lang !== "ta") {
+          lang = "en";
+        }
+        currentLanguage = lang;
+        VS_I18N.activeLang = lang;
+
+        if (saveToStorage) {
+          try {
+            localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
+          } catch (e) {}
+        }
+
+        // Update button states in Settings Popover
+        document.querySelectorAll(".settings-lang-btn").forEach(btn => {
+          const isAct = btn.getAttribute("data-lang-val") === lang;
+          btn.classList.toggle("active", isAct);
+          btn.setAttribute("aria-checked", isAct ? "true" : "false");
+        });
+
+        // Update static UI chrome
+        updateStaticLocalizedUI();
+
+        // Re-render currently active view
+        if (currentTier === "CONCEPTS") {
+          const entry = TRD_DICTIONARY.find(e => e.id === activeEntryId) || TRD_DICTIONARY[0];
+          if (entry && typeof renderDetail === "function") renderDetail(entry);
+        } else if (currentTier === "FIELD") {
+          const item = TRD_FIELD.find(f => f.id === activeFieldId) || TRD_FIELD[0];
+          if (item && typeof renderFieldDetail === "function") renderFieldDetail(item);
+        } else if (currentTier === "REGISTERS") {
+          const reg = TRD_REGISTERS.find(r => r.id === activeRegisterId) || TRD_REGISTERS[0];
+          if (reg && typeof renderRegisterDetail === "function") renderRegisterDetail(reg);
+        }
+
+        // Re-render learning card modal if active
+        const learningOverlay = document.getElementById("learningModalOverlay");
+        if (learningOverlay && learningOverlay.style.display !== "none" && currentLearningEntry && typeof displayLearningCard === "function") {
+          displayLearningCard(currentLearningEntry);
+        }
+      }
+
+      // Initialize language state from storage and wire popover buttons
+      function initLanguage() {
+        let savedLang = "en";
+        try {
+          savedLang = localStorage.getItem(LANGUAGE_STORAGE_KEY) || "en";
+        } catch (e) {
+          savedLang = "en";
+        }
+        setLanguage(savedLang, false);
+
+        document.querySelectorAll(".settings-lang-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            setLanguage(btn.getAttribute("data-lang-val"), true);
+          });
+        });
+      }
+
+      // Expose to window for testing / audit access
+      window.VS_I18N = VS_I18N;
+      window.computeEnglishHash = computeEnglishHash;
+      window.getLocalizedSimpleTerms = getLocalizedSimpleTerms;
+      window.getLocalizedFieldPurpose = getLocalizedFieldPurpose;
+      window.setLanguage = setLanguage;
+      window.t = t;
+      window.TRD_DICTIONARY = TRD_DICTIONARY;
+      window.TRD_FIELD = TRD_FIELD;
+      window.TRD_REGISTERS = TRD_REGISTERS;
+      Object.defineProperty(window, "currentLanguage", {
+        get() { return currentLanguage; },
+        set(val) { setLanguage(val, true); }
+      });
+
       function getFieldActionLabel(f) {
         const kClass = f.knowledge_class || "";
         const act = f.action_classification || "";
@@ -77871,8 +78216,8 @@ function switchTier(newTier, updateUrl = true) {
             </div>
             
             <div class="field-purpose-box">
-              <div class="field-param-label">PURPOSE</div>
-              <p class="field-purpose-text">${escapeHtml(item.purpose)}</p>
+              <div class="field-param-label">${escapeHtml(t("field.purpose_label", "PURPOSE"))}</div>
+              <p class="field-purpose-text">${escapeHtml(getLocalizedFieldPurpose(item))}</p>
             </div>
 
             <div class="field-params-4col">
@@ -78226,11 +78571,11 @@ function switchTier(newTier, updateUrl = true) {
                   <line x1="12" y1="16" x2="12" y2="12"></line>
                   <line x1="12" y1="8" x2="12.01" y2="8"></line>
                 </svg>
-                In Simple Terms
+                ${escapeHtml(t("section.simple_terms", "In Simple Terms"))}
               </span>
-              <span class="section-heading-title">Conceptual Summary • Non-Statutory</span>
+              <span class="section-heading-title">${escapeHtml(t("section.simple_terms_sub", "Conceptual Summary • Non-Statutory"))}</span>
             </div>
-            <p class="simple-text-content">${escapeHtml(entry.simple_terms)}</p>
+            <p class="simple-text-content">${escapeHtml(getLocalizedSimpleTerms(entry))}</p>
           </div>
 
           <!-- Section 2: Statutory Engineering Specifications -->
@@ -78708,21 +79053,22 @@ function switchTier(newTier, updateUrl = true) {
         const specs = entry.engineering_spec || {};
         let engMeaning = "";
         let simpleTerms = "";
+        const localizedSimple = getLocalizedSimpleTerms(entry);
 
         if (entry.is_ambiguity) {
           engMeaning = entry.ambiguity_guidance || entry.simple_terms || "";
           if (entry.ambiguity_guidance && entry.simple_terms && entry.ambiguity_guidance !== entry.simple_terms) {
-            simpleTerms = entry.simple_terms;
+            simpleTerms = localizedSimple;
           }
         } else if (specs.statutory_definition) {
           engMeaning = specs.statutory_definition;
-          simpleTerms = entry.simple_terms || "";
+          simpleTerms = localizedSimple;
         } else if (specs.primary_function) {
           engMeaning = specs.primary_function;
-          simpleTerms = entry.simple_terms || "";
+          simpleTerms = localizedSimple;
         } else if (specs.functional_role) {
           engMeaning = specs.functional_role;
-          simpleTerms = entry.simple_terms || "";
+          simpleTerms = localizedSimple;
         } else {
           engMeaning = entry.simple_terms || "";
           simpleTerms = "";
@@ -79677,6 +80023,7 @@ function switchTier(newTier, updateUrl = true) {
       window.addEventListener("orientationchange", updateHeaderHeightVar);
 
       initTheme();
+      initLanguage();
       initCategoryPills();
       renderEntriesList();
       handleHashChange();
