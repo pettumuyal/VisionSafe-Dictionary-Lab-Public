@@ -1,6 +1,6 @@
 // VisionSafe TRD Engineering Dictionary V2.3 Service Worker
-// Internal Incremental Release Cache: visionsafe-v23-007
-const CACHE_NAME = 'visionsafe-v23-007';
+// Internal Incremental Release Cache: visionsafe-v23-008
+const CACHE_NAME = 'visionsafe-v23-008';
 
 const APP_SHELL = [
   './',

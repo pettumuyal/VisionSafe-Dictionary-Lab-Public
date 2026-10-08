@@ -86,6 +86,21 @@
       --radius-lg: 12px;
       --radius-full: 9999px;
       --app-header-height: 52px;
+
+      /* Application Settings Panel (Theme-Derived Contrasting Surface) */
+      --settings-panel-bg: #f8fafc;
+      --settings-panel-border: #cbd5e1;
+      --settings-panel-header-bg: #edf2f7;
+      --settings-panel-footer-bg: #edf2f7;
+      --settings-control-bg: #ffffff;
+      --settings-control-border: #cbd5e1;
+      --settings-control-hover-bg: #f1f5f9;
+      --settings-control-text: #334155;
+      --settings-disclaimer-bg: #ffffff;
+      --settings-disclaimer-border: #cbd5e1;
+      --settings-disclaimer-text: #475569;
+      --settings-disclaimer-accent: #0284c7;
+      --settings-shadow: 0 12px 28px -4px rgba(15, 23, 42, 0.16), 0 4px 10px -2px rgba(15, 23, 42, 0.08);
     }
 
     [data-theme="dark"] {
@@ -132,6 +147,21 @@
       --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
       --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
       --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4);
+
+      /* Application Settings Panel (Dark Theme: Lighter Contrasting Surface) */
+      --settings-panel-bg: #1a2333;
+      --settings-panel-border: #334155;
+      --settings-panel-header-bg: #131a26;
+      --settings-panel-footer-bg: #131a26;
+      --settings-control-bg: #0f172a;
+      --settings-control-border: #293548;
+      --settings-control-hover-bg: #1e293b;
+      --settings-control-text: #cbd5e1;
+      --settings-disclaimer-bg: #121824;
+      --settings-disclaimer-border: #334155;
+      --settings-disclaimer-text: #94a3b8;
+      --settings-disclaimer-accent: #38bdf8;
+      --settings-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.65), 0 4px 10px -2px rgba(0, 0, 0, 0.45);
     }
 
     /* Dark Theme B - Alternate Dark (Restrained Burgundy / Dark Neutral Engineering Palette) */
@@ -180,6 +210,21 @@
       --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
       --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(139, 46, 62, 0.15);
       --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(139, 46, 62, 0.2);
+
+      /* Application Settings Panel (Alt Theme: Lighter Contrasting Burgundy Surface) */
+      --settings-panel-bg: #2d2225;
+      --settings-panel-border: rgba(226, 192, 197, 0.22);
+      --settings-panel-header-bg: #21181a;
+      --settings-panel-footer-bg: #21181a;
+      --settings-control-bg: #1c1416;
+      --settings-control-border: rgba(226, 192, 197, 0.14);
+      --settings-control-hover-bg: #382528;
+      --settings-control-text: #A69598;
+      --settings-disclaimer-bg: #1c1416;
+      --settings-disclaimer-border: rgba(226, 192, 197, 0.22);
+      --settings-disclaimer-text: #D1C4C6;
+      --settings-disclaimer-accent: #a83d50;
+      --settings-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.7), 0 4px 10px -2px rgba(0, 0, 0, 0.5);
     }
 
     [data-theme="alternate-dark"] .brand-logo {
@@ -5604,18 +5649,20 @@
       position: absolute;
       top: calc(100% + 8px);
       right: 0;
-      width: 310px;
+      width: 320px;
       max-width: calc(100vw - 20px);
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-strong);
+      max-height: calc(100vh - 72px);
+      background: var(--settings-panel-bg);
+      border: 1px solid var(--settings-panel-border);
       border-radius: var(--radius-lg);
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+      box-shadow: var(--settings-shadow);
       z-index: 1200;
       display: flex;
       flex-direction: column;
       animation: popoverFadeIn 160ms cubic-bezier(0.16, 1, 0.3, 1);
       transform-origin: top right;
       color: var(--text-main);
+      overflow: hidden;
     }
 
     .settings-popover[hidden] {
@@ -5638,7 +5685,9 @@
       align-items: center;
       justify-content: space-between;
       padding: 0.75rem 1rem;
-      border-bottom: 1px solid var(--border-subtle);
+      background: var(--settings-panel-header-bg);
+      border-bottom: 1px solid var(--settings-panel-border);
+      flex-shrink: 0;
     }
 
     .settings-popover-title-row {
@@ -5672,7 +5721,7 @@
     }
 
     .settings-popover-close-btn:hover {
-      background: var(--bg-hover);
+      background: var(--settings-control-hover-bg);
       color: var(--text-main);
     }
 
@@ -5685,13 +5734,17 @@
       padding: 0.85rem 1rem;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.9rem;
+      flex: 1 1 auto;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
     }
 
     .settings-section {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.45rem;
     }
 
     .settings-section-header {
@@ -5713,13 +5766,13 @@
       font-size: 0.75rem;
       font-weight: 700;
       color: var(--accent-railway-blue);
-      background: var(--bg-inset);
+      background: var(--settings-control-bg);
       padding: 2px 7px;
       border-radius: var(--radius-sm);
-      border: 1px solid var(--border-subtle);
+      border: 1px solid var(--settings-control-border);
     }
 
-    /* Reading Size Presets Row: Exactly 4 Options (Default, Large, X-Large, Custom) */
+    /* Reading Size Presets Row: Exactly 4 Options (Default, Medium, Large, X-Large) */
     .reading-presets-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -5729,13 +5782,13 @@
     .reading-preset-btn {
       min-height: 44px;
       min-width: 44px;
-      padding: 0.45rem 0.25rem;
+      padding: 0.45rem 0.2rem;
       font-size: 0.72rem;
       font-weight: 600;
-      background: var(--bg-inset);
-      border: 1px solid var(--border-subtle);
+      background: var(--settings-control-bg);
+      border: 1px solid var(--settings-control-border);
       border-radius: var(--radius-sm);
-      color: var(--text-muted);
+      color: var(--settings-control-text);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -5745,7 +5798,7 @@
     }
 
     .reading-preset-btn:hover {
-      background: var(--bg-hover);
+      background: var(--settings-control-hover-bg);
       color: var(--text-main);
       border-color: var(--border-strong);
     }
@@ -5775,116 +5828,14 @@
       outline-offset: 2px;
     }
 
-    /* Custom Percentage Input Box */
-    .reading-custom-box {
-      background: var(--bg-inset);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 0.5rem 0.75rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
-      transition: border-color 150ms ease, background-color 150ms ease;
-    }
-
-    .reading-custom-box.active-mode {
-      border-color: var(--accent-railway-blue);
-      background: var(--bg-surface);
-      box-shadow: 0 0 0 1px var(--accent-railway-blue);
-    }
-
-    [data-theme="alternate-dark"] .reading-custom-box.active-mode {
-      border-color: #a83d50;
-      box-shadow: 0 0 0 1px #a83d50;
-    }
-
-    .reading-custom-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-    }
-
-    .reading-custom-label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-main);
-      user-select: none;
-    }
-
-    .reading-custom-input-wrap {
-      display: inline-flex;
-      align-items: center;
-      background: var(--bg-inset);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-sm);
-      padding: 0 0.5rem;
-      height: 38px;
-      min-height: 38px;
-      box-sizing: border-box;
-      transition: border-color 150ms ease;
-    }
-
-    .reading-custom-box.active-mode .reading-custom-input-wrap {
-      border-color: var(--accent-railway-blue);
-      background: var(--bg-canvas);
-    }
-
-    [data-theme="alternate-dark"] .reading-custom-box.active-mode .reading-custom-input-wrap {
-      border-color: #a83d50;
-    }
-
-    .reading-custom-input {
-      width: 52px;
-      height: 100%;
-      border: none;
-      background: transparent;
-      color: var(--text-main);
-      font-family: var(--font-mono);
-      font-size: 0.875rem;
-      font-weight: 700;
-      text-align: right;
-      padding: 0 4px 0 0;
-      outline: none;
-      -moz-appearance: textfield;
-      box-sizing: border-box;
-    }
-
-    .reading-custom-input::-webkit-outer-spin-button,
-    .reading-custom-input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-
-    .reading-custom-unit {
-      font-family: var(--font-mono);
-      font-size: 0.8125rem;
-      font-weight: 700;
-      color: var(--text-muted);
-    }
-
-    .reading-custom-hint {
-      font-size: 0.6875rem;
-      color: var(--text-subtle);
-    }
-
-    .reading-custom-input:focus {
-      outline: none;
-    }
-
-    .reading-custom-input-wrap:focus-within {
-      outline: 2px solid var(--accent-railway-blue);
-      outline-offset: 1px;
-    }
-
     .reading-size-note {
       font-size: 0.6875rem;
       color: var(--text-subtle);
       line-height: 1.35;
-      padding-top: 2px;
+      padding-top: 1px;
     }
 
-    /* Appearance Theme and Language in Popover */
+    /* Appearance Theme and Language Rows in Popover */
     .settings-theme-row,
     .settings-lang-row {
       display: grid;
@@ -5895,13 +5846,14 @@
     .settings-theme-btn,
     .settings-lang-btn {
       min-height: 44px;
+      min-width: 44px;
       padding: 0.5rem 0.35rem;
       font-size: 0.72rem;
       font-weight: 600;
-      background: var(--bg-inset);
-      border: 1px solid var(--border-subtle);
+      background: var(--settings-control-bg);
+      border: 1px solid var(--settings-control-border);
       border-radius: var(--radius-sm);
-      color: var(--text-muted);
+      color: var(--settings-control-text);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -5912,17 +5864,32 @@
 
     .settings-theme-btn:hover,
     .settings-lang-btn:hover {
-      background: var(--bg-hover);
+      background: var(--settings-control-hover-bg);
       color: var(--text-main);
+      border-color: var(--border-strong);
     }
 
     .settings-theme-btn.active,
     .settings-lang-btn.active {
-      background: var(--bg-surface);
-      border-color: var(--border-strong);
-      color: var(--text-main);
+      background: var(--accent-railway-blue);
+      border-color: var(--accent-railway-blue);
+      color: #ffffff;
       box-shadow: var(--shadow-sm);
       font-weight: 700;
+    }
+
+    [data-theme="dark"] .settings-theme-btn.active,
+    [data-theme="dark"] .settings-lang-btn.active {
+      background: var(--accent-railway-blue);
+      border-color: var(--accent-railway-blue-light);
+      color: #ffffff;
+    }
+
+    [data-theme="alternate-dark"] .settings-theme-btn.active,
+    [data-theme="alternate-dark"] .settings-lang-btn.active {
+      background: #8b2e3e;
+      border-color: #a83d50;
+      color: #ffffff;
     }
 
     .settings-theme-btn:focus-visible,
@@ -5931,7 +5898,36 @@
       outline-offset: 2px;
     }
 
-    /* Language Disclaimer Banner */
+    /* Conditional Translation Disclaimer Box in Settings Popover */
+    .settings-disclaimer-box {
+      margin-top: 0.35rem;
+      padding: 0.55rem 0.65rem;
+      background: var(--settings-disclaimer-bg);
+      border: 1px solid var(--settings-disclaimer-border);
+      border-left: 3px solid var(--settings-disclaimer-accent);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.45rem;
+      font-size: 0.72rem;
+      line-height: 1.4;
+      color: var(--settings-disclaimer-text);
+      transition: background-color 150ms ease, border-color 150ms ease;
+    }
+
+    .settings-disclaimer-icon {
+      font-size: 0.8rem;
+      line-height: 1.2;
+      flex-shrink: 0;
+      opacity: 0.9;
+    }
+
+    .settings-disclaimer-text {
+      flex: 1;
+      font-weight: 500;
+    }
+
+    /* Language Disclaimer Banner (Main Page View) */
     .language-disclaimer-banner {
       margin: 1rem 0;
       padding: 0.75rem 1rem;
@@ -5960,22 +5956,23 @@
     /* Popover Footer */
     .settings-popover-footer {
       padding: 0.65rem 1rem;
-      border-top: 1px solid var(--border-subtle);
+      border-top: 1px solid var(--settings-panel-border);
       display: flex;
       justify-content: flex-end;
-      background: var(--bg-inset);
+      background: var(--settings-panel-footer-bg);
       border-bottom-left-radius: var(--radius-lg);
       border-bottom-right-radius: var(--radius-lg);
+      flex-shrink: 0;
     }
 
     .settings-reset-btn {
-      min-height: 44px;
+      min-height: 38px;
       padding: 0.45rem 0.85rem;
       font-size: 0.75rem;
       font-weight: 600;
-      color: var(--text-muted);
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
+      color: var(--settings-control-text);
+      background: var(--settings-control-bg);
+      border: 1px solid var(--settings-control-border);
       border-radius: var(--radius-sm);
       cursor: pointer;
       display: inline-flex;
@@ -5985,7 +5982,7 @@
     }
 
     .settings-reset-btn:hover {
-      background: var(--bg-hover);
+      background: var(--settings-control-hover-bg);
       color: var(--text-main);
       border-color: var(--border-strong);
     }
@@ -6004,6 +6001,7 @@
         left: 8px;
         width: auto;
         max-width: calc(100vw - 16px);
+        max-height: calc(100vh - var(--app-header-height) - 16px);
       }
     }
 
@@ -6768,7 +6766,28 @@
                 </button>
               </div>
             </div>
-            <!-- Language Section in Popover -->
+
+            <!-- Reading Size Section (B: Default, Medium, Large, X-Large) -->
+            <div class="settings-section">
+              <div class="settings-section-header">
+                <span class="settings-section-title">Reading Size</span>
+                <span class="reading-size-indicator" id="readingSizePercent" aria-live="polite">100%</span>
+              </div>
+              
+              <!-- Exactly Four Options: Default (100%), Medium (120%), Large (150%), X-Large (200%) -->
+              <div class="reading-presets-row" role="radiogroup" aria-label="Reading size options">
+                <button type="button" class="reading-preset-btn active" id="readingOptionDefault" data-mode="default" role="radio" aria-checked="true" aria-label="Default reading size (100%)">Default</button>
+                <button type="button" class="reading-preset-btn" id="readingOptionMedium" data-mode="medium" role="radio" aria-checked="false" aria-label="Medium reading size (120%)">Medium</button>
+                <button type="button" class="reading-preset-btn" id="readingOptionLarge" data-mode="large" role="radio" aria-checked="false" aria-label="Large reading size (150%)">Large</button>
+                <button type="button" class="reading-preset-btn" id="readingOptionXLarge" data-mode="xlarge" role="radio" aria-checked="false" aria-label="X-Large reading size (200%)">X-Large</button>
+              </div>
+
+              <div class="reading-size-note">
+                Scales readable knowledge content: concepts, field checks, limits, and register procedures.
+              </div>
+            </div>
+
+            <!-- Language Section in Popover (C: Directly BELOW Reading Size) -->
             <div class="settings-section">
               <div class="settings-section-header">
                 <span class="settings-section-title" id="settingsLanguageTitle">Language</span>
@@ -6784,44 +6803,17 @@
                   <span>தமிழ்</span>
                 </button>
               </div>
-            </div>
-            <!-- Reading Size Section -->
-            <div class="settings-section">
-              <div class="settings-section-header">
-                <span class="settings-section-title">Reading Size</span>
-                <span class="reading-size-indicator" id="readingSizePercent" aria-live="polite">100%</span>
-              </div>
-              
-              <!-- Exactly Four Options: Default, Large, X-Large, Custom -->
-              <div class="reading-presets-row" role="radiogroup" aria-label="Reading size options">
-                <button type="button" class="reading-preset-btn active" id="readingOptionDefault" data-mode="default" role="radio" aria-checked="true" aria-label="Default reading size (100%)">Default</button>
-                <button type="button" class="reading-preset-btn" id="readingOptionLarge" data-mode="large" role="radio" aria-checked="false" aria-label="Large reading size (115%)">Large</button>
-                <button type="button" class="reading-preset-btn" id="readingOptionXLarge" data-mode="xlarge" role="radio" aria-checked="false" aria-label="X-Large reading size (130%)">X-Large</button>
-                <button type="button" class="reading-preset-btn" id="readingOptionCustom" data-mode="custom" role="radio" aria-checked="false" aria-label="Custom reading size (92% to 150%)">Custom</button>
-              </div>
 
-              <!-- Custom Percentage Input Box -->
-              <div class="reading-custom-box" id="readingCustomBox">
-                <div class="reading-custom-row">
-                  <label for="readingCustomInput" class="reading-custom-label">Custom scale</label>
-                  <div class="reading-custom-input-wrap">
-                    <input type="text" id="readingCustomInput" class="reading-custom-input" minlength="2" maxlength="3" value="100" aria-label="Custom reading size percentage" inputmode="numeric">
-                    <span class="reading-custom-unit" aria-hidden="true">%</span>
-                  </div>
-                </div>
-                <div class="reading-custom-hint" id="readingCustomHint">Allowed range: 92–150%</div>
-              </div>
-
-              <div class="reading-size-note">
-                Scales readable knowledge content: concepts, field checks, limits, and register procedures.
+              <!-- Conditional Translation Disclaimer (D: Directly BELOW Language selector) -->
+              <div class="settings-disclaimer-box" id="settingsDisclaimerBox" style="display: none;">
+                <span class="settings-disclaimer-icon" aria-hidden="true">ℹ️</span>
+                <span class="settings-disclaimer-text" id="settingsDisclaimerText"></span>
               </div>
             </div>
-
-            
           </div>
 
           <div class="settings-popover-footer">
-            <button type="button" class="settings-reset-btn" id="settingsResetBtn" aria-label="Reset reading size to default">
+            <button type="button" class="settings-reset-btn" id="settingsResetBtn" aria-label="Reset settings to default">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <polyline points="1 4 1 10 7 10"></polyline>
                 <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
@@ -81625,6 +81617,18 @@
             bannerText.textContent = t("disclaimer.text", "English is the authoritative technical reference. Hindi and Tamil translations are provided solely for accessibility and conceptual understanding. All safety instructions and statutory limits remain in official English.");
           }
         }
+
+        const settingsDisclaimer = document.getElementById("settingsDisclaimerBox");
+        const settingsDisclaimerText = document.getElementById("settingsDisclaimerText");
+        if (settingsDisclaimer && settingsDisclaimerText) {
+          if (currentLanguage === "en") {
+            settingsDisclaimer.style.display = "none";
+            settingsDisclaimerText.textContent = "";
+          } else {
+            settingsDisclaimer.style.display = "flex";
+            settingsDisclaimerText.textContent = t("disclaimer.text", "English is the authoritative technical reference. Hindi and Tamil translations are provided solely for accessibility and conceptual understanding. All safety instructions and statutory limits remain in official English.");
+          }
+        }
       }
 
       // Set active language and trigger immediate UI re-rendering
@@ -84257,162 +84261,69 @@ function switchTier(newTier, updateUrl = true) {
       // ============================================================
       const READING_PRESETS = {
         default: 1.0,
-        large: 1.15,
-        xlarge: 1.30
+        medium: 1.20,
+        large: 1.50,
+        xlarge: 2.00
       };
-      const READING_MIN_PCT = 92;
-      const READING_MAX_PCT = 150;
       const READING_STORAGE_MODE = "visionsafe_reading_mode";
       const READING_STORAGE_SCALE = "visionsafe_reading_scale";
-      const READING_STORAGE_CUSTOM = "visionsafe_reading_custom";
 
       const headerSettingsBtn = document.getElementById("headerSettingsBtn");
       const settingsPopover = document.getElementById("settingsPopover");
       const closeSettingsPopoverBtn = document.getElementById("closeSettingsPopoverBtn");
       const readingSizePercent = document.getElementById("readingSizePercent");
       const readingPresetBtns = document.querySelectorAll(".reading-preset-btn");
-      const readingCustomBox = document.getElementById("readingCustomBox");
-      const readingCustomInput = document.getElementById("readingCustomInput");
       const settingsResetBtn = document.getElementById("settingsResetBtn");
 
-      let currentReadingMode = "default"; // 'default' | 'large' | 'xlarge' | 'custom'
+      let currentReadingMode = "default"; // 'default' | 'medium' | 'large' | 'xlarge'
       let currentReadingScale = 1.0;
-      let lastValidCustomPct = 118;
 
-      function applyReadingState(mode, scale, customPct, saveStorage = true) {
-        let validScale = (typeof scale === "number" && !isNaN(scale)) ? scale : 1.0;
-        let validPct = Math.round(validScale * 100);
-
-        if (validPct < READING_MIN_PCT) {
-          validPct = READING_MIN_PCT;
-          validScale = validPct / 100;
-        } else if (validPct > READING_MAX_PCT) {
-          validPct = READING_MAX_PCT;
-          validScale = validPct / 100;
+      function applyReadingState(mode, saveStorage = true) {
+        if (!READING_PRESETS[mode]) {
+          mode = "default";
         }
-
+        const scale = READING_PRESETS[mode];
         currentReadingMode = mode;
-        currentReadingScale = validScale;
-
-        if (typeof customPct === "number" && !isNaN(customPct)) {
-          lastValidCustomPct = Math.min(Math.max(Math.round(customPct), READING_MIN_PCT), READING_MAX_PCT);
-        } else if (mode === "custom") {
-          lastValidCustomPct = validPct;
-        }
+        currentReadingScale = scale;
 
         // Apply CSS custom property to document root
-        document.documentElement.style.setProperty("--reading-scale", validScale);
+        document.documentElement.style.setProperty("--reading-scale", scale);
 
         // Update percentage indicator in header of reading section
         if (readingSizePercent) {
-          readingSizePercent.textContent = validPct + "%";
+          readingSizePercent.textContent = Math.round(scale * 100) + "%";
         }
 
         // Update preset radio buttons active and aria-checked states
-        readingPresetBtns.forEach(btn => {
+        document.querySelectorAll(".reading-preset-btn").forEach(btn => {
           const btnMode = btn.dataset.mode;
           const isSelected = (btnMode === currentReadingMode);
           btn.classList.toggle("active", isSelected);
           btn.setAttribute("aria-checked", isSelected ? "true" : "false");
         });
 
-        // Update Custom input box active styling & value
-        if (readingCustomBox) {
-          readingCustomBox.classList.toggle("active-mode", currentReadingMode === "custom");
-        }
-        if (readingCustomInput) {
-          if (currentReadingMode === "custom") {
-            readingCustomInput.value = validPct;
-          } else {
-            readingCustomInput.value = lastValidCustomPct;
-          }
-        }
-
         // Persist to localStorage
         if (saveStorage) {
           try {
             localStorage.setItem(READING_STORAGE_MODE, currentReadingMode);
-            localStorage.setItem(READING_STORAGE_SCALE, validScale.toString());
-            localStorage.setItem(READING_STORAGE_CUSTOM, lastValidCustomPct.toString());
+            localStorage.setItem(READING_STORAGE_SCALE, scale.toString());
           } catch (e) {
             console.warn("Could not save reading scale preferences", e);
           }
         }
       }
 
-      function handleCustomInputCommit(rawVal) {
-        if (rawVal === undefined || rawVal === null) {
-          rawVal = readingCustomInput ? readingCustomInput.value : "";
-        }
-        const strVal = String(rawVal).trim();
-        if (strVal === "") {
-          // empty input -> preserve previous valid value or return to Default
-          if (lastValidCustomPct && lastValidCustomPct >= READING_MIN_PCT && lastValidCustomPct <= READING_MAX_PCT) {
-            applyReadingState("custom", lastValidCustomPct / 100, lastValidCustomPct);
-          } else {
-            applyReadingState("default", 1.0, 100);
-          }
-          return;
-        }
-
-        let num = parseInt(strVal, 10);
-        if (isNaN(num)) {
-          // non-numeric input -> reject gracefully, restore last valid
-          if (readingCustomInput) {
-            readingCustomInput.value = lastValidCustomPct;
-          }
-          applyReadingState("custom", lastValidCustomPct / 100, lastValidCustomPct);
-          return;
-        }
-
-        // Clamping rules: < 92 -> 92, > 150 -> 150
-        if (num < READING_MIN_PCT) {
-          num = READING_MIN_PCT;
-        } else if (num > READING_MAX_PCT) {
-          num = READING_MAX_PCT;
-        }
-
-        applyReadingState("custom", num / 100, num);
-      }
-
       function initReadingScale() {
         let savedMode = "default";
-        let savedCustom = 118;
-        let savedScale = 1.0;
-
         try {
           const m = localStorage.getItem(READING_STORAGE_MODE);
-          if (m && ["default", "large", "xlarge", "custom"].includes(m)) {
+          if (m && READING_PRESETS[m]) {
             savedMode = m;
-          }
-          const c = localStorage.getItem(READING_STORAGE_CUSTOM);
-          if (c) {
-            const parsedC = parseInt(c, 10);
-            if (!isNaN(parsedC) && parsedC >= READING_MIN_PCT && parsedC <= READING_MAX_PCT) {
-              savedCustom = parsedC;
-            }
-          }
-          const s = localStorage.getItem(READING_STORAGE_SCALE);
-          if (s) {
-            const parsedS = parseFloat(s);
-            if (!isNaN(parsedS) && parsedS >= (READING_MIN_PCT / 100) && parsedS <= (READING_MAX_PCT / 100)) {
-              savedScale = parsedS;
-            }
           }
         } catch (e) {
           // ignore
         }
-
-        if (savedMode === "large") {
-          applyReadingState("large", READING_PRESETS.large, savedCustom, false);
-        } else if (savedMode === "xlarge") {
-          applyReadingState("xlarge", READING_PRESETS.xlarge, savedCustom, false);
-        } else if (savedMode === "custom") {
-          const custScale = savedCustom / 100;
-          applyReadingState("custom", custScale, savedCustom, false);
-        } else {
-          applyReadingState("default", READING_PRESETS.default, savedCustom, false);
-        }
+        applyReadingState(savedMode, false);
       }
 
       function toggleSettingsPopover(show) {
@@ -84454,67 +84365,27 @@ function switchTier(newTier, updateUrl = true) {
       }
 
       // Preset radio buttons click handlers
-      readingPresetBtns.forEach(btn => {
+      document.querySelectorAll(".reading-preset-btn").forEach(btn => {
         btn.addEventListener("click", () => {
           const mode = btn.dataset.mode;
-          if (mode === "default") {
-            applyReadingState("default", READING_PRESETS.default, lastValidCustomPct);
-          } else if (mode === "large") {
-            applyReadingState("large", READING_PRESETS.large, lastValidCustomPct);
-          } else if (mode === "xlarge") {
-            applyReadingState("xlarge", READING_PRESETS.xlarge, lastValidCustomPct);
-          } else if (mode === "custom") {
-            applyReadingState("custom", lastValidCustomPct / 100, lastValidCustomPct);
-            if (readingCustomInput) {
-              readingCustomInput.focus();
-              readingCustomInput.select();
-            }
+          if (mode && READING_PRESETS[mode]) {
+            applyReadingState(mode, true);
           }
         });
       });
 
-      // Custom input event bindings
-      if (readingCustomInput) {
-        readingCustomInput.addEventListener("input", () => {
-          const val = readingCustomInput.value.trim();
-          if (val !== "") {
-            const num = parseInt(val, 10);
-            if (!isNaN(num)) {
-              if (num >= READING_MIN_PCT && num <= READING_MAX_PCT) {
-                applyReadingState("custom", num / 100, num);
-              } else {
-                currentReadingMode = "custom";
-                readingPresetBtns.forEach(btn => {
-                  const isCustom = (btn.dataset.mode === "custom");
-                  btn.classList.toggle("active", isCustom);
-                  btn.setAttribute("aria-checked", isCustom ? "true" : "false");
-                });
-                if (readingCustomBox) readingCustomBox.classList.add("active-mode");
-              }
-            }
-          }
-        });
-
-        readingCustomInput.addEventListener("change", () => {
-          handleCustomInputCommit();
-        });
-
-        readingCustomInput.addEventListener("blur", () => {
-          handleCustomInputCommit();
-        });
-
-        readingCustomInput.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            handleCustomInputCommit();
-            readingCustomInput.blur();
-          }
-        });
-      }
-
       if (settingsResetBtn) {
         settingsResetBtn.addEventListener("click", () => {
-          applyReadingState("default", READING_PRESETS.default, 100);
+          // 1. Reset theme to default dark
+          if (typeof setTheme === "function") {
+            setTheme("dark");
+          }
+          // 2. Reset reading size to default 100%
+          applyReadingState("default", true);
+          // 3. Reset language to English (which also hides disclaimer)
+          if (typeof setLanguage === "function") {
+            setLanguage("en", true);
+          }
         });
       }
 
