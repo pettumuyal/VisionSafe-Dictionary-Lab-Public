@@ -6675,7 +6675,7 @@
           <h1 class="brand-main-title">
             <span class="brand-title-primary-group">
               <span class="brand-title-primary">VisionSafe TRD</span>
-              <span class="brand-version-sub">v2.3</span>
+              <span class="brand-version-sub">v2.4-rc1</span>
             </span>
             <span class="brand-title-secondary">ENGINEERING DICTIONARY</span>
           </h1>
@@ -6870,7 +6870,7 @@
           </button>
         </div>
         <div class="safety-disclaimer-credit">
-          <span>VisionSafe TRD Engineering Dictionary V2.3 • Prepared by <strong>Nidhin&nbsp;Raj&nbsp;S&nbsp;R</strong></span>
+          <span>VisionSafe TRD Engineering Dictionary V2.4-RC1 • Prepared by <strong>Nidhin&nbsp;Raj&nbsp;S&nbsp;R</strong></span>
         </div>
       </div>
     </div>
@@ -18711,55 +18711,45 @@
   },
   {
     "id": "lc-single-cross-bond",
-    "term": "Level Crossing Single Cross Bond Invariant",
-    "acronym": "LCSCBI",
+    "term": "Level Crossing Single Cross Bond Requirement",
+    "acronym": "LCSCBR",
     "category": "Earthing & Return Circuit",
     "aliases": [
       "Level Crossing Bonding Rule",
-      "LC Rail Cross Bond",
-      "LC Return Bonding Invariant"
+      "LC Traction Rail Cross Bond",
+      "LC Return Bonding"
     ],
     "is_ambiguity": false,
-    "simple_terms": "The Level Crossing Single Cross Bond Invariant is a critical electrical earthing rule that requires a heavy copper or steel cross-bond connecting the two rails of a railway track immediately on BOTH sides of every road level crossing. Because road level crossings are paved over with bitumen, asphalt, or concrete pavers, maintenance crews cannot easily inspect the rail joints hidden under the road surface. Installing redundant cross bonds right outside the paved crossing zone guarantees that traction return current always has an uninterrupted, low-resistance path across the road, even if a hidden fishplate joint beneath the asphalt shakes loose or corrodes.",
+    "simple_terms": "The Level Crossing Single Cross Bond Requirement is a statutory electrical bonding rule requiring all traction rails to be cross-bonded at only one location within five meters of either transverse edge of a road level crossing. Providing cross-bonding at only one location maintains an equalized traction return path across rails while preventing closed ground loops that could induce circulating currents or interfere with signalling track circuits.",
     "engineering_spec": {
-      "primary_function": "Ensures continuous traction return current flow across road level crossings where embedded rails cannot be inspected.",
-      "statutory_mandate": "Mandated by RDSO Code of Practice ETI/OHE/71 (Rev 2021) and ACTM Vol. II Pt 2 App-1 Cl 26.0.",
-      "bonding_configuration": "Heavy transverse cross bonds (minimum 80 sq mm copper or 40 mm x 6 mm galvanized steel flat) installed between the non-track-circuited rails within 5.0 metres of each side of the road edge.",
-      "check_rail_bonding": "Steel check rails embedded in the road pavement to form the wheel flangeway must be bonded securely to the running rail to prevent dangerous electrostatic charge accumulation.",
-      "insulation_integrity": "In track-circuited areas, bonds must be kept clear of any insulated rail joint (IRJ) by at least 6.0 metres."
+      "primary_function": "Equalizes traction return current across traction rails at a level crossing without creating closed metallic loops.",
+      "statutory_mandate": "Mandated by RDSO Code of Practice ETI/OHE/71 (11/90) Rev. 1 Cl. 3.13 and ACTM Vol. II Pt. 2 App-2 Cl. 3.13.",
+      "bonding_configuration": "Cross-bonds provided across all traction rails at only one location, situated within five meters from either transverse edge of the level crossing.",
+      "material_specification": "Mild steel flat of cross section not less than 200 sq mm (typically 40x6 mm or 50x6 mm) fastened securely with galvanized steel fasteners to the neutral axis of the traction rail web.",
+      "signalling_isolation": "In track-circuited sections, cross-bonds connect strictly between non-track-circuited traction rails. Check rails embedded in level crossing flangeways must not be bonded to running rails."
     },
     "field_checks": [
       {
-        "check": "Cross-Bond Placement on Both Road Approaches",
-        "limit": "Cross-bonds installed on BOTH sides within 5.0 m of road edge",
-        "condition": "Physical verification of bonds immediately outside the paved road crossing boundary.",
+        "check": "Single Location Cross-Bond Placement",
+        "limit": "Cross-bonds installed at only one location within 5.0 m of either road edge",
+        "condition": "Physical verification that cross-bonding exists on only one approach, within 5.0 m of the crossing boundary.",
         "severity": "MANDATORY_INVARIANT"
       },
       {
-        "check": "Bond Electrical Continuity and Resistance",
-        "limit": "R_bond <= 0.01 ohms across transverse rail bond",
-        "condition": "Micro-ohmmeter measurement across each cross-bond.",
+        "check": "Cross-Bond Mechanical Fastening and Material",
+        "limit": "Minimum 200 sq mm mild steel flat firmly clamped to rail web",
+        "condition": "Torque and visual check of rail clamps and bond integrity.",
         "severity": "MAINTENANCE_INVARIANT"
-      },
-      {
-        "check": "Check Rail Electrical Bonding",
-        "limit": "Check rail bonded to running rail / zero floating voltage",
-        "condition": "Inspect bonding strap connecting road flangeway check rail to traction rail.",
-        "severity": "SAFETY_CRITICAL"
       }
     ],
     "citations": [
       {
-        "source": "RDSO Code of Practice ETI/OHE/71 (Rev 2021)",
-        "description": "Earthing and bonding arrangements at level crossings"
+        "source": "RDSO Code of Practice ETI/OHE/71 (11/90) Rev. 1 Cl. 3.13",
+        "description": "Bonding at a Level Crossing"
       },
       {
-        "source": "ACTM Vol. II Pt 2 App-1 Cl 26.0",
-        "description": "Traction return bonding across special track formations"
-      },
-      {
-        "source": "IRPWM Ch 9",
-        "description": "Permanent way maintenance at level crossings"
+        "source": "ACTM Vol. II Pt. 2 App-2 Cl. 3.13",
+        "description": "Bonding at a Level Crossing"
       }
     ],
     "relationships": {
@@ -18768,9 +18758,8 @@
         "Traction Return Circuit"
       ],
       "components": [
-        "40x6 mm GS Flat",
-        "Rail Exothermic Clamps",
-        "Check Rail Bonds",
+        "200 sq mm MS Flat",
+        "Rail Web Fasteners",
         "Traction Rail"
       ],
       "prerequisite_for": [
@@ -18782,8 +18771,7 @@
         "Structure Bond"
       ],
       "governing_rules": [
-        "RULE-LCSCBI-001 (Bonds on Both Sides <= 5.0 m)",
-        "RULE-LCSCBI-002 (Check Rail Grounded)"
+        "RULE-RDSO-BND-3.13 (Cross-bonds at only one location within 5.0 m of either edge)"
       ]
     }
   },
@@ -28646,15 +28634,22 @@
       "Center-Tap Bond"
     ],
     "is_ambiguity": false,
-    "simple_terms": "An Impedance Bond is a heavy, oil-filled or resin-cast electrical device installed between the rails at track circuit boundary points on lines where BOTH running rails are used for signaling. It acts as an electrical filter: to high-frequency or audio-frequency railway signaling currents, it appears as an impassable wall (high impedance), preventing signals in one track block from leaking into the next. But to heavy 50-hertz traction return current (up to 2,000 amperes), it offers almost zero resistance, allowing propulsion current to flow effortlessly across the track insulation joints and through its center tap back to the substation.",
+    "simple_terms": "An Impedance Bond is a heavy, oil-filled or resin-cast electrical device installed between the rails at track circuit boundary points on lines where BOTH running rails are used for signaling. It acts as an electrical filter: to high-frequency or audio-frequency railway signaling currents, it appears as an impassable wall (high impedance), preventing signals in one track block from leaking into the next. But to heavy 50-hertz traction return current (up to 2,000 amperes), it offers almost zero resistance, allowing propulsion current to flow effortlessly across the track insulation joints and through its center tap back to the substation. In double-rail track-circuited sections, direct rail-to-rail cross-bonds are strictly prohibited by RDSO ETI/OHE/71 Cl 3.8 and ACTM Vol. II Pt 2 App-2 Cl 3.8; no cross-bond shall be provided between the rails of the same track or between the rails of different tracks. Any cross-bonding for traction return current must be made exclusively through impedance bond center taps.",
     "engineering_spec": {
       "primary_function": "Permits seamless flow of 50 Hz traction return current across insulated rail joints while blocking track circuit signaling frequencies.",
-      "design_standard": "Manufactured and tested per RDSO Specification IRS:S-78/92 and ACTM Vol. II Pt 2 App-1 Cl 26.0.",
+      "design_standard": "Manufactured and tested per RDSO Specification IRS:S-78/92, with track bonding governed by RDSO Code ETI/OHE/71 Rev. 1 Cl 3.8 and ACTM Vol. II Pt 2 App-2 Cl 3.8.",
       "electrical_characteristics": "Presents very low DC/50 Hz resistance (< 0.5 milli-ohms) between rail terminals, and high AC impedance (> 200 ohms) at signaling carrier frequencies (1.5 kHz to 4.5 kHz).",
       "center_tap_functionality": "The center tap of the center-tapped copper inductor coil serves as the physical connection point for substation return conductors and cross-track equalizers.",
+      "cross_bonding_prohibition": "In double-rail track-circuited sections, no cross-bond shall be provided between the rails of the same track or between the rails of different tracks. Cross-bonding for traction return purposes is permitted solely via impedance bond center taps.",
       "traction_unbalance_limit": "Engineered to tolerate up to 10% to 15% current unbalance between the two rails without saturating the laminated iron core."
     },
     "field_checks": [
+      {
+        "check": "Cross-Bonding Prohibition in Double-Rail Track Circuits",
+        "limit": "No cross-bond between rails of same track or different tracks; center-tap connections only",
+        "condition": "Visual and physical track inspection across double-rail track-circuited section per Cl 3.8.",
+        "severity": "STATUTORY_PROHIBITION"
+      },
       {
         "check": "Center-Tap Return Cable Resistance",
         "limit": "R_joint <= 0.02 ohms / zero thermal rise under 1000 A load",
@@ -28676,8 +28671,12 @@
     ],
     "citations": [
       {
-        "source": "ACTM Vol. II Pt 2 App-1 Cl 26.0",
-        "description": "Impedance bond installation and center-tap return bonding"
+        "source": "RDSO Code ETI/OHE/71 Rev. 1 Cl 3.8",
+        "description": "Strict prohibition of cross-bonds between rails of same track or different tracks in double-rail track-circuited sections; equalizing through impedance bond center taps only"
+      },
+      {
+        "source": "ACTM Vol. II Pt 2 App-2 Cl 3.8",
+        "description": "Statutory rules for bonding in double-rail track-circuited sections"
       },
       {
         "source": "RDSO Specification IRS:S-78/92",
@@ -28708,6 +28707,7 @@
         "Direct Rail Cross Bond"
       ],
       "governing_rules": [
+        "RDSO ETI/OHE/71 Rev. 1 Cl 3.8 (No Cross-Bonds Between Rails of Same Track or Different Tracks)",
         "RULE-IB-001 (Joint Resistance <= 0.02 ohms)",
         "RULE-IB-002 (Traction Unbalance Tolerance <= 15%)"
       ]
