@@ -40,6 +40,7 @@
       --bg-canvas: #f8fafc;
       --bg-surface: #ffffff;
       --bg-surface-elevated: #ffffff;
+      --bg-popover: #f1f4f8;
       --bg-inset: #f1f5f9;
       --bg-hover: #f1f5f9;
       --border-subtle: #e2e8f0;
@@ -92,6 +93,7 @@
       --bg-canvas: #090d16;
       --bg-surface: #111827;
       --bg-surface-elevated: #1f2937;
+      --bg-popover: #0c111c;
       --bg-inset: #030712;
       --bg-hover: #1e293b;
       --border-subtle: #1e293b;
@@ -139,6 +141,7 @@
       --bg-canvas: #161011;
       --bg-surface: #241B1D;
       --bg-surface-elevated: #2D2224;
+      --bg-popover: #1c1315;
       --bg-inset: #181214;
       --bg-hover: #382528;
       --border-subtle: rgba(226, 192, 197, 0.08);
@@ -5606,7 +5609,7 @@
       right: 0;
       width: 310px;
       max-width: calc(100vw - 20px);
-      background: var(--bg-surface-elevated);
+      background: var(--bg-popover);
       border: 1px solid var(--border-strong);
       border-radius: var(--radius-lg);
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
@@ -6650,6 +6653,180 @@
       }
     }
 
+
+    /* GLOBAL Search Sliding Switch */
+    .global-search-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: 8px;
+      cursor: pointer;
+      user-select: none;
+      flex-shrink: 0;
+      padding: 4px 6px;
+      border-radius: var(--radius-sm);
+      transition: background-color 130ms ease;
+    }
+    .global-search-toggle:hover {
+      background-color: var(--bg-hover);
+    }
+    .global-search-checkbox {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+    .global-toggle-track {
+      position: relative;
+      display: inline-block;
+      width: 32px;
+      height: 18px;
+      background-color: var(--border-strong);
+      border-radius: 10px;
+      transition: background-color 130ms cubic-bezier(0.16, 1, 0.3, 1);
+      flex-shrink: 0;
+    }
+    .global-toggle-thumb {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 14px;
+      height: 14px;
+      background-color: #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+      transition: transform 130ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .global-search-checkbox:checked + .global-toggle-track {
+      background-color: var(--accent-railway-blue);
+    }
+    [data-theme="alternate-dark"] .global-search-checkbox:checked + .global-toggle-track {
+      background-color: #f43f5e;
+    }
+    .global-search-checkbox:checked + .global-toggle-track .global-toggle-thumb {
+      transform: translateX(14px);
+    }
+    .global-search-checkbox:focus-visible + .global-toggle-track {
+      outline: 2px solid var(--accent-railway-blue);
+      outline-offset: 2px;
+    }
+    .global-toggle-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      transition: color 130ms ease;
+    }
+    .global-search-checkbox:checked ~ .global-toggle-label {
+      color: var(--text-main);
+    }
+    @media (max-width: 480px) {
+      .global-search-toggle {
+        margin-left: 4px;
+        padding: 2px 4px;
+        gap: 4px;
+      }
+      .global-toggle-track {
+        width: 28px;
+        height: 16px;
+      }
+      .global-toggle-thumb {
+        width: 12px;
+        height: 12px;
+      }
+      .global-search-checkbox:checked + .global-toggle-track .global-toggle-thumb {
+        transform: translateX(12px);
+      }
+      .global-toggle-label {
+        font-size: 0.62rem;
+      }
+    }
+
+    /* Reading Presets 2x2 Grid */
+    .reading-presets-row {
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 6px !important;
+    }
+    .reading-preset-btn {
+      min-height: 42px;
+      padding: 0.45rem 0.4rem;
+      font-size: 0.74rem;
+      font-weight: 600;
+      background: var(--bg-inset);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: background-color 130ms ease, border-color 130ms ease, color 130ms ease;
+    }
+    .reading-preset-btn:hover {
+      background: var(--bg-hover);
+      color: var(--text-main);
+    }
+    .reading-preset-btn.active {
+      background: var(--accent-railway-blue) !important;
+      border-color: var(--accent-railway-blue) !important;
+      color: #ffffff !important;
+      font-weight: 700;
+      box-shadow: var(--shadow-sm);
+    }
+    [data-theme="dark"] .reading-preset-btn.active {
+      background: var(--accent-railway-blue) !important;
+      color: #0b1120 !important;
+    }
+    [data-theme="alternate-dark"] .reading-preset-btn.active {
+      background: #8b2e3e !important;
+      border-color: #a83d50 !important;
+      color: #ffffff !important;
+    }
+    .reading-preset-btn:focus-visible {
+      outline: 2px solid var(--accent-railway-blue);
+      outline-offset: 2px;
+    }
+
+    /* Dynamic Last Updated Footer in Settings Popover */
+    .settings-popover-footer {
+      padding: 0.65rem 1rem !important;
+      border-top: 1px solid var(--border-subtle);
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      gap: 8px;
+      background: var(--bg-inset);
+      border-bottom-left-radius: var(--radius-lg);
+      border-bottom-right-radius: var(--radius-lg);
+    }
+    .settings-last-updated {
+      font-size: 0.68rem;
+      color: var(--text-subtle);
+      font-weight: 500;
+      letter-spacing: 0.01em;
+    }
+
+    /* Animation Responsiveness Enhancements */
+    .settings-popover {
+      will-change: transform, opacity;
+      animation: popoverFadeIn 130ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    #detailContent {
+      will-change: transform, opacity;
+      animation: detailFadeSlide 130ms ease-out;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
   </style>
 </head>
 <body data-theme="light">
@@ -6675,7 +6852,7 @@
           <h1 class="brand-main-title">
             <span class="brand-title-primary-group">
               <span class="brand-title-primary">VisionSafe TRD</span>
-              <span class="brand-version-sub">v2.4-rc1</span>
+              <span class="brand-version-sub">V23.05</span>
             </span>
             <span class="brand-title-secondary">ENGINEERING DICTIONARY</span>
           </h1>
@@ -6741,38 +6918,24 @@
             <div class="settings-section">
               <div class="settings-section-header">
                 <span class="settings-section-title">Reading Size</span>
-                <span class="reading-size-indicator" id="readingSizePercent" aria-live="polite">100%</span>
               </div>
               
-              <!-- Exactly Four Options: Default, Large, X-Large, Custom -->
+              <!-- Exactly Four Options: Default (usual), Medium (120%), Large (150%), X-Large (200%) -->
               <div class="reading-presets-row" role="radiogroup" aria-label="Reading size options">
-                <button type="button" class="reading-preset-btn active" id="readingOptionDefault" data-mode="default" role="radio" aria-checked="true" aria-label="Default reading size (100%)">Default</button>
-                <button type="button" class="reading-preset-btn" id="readingOptionLarge" data-mode="large" role="radio" aria-checked="false" aria-label="Large reading size (115%)">Large</button>
-                <button type="button" class="reading-preset-btn" id="readingOptionXLarge" data-mode="xlarge" role="radio" aria-checked="false" aria-label="X-Large reading size (130%)">X-Large</button>
-                <button type="button" class="reading-preset-btn" id="readingOptionCustom" data-mode="custom" role="radio" aria-checked="false" aria-label="Custom reading size (92% to 150%)">Custom</button>
-              </div>
-
-              <!-- Custom Percentage Input Box -->
-              <div class="reading-custom-box" id="readingCustomBox">
-                <div class="reading-custom-row">
-                  <label for="readingCustomInput" class="reading-custom-label">Custom scale</label>
-                  <div class="reading-custom-input-wrap">
-                    <input type="text" id="readingCustomInput" class="reading-custom-input" minlength="2" maxlength="3" value="100" aria-label="Custom reading size percentage" inputmode="numeric">
-                    <span class="reading-custom-unit" aria-hidden="true">%</span>
-                  </div>
-                </div>
-                <div class="reading-custom-hint" id="readingCustomHint">Allowed range: 92–150%</div>
+                <button type="button" class="reading-preset-btn active" id="readingOptionDefault" data-mode="default" role="radio" aria-checked="true">Default (usual)</button>
+                <button type="button" class="reading-preset-btn" id="readingOptionMedium" data-mode="medium" role="radio" aria-checked="false">Medium (120%)</button>
+                <button type="button" class="reading-preset-btn" id="readingOptionLarge" data-mode="large" role="radio" aria-checked="false">Large (150%)</button>
+                <button type="button" class="reading-preset-btn" id="readingOptionXLarge" data-mode="xlarge" role="radio" aria-checked="false">X-Large (200%)</button>
               </div>
 
               <div class="reading-size-note">
                 Scales readable knowledge content: concepts, field checks, limits, and register procedures.
               </div>
             </div>
-
-            
           </div>
 
           <div class="settings-popover-footer">
+            <span class="settings-last-updated" id="settingsLastUpdated">Last updated: 11 Oct 2026</span>
             <button type="button" class="settings-reset-btn" id="settingsResetBtn" aria-label="Reset reading size to default">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <polyline points="1 4 1 10 7 10"></polyline>
@@ -6870,7 +7033,7 @@
           </button>
         </div>
         <div class="safety-disclaimer-credit">
-          <span>VisionSafe TRD Engineering Dictionary V2.4-RC1 • Prepared by <strong>Nidhin&nbsp;Raj&nbsp;S&nbsp;R</strong></span>
+          <span>VisionSafe TRD Engineering Dictionary V23.05 • Prepared by <strong>Nidhin&nbsp;Raj&nbsp;S&nbsp;R</strong></span>
         </div>
       </div>
     </div>
@@ -6964,6 +7127,15 @@
             </svg>
           </button>
         </div>
+
+        <!-- GLOBAL Search Sliding Switch -->
+        <label class="global-search-toggle" id="globalSearchToggleWrap" title="Toggle GLOBAL search for unrestricted full-text matching across all fields">
+          <input type="checkbox" id="globalSearchToggle" class="global-search-checkbox" aria-label="Toggle GLOBAL full-text search">
+          <span class="global-toggle-track">
+            <span class="global-toggle-thumb"></span>
+          </span>
+          <span class="global-toggle-label">GLOBAL</span>
+        </label>
         <button type="button" class="concept-discovery-btn" id="conceptDiscoveryBtn" title="Concept Discovery" aria-label="Open Concept Discovery">
           <svg class="discovery-spark-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
@@ -76716,14 +76888,142 @@ function switchTier(newTier, updateUrl = true) {
         return /^(actm|acs|eti|ti\/|is:|is\s|rdso|rule-|iec|en\s|para\b|appendix\b|table\b|drawing\b|re\/33\/|mod\/|sk\/|bs:)/i.test(s);
       }
 
+      // Global Search State & Indexing for Unrestricted Matching
+      let isGlobalSearch = false;
+      const globalSearchToggleEl = document.getElementById("globalSearchToggle");
+      if (globalSearchToggleEl) {
+        try {
+          const savedGlobal = localStorage.getItem("visionsafe_global_search");
+          if (savedGlobal === "true") {
+            isGlobalSearch = true;
+            globalSearchToggleEl.checked = true;
+          }
+        } catch (e) {}
+
+        globalSearchToggleEl.addEventListener("change", () => {
+          isGlobalSearch = globalSearchToggleEl.checked;
+          try {
+            localStorage.setItem("visionsafe_global_search", isGlobalSearch ? "true" : "false");
+          } catch (e) {}
+          handleSearchChange();
+        });
+      }
+
+      function getConceptSearchableText(e) {
+        if (e._globalSearchText) return e._globalSearchText;
+        const parts = [
+          e.id || "",
+          e.term || "",
+          e.acronym || "",
+          ...(e.aliases || []),
+          e.simple_terms || "",
+          e.ambiguity_guidance || "",
+          e.category || ""
+        ];
+        if (e.engineering_spec) {
+          for (const [k, v] of Object.entries(e.engineering_spec)) {
+            parts.push(k, String(v));
+          }
+        }
+        if (e.field_checks) {
+          for (const fc of e.field_checks) {
+            parts.push(fc.check || "", fc.limit || "", fc.condition || "", fc.severity || "");
+          }
+        }
+        if (e.citations) {
+          for (const c of e.citations) {
+            parts.push(c.source || "", c.description || "");
+          }
+        }
+        if (e.relationships) {
+          for (const [k, rels] of Object.entries(e.relationships)) {
+            if (Array.isArray(rels)) parts.push(...rels);
+          }
+        }
+        if (e.senses) {
+          for (const s of e.senses) {
+            parts.push(s.title || "", s.description || "");
+          }
+        }
+        e._globalSearchText = parts.join(" ").toLowerCase();
+        return e._globalSearchText;
+      }
+
+      function getFieldSearchableText(f) {
+        if (f._globalSearchText) return f._globalSearchText;
+        const parts = [
+          f.id || "",
+          f.title || "",
+          f.displayName || "",
+          f.equipment || "",
+          f.subsystem || "",
+          f.domain || "",
+          f.parent_process || "",
+          f.parent_process_name || "",
+          f.what_to_check || "",
+          f.how_to_check || "",
+          f.acceptance_criteria || "",
+          f.abnormal_condition || "",
+          f.action_if_abnormal || "",
+          f.action_classification || "",
+          f.typical_value || "",
+          f.maintenance_frequency || "",
+          f.authority_ref || "",
+          f.source_reference || "",
+          f.description || "",
+          ...(f.rules || [])
+        ];
+        if (f.steps) {
+          for (const s of f.steps) {
+            parts.push(s.step_title || "", s.action || "", s.notes || "");
+          }
+        }
+        f._globalSearchText = parts.join(" ").toLowerCase();
+        return f._globalSearchText;
+      }
+
+      function getRegisterSearchableText(r) {
+        if (r._globalSearchText) return r._globalSearchText;
+        const parts = [
+          r.id || "",
+          r.code || "",
+          r.title || "",
+          r.category || "",
+          r.governing_authority || "",
+          r.target_equipment || "",
+          r.statutory_proforma || "",
+          r.description || ""
+        ];
+        if (r.required_fields) {
+          for (const rf of r.required_fields) {
+            if (typeof rf === "string") parts.push(rf);
+            else if (rf) {
+              parts.push(rf.field_name || "", rf.raw || "", rf.acceptance_limit || "", rf.normal_range || "", rf.expected_condition || "");
+            }
+          }
+        }
+        r._globalSearchText = parts.join(" ").toLowerCase();
+        return r._globalSearchText;
+      }
+
+      function matchesQueryGlobal(fullText, q) {
+        if (!q) return true;
+        if (!fullText) return false;
+        const lowerText = fullText.toLowerCase();
+        const lowerQ = q.toLowerCase().trim();
+        // Exact phrase or substring match
+        if (lowerText.includes(lowerQ)) return true;
+        // Multiword match: all space-delimited words present
+        const words = lowerQ.split(/\s+/).filter(w => w.length > 0);
+        if (words.length > 1 && words.every(w => lowerText.includes(w))) return true;
+        return false;
+      }
+
       // Filter entries based on search query and category with smart relevance scoring
       function getFilteredEntries() {
         const q = searchQuery.toLowerCase().trim();
 
         if (currentTier === "CONCEPTS") {
-          const isShort = q.length >= 2 && q.length <= 4;
-          const wordRegex = isShort ? new RegExp(`\b${q}\b`, "i") : null;
-
           let filtered = TRD_DICTIONARY.filter(entry => {
             if (currentCategory === "ABBREVIATIONS") {
               if (!entry.acronym || entry.acronym.trim().length === 0) return false;
@@ -76732,6 +77032,13 @@ function switchTier(newTier, updateUrl = true) {
             }
 
             if (!q) return true;
+
+            if (isGlobalSearch) {
+              return matchesQueryGlobal(getConceptSearchableText(entry), q);
+            }
+
+            const isShort = q.length >= 2 && q.length <= 4;
+            const wordRegex = isShort ? new RegExp(`\\b${q}\\b`, "i") : null;
 
             const acronymExact = (entry.acronym || "").toLowerCase() === q;
             const acronymStart = (entry.acronym || "").toLowerCase().startsWith(q);
@@ -76778,9 +77085,11 @@ function switchTier(newTier, updateUrl = true) {
               else if (acro.startsWith(q)) s += 50;
               if (term === q) s += 80;
               else if (term.startsWith(q)) s += 40;
+              if (term.includes(q)) s += 25;
               if ((e.aliases || []).some(al => al.toLowerCase() === q)) s += 75;
               else if ((e.aliases || []).some(al => al.toLowerCase().includes(q))) s += 35;
               if ((e.citations || []).some(c => c.source.toLowerCase().includes(q))) s += 35;
+              if (e.id === q) s += 90;
               return s;
             };
             return score(b) - score(a);
@@ -76802,6 +77111,11 @@ function switchTier(newTier, updateUrl = true) {
             });
           }
           if (!q) return list;
+
+          if (isGlobalSearch) {
+            return list.filter(f => matchesQueryGlobal(getFieldSearchableText(f), q));
+          }
+
           return list.filter(f => {
             const idMatch = (f.id || "").toLowerCase().includes(q);
             const titleMatch = ((f.displayName || f.title) || "").toLowerCase().includes(q);
@@ -76824,6 +77138,11 @@ function switchTier(newTier, updateUrl = true) {
             list = list.filter(r => (r.category || "General") === currentCategory);
           }
           if (!q) return list;
+
+          if (isGlobalSearch) {
+            return list.filter(r => matchesQueryGlobal(getRegisterSearchableText(r), q));
+          }
+
           return list.filter(r => {
             const idMatch = (r.id || "").toLowerCase().includes(q);
             const codeMatch = (r.code || "").toLowerCase().includes(q);
@@ -76845,9 +77164,7 @@ function switchTier(newTier, updateUrl = true) {
           });
         }
         return [];
-      }
-
-      // Render Master Sidebar list
+      }      // Render Master Sidebar list
       function renderEntriesList() {
         const filtered = getFilteredEntries();
         matchCountEl.textContent = `${filtered.length} result${filtered.length === 1 ? '' : 's'}`;
@@ -78519,8 +78836,16 @@ function switchTier(newTier, updateUrl = true) {
         `;
       }
 
-      // Search and category input handlers
+      // Search input debouncing via requestAnimationFrame for 60fps responsiveness
+      let searchRafId = null;
       function handleSearchChange() {
+        if (searchRafId) cancelAnimationFrame(searchRafId);
+        searchRafId = requestAnimationFrame(() => {
+          _executeSearchChange();
+        });
+      }
+
+      function _executeSearchChange() {
         searchQuery = searchInputEl.value;
         if (searchQuery.trim().length > 0) {
           searchClearBtnEl.style.display = "flex";
@@ -78531,39 +78856,67 @@ function switchTier(newTier, updateUrl = true) {
         }
 
         const q = searchQuery.toLowerCase().trim();
-        const cMatches = TRD_DICTIONARY.filter(e => {
-          if (!q) return true;
-          return (e.term || "").toLowerCase().includes(q) || (e.acronym || "").toLowerCase().includes(q) || (e.aliases || []).some(a => a.toLowerCase().includes(q));
-        }).length;
-        const fMatches = TRD_FIELD.filter(f => {
-          if (!q) return true;
-          return (f.id || "").toLowerCase().includes(q) || (f.title || "").toLowerCase().includes(q) || (f.equipment || "").toLowerCase().includes(q);
-        }).length;
+
+        // Count Concept matches
+        let cMatches = 0;
+        if (!q) {
+          cMatches = TRD_DICTIONARY.length;
+        } else if (isGlobalSearch) {
+          cMatches = TRD_DICTIONARY.filter(e => matchesQueryGlobal(getConceptSearchableText(e), q)).length;
+        } else {
+          cMatches = TRD_DICTIONARY.filter(e => {
+            return (e.term || "").toLowerCase().includes(q) ||
+                   (e.acronym || "").toLowerCase().includes(q) ||
+                   (e.aliases || []).some(a => a.toLowerCase().includes(q));
+          }).length;
+        }
+
+        // Count Field matches
+        let fMatches = 0;
+        if (!q) {
+          fMatches = TRD_FIELD.length;
+        } else if (isGlobalSearch) {
+          fMatches = TRD_FIELD.filter(f => matchesQueryGlobal(getFieldSearchableText(f), q)).length;
+        } else {
+          fMatches = TRD_FIELD.filter(f => {
+            return (f.id || "").toLowerCase().includes(q) ||
+                   (f.title || "").toLowerCase().includes(q) ||
+                   (f.equipment || "").toLowerCase().includes(q);
+          }).length;
+        }
+
+        // Count Register matches
+        let rMatches = 0;
+        if (!q) {
+          rMatches = TRD_REGISTERS.length;
+        } else if (isGlobalSearch) {
+          rMatches = TRD_REGISTERS.filter(r => matchesQueryGlobal(getRegisterSearchableText(r), q)).length;
+        } else {
+          rMatches = TRD_REGISTERS.filter(r => {
+            const idMatch = (r.id || "").toLowerCase().includes(q);
+            const codeMatch = (r.code || "").toLowerCase().includes(q);
+            const titleMatch = (r.title || "").toLowerCase().includes(q);
+            const catMatch = (r.category || "").toLowerCase().includes(q);
+            const authMatch = (r.governing_authority || "").toLowerCase().includes(q);
+            const equipMatch = (r.target_equipment || "").toLowerCase().includes(q);
+            const profMatch = (r.statutory_proforma || "").toLowerCase().includes(q);
+            const fieldMatch = (r.required_fields || []).some(f => {
+              if (!f) return false;
+              if (typeof f === 'string') return f.toLowerCase().includes(q);
+              return (f.field_name || "").toLowerCase().includes(q) ||
+                     (f.raw || "").toLowerCase().includes(q) ||
+                     (f.acceptance_limit || "").toLowerCase().includes(q) ||
+                     (f.normal_range || "").toLowerCase().includes(q) ||
+                     (f.expected_condition || "").toLowerCase().includes(q);
+            });
+            return idMatch || codeMatch || titleMatch || catMatch || authMatch || equipMatch || profMatch || fieldMatch;
+          }).length;
+        }
 
         const badgeC = document.getElementById("tierBadgeConcepts");
         if (badgeC) badgeC.textContent = cMatches;
         const badgeF = document.getElementById("tierBadgeField");
         if (badgeF) badgeF.textContent = fMatches;
-        const rMatches = TRD_REGISTERS.filter(r => {
-          if (!q) return true;
-          const idMatch = (r.id || "").toLowerCase().includes(q);
-          const codeMatch = (r.code || "").toLowerCase().includes(q);
-          const titleMatch = (r.title || "").toLowerCase().includes(q);
-          const catMatch = (r.category || "").toLowerCase().includes(q);
-          const authMatch = (r.governing_authority || "").toLowerCase().includes(q);
-          const equipMatch = (r.target_equipment || "").toLowerCase().includes(q);
-          const profMatch = (r.statutory_proforma || "").toLowerCase().includes(q);
-          const fieldMatch = (r.required_fields || []).some(f => {
-            if (!f) return false;
-            if (typeof f === 'string') return f.toLowerCase().includes(q);
-            return (f.field_name || "").toLowerCase().includes(q) ||
-                   (f.raw || "").toLowerCase().includes(q) ||
-                   (f.acceptance_limit || "").toLowerCase().includes(q) ||
-                   (f.normal_range || "").toLowerCase().includes(q) ||
-                   (f.expected_condition || "").toLowerCase().includes(q);
-          });
-          return idMatch || codeMatch || titleMatch || catMatch || authMatch || equipMatch || profMatch || fieldMatch;
-        }).length;
         const badgeR = document.getElementById("tierBadgeRegisters");
         if (badgeR) badgeR.textContent = rMatches;
 
@@ -78846,60 +79199,44 @@ function switchTier(newTier, updateUrl = true) {
       }
 
       // ============================================================
-      // APPLICATION SETTINGS & READING SIZE ACCESSIBILITY CONTROLLER
+      // APPLICATION SETTINGS & READING ACCESSIBILITY CONTROLLER (V23.05)
       // ============================================================
+      const VS_RELEASE_METADATA = {
+        version: "V23.05",
+        next_release: "V23.06",
+        last_updated: "11 Oct 2026"
+      };
+
       const READING_PRESETS = {
         default: 1.0,
-        large: 1.15,
-        xlarge: 1.30
+        medium: 1.20,
+        large: 1.50,
+        xlarge: 2.00
       };
-      const READING_MIN_PCT = 92;
-      const READING_MAX_PCT = 150;
       const READING_STORAGE_MODE = "visionsafe_reading_mode";
       const READING_STORAGE_SCALE = "visionsafe_reading_scale";
-      const READING_STORAGE_CUSTOM = "visionsafe_reading_custom";
 
       const headerSettingsBtn = document.getElementById("headerSettingsBtn");
       const settingsPopover = document.getElementById("settingsPopover");
       const closeSettingsPopoverBtn = document.getElementById("closeSettingsPopoverBtn");
-      const readingSizePercent = document.getElementById("readingSizePercent");
       const readingPresetBtns = document.querySelectorAll(".reading-preset-btn");
-      const readingCustomBox = document.getElementById("readingCustomBox");
-      const readingCustomInput = document.getElementById("readingCustomInput");
       const settingsResetBtn = document.getElementById("settingsResetBtn");
 
-      let currentReadingMode = "default"; // 'default' | 'large' | 'xlarge' | 'custom'
+      let currentReadingMode = "default"; // 'default' | 'medium' | 'large' | 'xlarge'
       let currentReadingScale = 1.0;
-      let lastValidCustomPct = 118;
 
-      function applyReadingState(mode, scale, customPct, saveStorage = true) {
-        let validScale = (typeof scale === "number" && !isNaN(scale)) ? scale : 1.0;
-        let validPct = Math.round(validScale * 100);
-
-        if (validPct < READING_MIN_PCT) {
-          validPct = READING_MIN_PCT;
-          validScale = validPct / 100;
-        } else if (validPct > READING_MAX_PCT) {
-          validPct = READING_MAX_PCT;
-          validScale = validPct / 100;
+      function applyReadingState(mode, scale, saveStorage = true) {
+        if (!READING_PRESETS[mode]) {
+          mode = "default";
+          scale = 1.0;
         }
+        let validScale = (typeof scale === "number" && !isNaN(scale)) ? scale : READING_PRESETS[mode];
 
         currentReadingMode = mode;
         currentReadingScale = validScale;
 
-        if (typeof customPct === "number" && !isNaN(customPct)) {
-          lastValidCustomPct = Math.min(Math.max(Math.round(customPct), READING_MIN_PCT), READING_MAX_PCT);
-        } else if (mode === "custom") {
-          lastValidCustomPct = validPct;
-        }
-
         // Apply CSS custom property to document root
         document.documentElement.style.setProperty("--reading-scale", validScale);
-
-        // Update percentage indicator in header of reading section
-        if (readingSizePercent) {
-          readingSizePercent.textContent = validPct + "%";
-        }
 
         // Update preset radio buttons active and aria-checked states
         readingPresetBtns.forEach(btn => {
@@ -78909,111 +79246,77 @@ function switchTier(newTier, updateUrl = true) {
           btn.setAttribute("aria-checked", isSelected ? "true" : "false");
         });
 
-        // Update Custom input box active styling & value
-        if (readingCustomBox) {
-          readingCustomBox.classList.toggle("active-mode", currentReadingMode === "custom");
-        }
-        if (readingCustomInput) {
-          if (currentReadingMode === "custom") {
-            readingCustomInput.value = validPct;
-          } else {
-            readingCustomInput.value = lastValidCustomPct;
-          }
-        }
-
         // Persist to localStorage
         if (saveStorage) {
           try {
             localStorage.setItem(READING_STORAGE_MODE, currentReadingMode);
             localStorage.setItem(READING_STORAGE_SCALE, validScale.toString());
-            localStorage.setItem(READING_STORAGE_CUSTOM, lastValidCustomPct.toString());
           } catch (e) {
             console.warn("Could not save reading scale preferences", e);
           }
         }
       }
 
-      function handleCustomInputCommit(rawVal) {
-        if (rawVal === undefined || rawVal === null) {
-          rawVal = readingCustomInput ? readingCustomInput.value : "";
-        }
-        const strVal = String(rawVal).trim();
-        if (strVal === "") {
-          // empty input -> preserve previous valid value or return to Default
-          if (lastValidCustomPct && lastValidCustomPct >= READING_MIN_PCT && lastValidCustomPct <= READING_MAX_PCT) {
-            applyReadingState("custom", lastValidCustomPct / 100, lastValidCustomPct);
-          } else {
-            applyReadingState("default", 1.0, 100);
-          }
-          return;
-        }
-
-        let num = parseInt(strVal, 10);
-        if (isNaN(num)) {
-          // non-numeric input -> reject gracefully, restore last valid
-          if (readingCustomInput) {
-            readingCustomInput.value = lastValidCustomPct;
-          }
-          applyReadingState("custom", lastValidCustomPct / 100, lastValidCustomPct);
-          return;
-        }
-
-        // Clamping rules: < 92 -> 92, > 150 -> 150
-        if (num < READING_MIN_PCT) {
-          num = READING_MIN_PCT;
-        } else if (num > READING_MAX_PCT) {
-          num = READING_MAX_PCT;
-        }
-
-        applyReadingState("custom", num / 100, num);
-      }
-
-      function initReadingScale() {
+      function initReadingPreferences() {
         let savedMode = "default";
-        let savedCustom = 118;
         let savedScale = 1.0;
 
         try {
           const m = localStorage.getItem(READING_STORAGE_MODE);
-          if (m && ["default", "large", "xlarge", "custom"].includes(m)) {
+          if (m && READING_PRESETS[m]) {
             savedMode = m;
+            savedScale = READING_PRESETS[m];
           }
-          const c = localStorage.getItem(READING_STORAGE_CUSTOM);
-          if (c) {
-            const parsedC = parseInt(c, 10);
-            if (!isNaN(parsedC) && parsedC >= READING_MIN_PCT && parsedC <= READING_MAX_PCT) {
-              savedCustom = parsedC;
+        } catch (e) {}
+
+        applyReadingState(savedMode, savedScale, false);
+
+        // Bind Radio Buttons
+        readingPresetBtns.forEach(btn => {
+          btn.addEventListener("click", () => {
+            const mode = btn.dataset.mode;
+            if (READING_PRESETS[mode]) {
+              applyReadingState(mode, READING_PRESETS[mode], true);
             }
-          }
-          const s = localStorage.getItem(READING_STORAGE_SCALE);
-          if (s) {
-            const parsedS = parseFloat(s);
-            if (!isNaN(parsedS) && parsedS >= (READING_MIN_PCT / 100) && parsedS <= (READING_MAX_PCT / 100)) {
-              savedScale = parsedS;
-            }
-          }
-        } catch (e) {
-          // ignore
+          });
+        });
+
+        // Bind Reset Button
+        if (settingsResetBtn) {
+          settingsResetBtn.addEventListener("click", () => {
+            applyReadingState("default", READING_PRESETS.default, true);
+          });
         }
 
-        if (savedMode === "large") {
-          applyReadingState("large", READING_PRESETS.large, savedCustom, false);
-        } else if (savedMode === "xlarge") {
-          applyReadingState("xlarge", READING_PRESETS.xlarge, savedCustom, false);
-        } else if (savedMode === "custom") {
-          const custScale = savedCustom / 100;
-          applyReadingState("custom", custScale, savedCustom, false);
-        } else {
-          applyReadingState("default", READING_PRESETS.default, savedCustom, false);
+        // Initialize Dynamic Publication Date in Settings Footer
+        const lastUpdatedEl = document.getElementById("settingsLastUpdated");
+        if (lastUpdatedEl) {
+          lastUpdatedEl.textContent = "Last updated: " + VS_RELEASE_METADATA.last_updated;
         }
+
+        // Close on outside click
+        document.addEventListener("click", (e) => {
+          if (!settingsPopover || settingsPopover.hasAttribute("hidden")) return;
+          if (headerSettingsBtn && headerSettingsBtn.contains(e.target)) return;
+          if (settingsPopover.contains(e.target)) return;
+          toggleSettingsPopover(false);
+        });
+
+        // Close on Escape key
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && settingsPopover && !settingsPopover.hasAttribute("hidden")) {
+            toggleSettingsPopover(false);
+            if (headerSettingsBtn) headerSettingsBtn.focus();
+          }
+        });
       }
 
-      function toggleSettingsPopover(show) {
+      function toggleSettingsPopover(force) {
         if (!settingsPopover) return;
         const isHidden = settingsPopover.hasAttribute("hidden");
-        const nextState = (typeof show === "boolean") ? show : isHidden;
+        const willShow = (force !== undefined) ? force : isHidden;
 
-        if (nextState) {
+        if (willShow) {
           settingsPopover.removeAttribute("hidden");
           if (headerSettingsBtn) {
             headerSettingsBtn.setAttribute("aria-expanded", "true");
@@ -79046,86 +79349,7 @@ function switchTier(newTier, updateUrl = true) {
         });
       }
 
-      // Preset radio buttons click handlers
-      readingPresetBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-          const mode = btn.dataset.mode;
-          if (mode === "default") {
-            applyReadingState("default", READING_PRESETS.default, lastValidCustomPct);
-          } else if (mode === "large") {
-            applyReadingState("large", READING_PRESETS.large, lastValidCustomPct);
-          } else if (mode === "xlarge") {
-            applyReadingState("xlarge", READING_PRESETS.xlarge, lastValidCustomPct);
-          } else if (mode === "custom") {
-            applyReadingState("custom", lastValidCustomPct / 100, lastValidCustomPct);
-            if (readingCustomInput) {
-              readingCustomInput.focus();
-              readingCustomInput.select();
-            }
-          }
-        });
-      });
-
-      // Custom input event bindings
-      if (readingCustomInput) {
-        readingCustomInput.addEventListener("input", () => {
-          const val = readingCustomInput.value.trim();
-          if (val !== "") {
-            const num = parseInt(val, 10);
-            if (!isNaN(num)) {
-              if (num >= READING_MIN_PCT && num <= READING_MAX_PCT) {
-                applyReadingState("custom", num / 100, num);
-              } else {
-                currentReadingMode = "custom";
-                readingPresetBtns.forEach(btn => {
-                  const isCustom = (btn.dataset.mode === "custom");
-                  btn.classList.toggle("active", isCustom);
-                  btn.setAttribute("aria-checked", isCustom ? "true" : "false");
-                });
-                if (readingCustomBox) readingCustomBox.classList.add("active-mode");
-              }
-            }
-          }
-        });
-
-        readingCustomInput.addEventListener("change", () => {
-          handleCustomInputCommit();
-        });
-
-        readingCustomInput.addEventListener("blur", () => {
-          handleCustomInputCommit();
-        });
-
-        readingCustomInput.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            handleCustomInputCommit();
-            readingCustomInput.blur();
-          }
-        });
-      }
-
-      if (settingsResetBtn) {
-        settingsResetBtn.addEventListener("click", () => {
-          applyReadingState("default", READING_PRESETS.default, 100);
-        });
-      }
-
-      document.addEventListener("click", (e) => {
-        if (!settingsPopover || settingsPopover.hasAttribute("hidden")) return;
-        if (!settingsPopover.contains(e.target) && !headerSettingsBtn.contains(e.target)) {
-          toggleSettingsPopover(false);
-        }
-      });
-
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && settingsPopover && !settingsPopover.hasAttribute("hidden")) {
-          toggleSettingsPopover(false);
-          if (headerSettingsBtn) headerSettingsBtn.focus();
-        }
-      });
-
-      initReadingScale();
+      initReadingPreferences();
 
       const openLearningBtn = document.getElementById("openLearningModalBtn");
       if (openLearningBtn) {

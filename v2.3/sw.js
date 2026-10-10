@@ -1,6 +1,6 @@
-// VisionSafe TRD Engineering Dictionary V2.4-RC1 Service Worker
-// Internal Incremental Release Cache: visionsafe-v24-rc1-001
-const CACHE_NAME = 'visionsafe-v24-rc1-001';
+// VisionSafe TRD Engineering Dictionary V23.05 Service Worker
+// Internal Incremental Release Cache: visionsafe-v2305-001
+const CACHE_NAME = 'visionsafe-v2305-001';
 
 const APP_SHELL = [
   './',
@@ -24,7 +24,7 @@ self.addEventListener('activate', event => {
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames
-          .filter(name => (name.startsWith('visionsafe-v24-') || name.startsWith('visionsafe-v23-') || name.startsWith('visionsafe-v23')) && name !== CACHE_NAME)
+          .filter(name => (name.startsWith('visionsafe-v24-') || name.startsWith('visionsafe-v23-') || name.startsWith('visionsafe-v2305-') || name.startsWith('visionsafe-v23')) && name !== CACHE_NAME)
           .map(name => {
             console.log('[VisionSafe SW] Retiring obsolete cache:', name);
             return caches.delete(name);
