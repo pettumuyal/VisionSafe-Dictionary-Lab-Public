@@ -6852,7 +6852,7 @@
           <h1 class="brand-main-title">
             <span class="brand-title-primary-group">
               <span class="brand-title-primary">VisionSafe TRD</span>
-              <span class="brand-version-sub">V23.05</span>
+              <span class="brand-version-sub">V23.06</span>
             </span>
             <span class="brand-title-secondary">ENGINEERING DICTIONARY</span>
           </h1>
@@ -7033,7 +7033,7 @@
           </button>
         </div>
         <div class="safety-disclaimer-credit">
-          <span>VisionSafe TRD Engineering Dictionary V23.05 • Prepared by <strong>Nidhin&nbsp;Raj&nbsp;S&nbsp;R</strong></span>
+          <span>VisionSafe TRD Engineering Dictionary V23.06 • Prepared by <strong>Nidhin&nbsp;Raj&nbsp;S&nbsp;R</strong></span>
         </div>
       </div>
     </div>
@@ -76909,6 +76909,10 @@ function switchTier(newTier, updateUrl = true) {
         });
       }
 
+      function escapeRegex(str) {
+        return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      }
+
       function getConceptSearchableText(e) {
         if (e._globalSearchText) return e._globalSearchText;
         const parts = [
@@ -77019,7 +77023,181 @@ function switchTier(newTier, updateUrl = true) {
         return false;
       }
 
-      // Filter entries based on search query and category with smart relevance scoring
+      // ==========================================================================
+      // Deterministic 4-Priority Relevance Ranking Engine (Phase C)
+      // ==========================================================================
+      function scoreConceptGlobal(e, q) {
+        if (!q) return 0;
+        const lq = q.toLowerCase().trim();
+        const term = (e.term || "").toLowerCase();
+        const acro = (e.acronym || "").toLowerCase();
+        const id = (e.id || "").toLowerCase();
+        const aliases = (e.aliases || []).map(a => a.toLowerCase());
+
+        const specs = e.engineering_spec || {};
+        const statDef = (specs.statutory_definition || "").toLowerCase();
+        const primFunc = (specs.primary_function || "").toLowerCase();
+        const funcRole = (specs.functional_role || "").toLowerCase();
+        const ambig = (e.ambiguity_guidance || "").toLowerCase();
+        const sensesText = (e.senses || []).map(s => `${s.title || ""} ${s.description || ""}`.toLowerCase()).join(" ");
+
+        const checksText = (e.field_checks || []).map(fc => `${fc.check || ""} ${fc.limit || ""} ${fc.condition || ""}`.toLowerCase()).join(" ");
+        const otherSpecsText = Object.entries(specs)
+          .filter(([k]) => !['statutory_definition', 'primary_function', 'functional_role'].includes(k))
+          .map(([k, v]) => `${k} ${v}`.toLowerCase()).join(" ");
+
+        const citationsText = (e.citations || []).map(c => `${c.source || ""} ${c.description || ""}`.toLowerCase()).join(" ");
+        const relsText = Object.entries(e.relationships || {}).map(([k, v]) => Array.isArray(v) ? v.join(" ") : String(v)).join(" ").toLowerCase();
+
+        let priority = 4;
+        let boost = 0;
+
+        const isExactTitle = (term === lq || acro === lq || id === lq || aliases.includes(lq));
+        const isTitlePrefix = (term.startsWith(lq) || acro.startsWith(lq));
+        const isTitleWord = (new RegExp(`(^|\\b|\\s)${escapeRegex(lq)}(\\b|\\s|$)`, "i").test(term) || aliases.some(a => new RegExp(`(^|\\b|\\s)${escapeRegex(lq)}(\\b|\\s|$)`, "i").test(a)));
+        const isTitleContains = (term.includes(lq) || (acro && acro.includes(lq)) || aliases.some(a => a.includes(lq)) || id.includes(lq));
+        const isDefMatch = matchesQueryGlobal(statDef, lq) || matchesQueryGlobal(primFunc, lq) || matchesQueryGlobal(funcRole, lq) || matchesQueryGlobal(ambig, lq) || matchesQueryGlobal(sensesText, lq);
+
+        if (isExactTitle || isTitleContains || isDefMatch) {
+          priority = 1;
+          if (isExactTitle) boost += 600;
+          else if (isTitlePrefix) boost += 400;
+          else if (isTitleWord) boost += 300;
+          else if (isTitleContains) boost += 200;
+          if (isDefMatch) boost += 100;
+        } else {
+          const isCheckMatch = matchesQueryGlobal(checksText, lq);
+          const isSpecMatch = matchesQueryGlobal(otherSpecsText, lq);
+          if (isCheckMatch || isSpecMatch) {
+            priority = 2;
+            if (isCheckMatch) boost += 250;
+            if (isSpecMatch) boost += 150;
+          } else {
+            const isCitationMatch = matchesQueryGlobal(citationsText, lq) || matchesQueryGlobal(relsText, lq);
+            if (isCitationMatch) {
+              priority = 3;
+              boost += 150;
+            } else {
+              priority = 4;
+              boost += 50;
+            }
+          }
+        }
+
+        const baseScore = { 1: 10000, 2: 5000, 3: 2000, 4: 1000 }[priority];
+        return baseScore + boost;
+      }
+
+      function scoreFieldGlobal(f, q) {
+        if (!q) return 0;
+        const lq = q.toLowerCase().trim();
+        const id = (f.id || "").toLowerCase();
+        const title = (f.title || "").toLowerCase();
+        const dTitle = (f.displayName || "").toLowerCase();
+        const equip = (f.equipment || "").toLowerCase();
+        const what = (f.what_to_check || "").toLowerCase();
+
+        const how = (f.how_to_check || "").toLowerCase();
+        const crit = (f.acceptance_criteria || "").toLowerCase();
+        const abn = (f.abnormal_condition || "").toLowerCase();
+        const act = (f.action_if_abnormal || "").toLowerCase();
+        const typ = (f.typical_value || "").toLowerCase();
+        const steps = (f.steps || []).map(s => `${s.step_title || ""} ${s.action || ""}`.toLowerCase()).join(" ");
+        const rules = (f.rules || []).join(" ").toLowerCase();
+
+        const parent = (f.parent_process_name || f.parent_process || "").toLowerCase();
+        const authRef = (f.authority_ref || "").toLowerCase();
+        const srcRef = (f.source_reference || "").toLowerCase();
+
+        let priority = 4;
+        let boost = 0;
+
+        const isExactTitle = (title === lq || dTitle === lq || id === lq || equip === lq);
+        const isTitlePrefix = (title.startsWith(lq) || dTitle.startsWith(lq));
+        const isTitleWord = (new RegExp(`(^|\\b|\\s)${escapeRegex(lq)}(\\b|\\s|$)`, "i").test(title) || new RegExp(`(^|\\b|\\s)${escapeRegex(lq)}(\\b|\\s|$)`, "i").test(dTitle));
+        const isTitleContains = (title.includes(lq) || dTitle.includes(lq) || equip.includes(lq) || matchesQueryGlobal(what, lq) || id.includes(lq));
+
+        if (isExactTitle || isTitleContains) {
+          priority = 1;
+          if (isExactTitle) boost += 600;
+          else if (isTitlePrefix) boost += 400;
+          else if (isTitleWord) boost += 300;
+          else boost += 200;
+        } else {
+          const isOpsMatch = matchesQueryGlobal(how, lq) || matchesQueryGlobal(crit, lq) || matchesQueryGlobal(abn, lq) || matchesQueryGlobal(act, lq) || matchesQueryGlobal(typ, lq) || matchesQueryGlobal(steps, lq) || matchesQueryGlobal(rules, lq);
+          if (isOpsMatch) {
+            priority = 2;
+            if (matchesQueryGlobal(crit, lq)) boost += 250;
+            else boost += 150;
+          } else {
+            const isRefMatch = matchesQueryGlobal(parent, lq) || matchesQueryGlobal(authRef, lq) || matchesQueryGlobal(srcRef, lq);
+            if (isRefMatch) {
+              priority = 3;
+              boost += 150;
+            } else {
+              priority = 4;
+              boost += 50;
+            }
+          }
+        }
+
+        const baseScore = { 1: 10000, 2: 5000, 3: 2000, 4: 1000 }[priority];
+        return baseScore + boost;
+      }
+
+      function scoreRegisterGlobal(r, q) {
+        if (!q) return 0;
+        const lq = q.toLowerCase().trim();
+        const id = (r.id || "").toLowerCase();
+        const code = (r.code || "").toLowerCase();
+        const title = (r.title || "").toLowerCase();
+        const prof = (r.statutory_proforma || "").toLowerCase();
+
+        const fields = (r.required_fields || []).map(f => {
+          if (typeof f === 'string') return f.toLowerCase();
+          return `${f.field_name || ""} ${f.raw || ""} ${f.acceptance_limit || ""} ${f.normal_range || ""} ${f.expected_condition || ""}`.toLowerCase();
+        }).join(" ");
+
+        const cat = (r.category || "").toLowerCase();
+        const auth = (r.governing_authority || "").toLowerCase();
+        const equip = (r.target_equipment || "").toLowerCase();
+
+        let priority = 4;
+        let boost = 0;
+
+        const isExactTitle = (title === lq || code === lq || id === lq);
+        const isTitlePrefix = (title.startsWith(lq) || code.startsWith(lq));
+        const isTitleWord = (new RegExp(`(^|\\b|\\s)${escapeRegex(lq)}(\\b|\\s|$)`, "i").test(title) || new RegExp(`(^|\\b|\\s)${escapeRegex(lq)}(\\b|\\s|$)`, "i").test(code));
+        const isTitleContains = (title.includes(lq) || code.includes(lq) || matchesQueryGlobal(prof, lq) || id.includes(lq));
+
+        if (isExactTitle || isTitleContains) {
+          priority = 1;
+          if (isExactTitle) boost += 600;
+          else if (isTitlePrefix) boost += 400;
+          else if (isTitleWord) boost += 300;
+          else boost += 200;
+        } else {
+          const isFieldMatch = matchesQueryGlobal(fields, lq);
+          if (isFieldMatch) {
+            priority = 2;
+            boost += 250;
+          } else {
+            const isRefMatch = matchesQueryGlobal(cat, lq) || matchesQueryGlobal(auth, lq) || matchesQueryGlobal(equip, lq);
+            if (isRefMatch) {
+              priority = 3;
+              boost += 150;
+            } else {
+              priority = 4;
+              boost += 50;
+            }
+          }
+        }
+
+        const baseScore = { 1: 10000, 2: 5000, 3: 2000, 4: 1000 }[priority];
+        return baseScore + boost;
+      }
+
+      // Filter entries based on search query and category with deterministic relevance scoring
       function getFilteredEntries() {
         const q = searchQuery.toLowerCase().trim();
 
@@ -77076,6 +77254,15 @@ function switchTier(newTier, updateUrl = true) {
             return filtered;
           }
 
+          if (isGlobalSearch) {
+            return filtered.sort((a, b) => {
+              const diff = scoreConceptGlobal(b, q) - scoreConceptGlobal(a, q);
+              if (diff !== 0) return diff;
+              return a.id.localeCompare(b.id);
+            });
+          }
+
+          // Default / standard search ranking (when GLOBAL is off) with stable tie-breaker
           return filtered.sort((a, b) => {
             const score = e => {
               let s = 0;
@@ -77092,7 +77279,9 @@ function switchTier(newTier, updateUrl = true) {
               if (e.id === q) s += 90;
               return s;
             };
-            return score(b) - score(a);
+            const diff = score(b) - score(a);
+            if (diff !== 0) return diff;
+            return a.id.localeCompare(b.id);
           });
         } else if (currentTier === "FIELD") {
           let list = TRD_FIELD;
@@ -77113,7 +77302,12 @@ function switchTier(newTier, updateUrl = true) {
           if (!q) return list;
 
           if (isGlobalSearch) {
-            return list.filter(f => matchesQueryGlobal(getFieldSearchableText(f), q));
+            const matched = list.filter(f => matchesQueryGlobal(getFieldSearchableText(f), q));
+            return matched.sort((a, b) => {
+              const diff = scoreFieldGlobal(b, q) - scoreFieldGlobal(a, q);
+              if (diff !== 0) return diff;
+              return a.id.localeCompare(b.id);
+            });
           }
 
           return list.filter(f => {
@@ -77140,7 +77334,12 @@ function switchTier(newTier, updateUrl = true) {
           if (!q) return list;
 
           if (isGlobalSearch) {
-            return list.filter(r => matchesQueryGlobal(getRegisterSearchableText(r), q));
+            const matched = list.filter(r => matchesQueryGlobal(getRegisterSearchableText(r), q));
+            return matched.sort((a, b) => {
+              const diff = scoreRegisterGlobal(b, q) - scoreRegisterGlobal(a, q);
+              if (diff !== 0) return diff;
+              return a.id.localeCompare(b.id);
+            });
           }
 
           return list.filter(r => {
@@ -77164,7 +77363,8 @@ function switchTier(newTier, updateUrl = true) {
           });
         }
         return [];
-      }      // Render Master Sidebar list
+      }
+
       function renderEntriesList() {
         const filtered = getFilteredEntries();
         matchCountEl.textContent = `${filtered.length} result${filtered.length === 1 ? '' : 's'}`;
@@ -79199,11 +79399,11 @@ function switchTier(newTier, updateUrl = true) {
       }
 
       // ============================================================
-      // APPLICATION SETTINGS & READING ACCESSIBILITY CONTROLLER (V23.05)
+      // APPLICATION SETTINGS & READING ACCESSIBILITY CONTROLLER (V23.06)
       // ============================================================
       const VS_RELEASE_METADATA = {
-        version: "V23.05",
-        next_release: "V23.06",
+        version: "V23.06",
+        next_release: "V23.07",
         last_updated: "11 Oct 2026"
       };
 
