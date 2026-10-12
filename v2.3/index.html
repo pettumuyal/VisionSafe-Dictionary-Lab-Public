@@ -87,6 +87,17 @@
       --radius-lg: 12px;
       --radius-full: 9999px;
       --app-header-height: 52px;
+
+      /* Motion & Transition System (Restrained Fluidity) */
+      --ease-fluid: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+      --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --transition-instant: 80ms ease;
+      --transition-fast: 140ms cubic-bezier(0.16, 1, 0.3, 1);
+      --transition-normal: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+      --transition-med: 220ms cubic-bezier(0.16, 1, 0.3, 1);
+      --transition-overlay: 200ms cubic-bezier(0.16, 1, 0.3, 1);
+      --transition-slow: 320ms cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     [data-theme="dark"] {
@@ -625,16 +636,27 @@
       position: absolute;
       right: 0.6rem;
       top: 50%;
-      transform: translateY(-50%);
+      transform: translateY(-50%) scale(0.88);
       background: transparent;
       border: none;
       color: var(--text-subtle);
       cursor: pointer;
       padding: 0.2rem;
-      display: none;
+      display: flex;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
       align-items: center;
       justify-content: center;
       border-radius: var(--radius-sm);
+      transition: opacity var(--transition-fast), transform var(--transition-fast), color var(--transition-fast), visibility var(--transition-fast);
+    }
+
+    .search-clear-btn.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(-50%) scale(1);
+      pointer-events: auto;
     }
 
     .search-clear-btn:hover {
@@ -653,6 +675,13 @@
       color: var(--text-subtle);
       padding: 0.1rem 0.35rem;
       border-radius: var(--radius-sm);
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity var(--transition-fast);
+    }
+
+    .shortcut-badge.hidden {
+      opacity: 0;
       pointer-events: none;
     }
 
@@ -785,7 +814,6 @@
                   border-color 0.15s ease,
                   box-shadow 0.18s ease;
       background-color: transparent;
-      will-change: transform;
     }
 
     @media (hover: hover) and (pointer: fine) {
@@ -3005,9 +3033,20 @@
       display: flex;
       flex-direction: column;
       box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
-      animation: modalFadeIn 0.22s ease-out;
+      animation: modalFadeIn var(--transition-overlay, 200ms) cubic-bezier(0.16, 1, 0.3, 1);
       overflow: hidden;
       box-sizing: border-box;
+    }
+
+    @keyframes modalFadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.985);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .safety-notice-header {
@@ -4971,7 +5010,7 @@
       border-radius: var(--radius-sm);
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
-      transition: transform 0.2s ease, background 0.15s ease;
+      transition: transform var(--transition-normal, 180ms) cubic-bezier(0.16, 1, 0.3, 1), background var(--transition-fast, 140ms) ease;
     }
 
     .periodicity-group-section.collapsed .group-collapse-icon {
@@ -6084,7 +6123,7 @@
       pointer-events: none;
       z-index: 2;
       transform: translateX(0%);
-      transition: transform 180ms cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform var(--transition-normal, 180ms) cubic-bezier(0.16, 1, 0.3, 1);
       box-sizing: border-box;
     }
 
@@ -6269,8 +6308,8 @@
 
     @keyframes detailFadeSlide {
       0% {
-        opacity: 0;
-        transform: translateY(4px);
+        opacity: 0.85;
+        transform: translateY(2px);
       }
       100% {
         opacity: 1;
@@ -6279,7 +6318,11 @@
     }
 
     #detailContent {
-      animation: detailFadeSlide 180ms ease-out;
+      animation: detailFadeSlide var(--transition-fast, 140ms) cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #detailContent.detail-entering {
+      animation: detailFadeSlide var(--transition-fast, 140ms) cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     /* Global Sidebar Footer */
@@ -6647,8 +6690,11 @@
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
       }
-      .entry-card, .proc-step-btn, .rel-term-pill, .btn, button, .tier-nav-indicator, .tier-nav-btn, .theme-seg-btn, .category-pill {
+      .entry-card, .proc-step-btn, .rel-term-pill, .btn, button, .tier-nav-btn, .theme-seg-btn, .category-pill {
         transform: none !important;
+        transition: none !important;
+      }
+      .tier-nav-indicator {
         transition: none !important;
       }
     }
@@ -6811,12 +6857,10 @@
 
     /* Animation Responsiveness Enhancements */
     .settings-popover {
-      will-change: transform, opacity;
-      animation: popoverFadeIn 130ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+      animation: popoverFadeIn var(--transition-fast, 140ms) cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
     #detailContent {
-      will-change: transform, opacity;
-      animation: detailFadeSlide 130ms ease-out;
+      animation: detailFadeSlide var(--transition-fast, 140ms) cubic-bezier(0.16, 1, 0.3, 1);
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -6825,6 +6869,407 @@
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
       }
+    }
+
+
+    /* ============================================================
+       ACTM CORRECTION SLIPS HISTORY CHRONOLOGICAL LEDGER (V23.07)
+       ============================================================ */
+    .actm-ledger-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .actm-metrics-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.65rem;
+      padding: 0.75rem;
+      background: var(--bg-inset);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+    }
+
+    .actm-metric-box {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .actm-metric-num {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--accent-railway-blue);
+      font-family: var(--font-mono);
+      line-height: 1.2;
+    }
+
+    .actm-metric-lbl {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--text-subtle);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .actm-census-note {
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      color: var(--text-muted);
+      background: var(--bg-surface);
+      border-left: 3px solid var(--accent-railway-blue);
+      padding: 0.65rem 0.85rem;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      border-top: 1px solid var(--border-subtle);
+      border-right: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      overflow-wrap: break-word;
+      word-break: normal;
+    }
+
+    .actm-controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+    }
+
+    .actm-filter-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .actm-tab-btn {
+      background: var(--bg-inset);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.15s ease;
+      user-select: none;
+      min-height: 34px;
+    }
+
+    .actm-tab-btn:hover {
+      background: var(--bg-hover);
+      color: var(--text-main);
+    }
+
+    .actm-tab-btn.active {
+      background: var(--accent-railway-blue);
+      border-color: var(--accent-railway-blue);
+      color: #ffffff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    }
+
+    .actm-tab-badge {
+      font-size: 0.6875rem;
+      font-family: var(--font-mono);
+      opacity: 0.85;
+      background: rgba(0, 0, 0, 0.12);
+      padding: 1px 5px;
+      border-radius: 10px;
+    }
+    .actm-tab-btn.active .actm-tab-badge {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .actm-search-box {
+      position: relative;
+      flex: 1 1 200px;
+      max-width: 320px;
+      min-width: 0;
+    }
+
+    .actm-search-input {
+      width: 100%;
+      background: var(--bg-inset);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.4rem 0.65rem 0.4rem 1.9rem;
+      font-size: 0.8125rem;
+      color: var(--text-main);
+      transition: border-color 0.15s ease;
+      min-height: 34px;
+    }
+
+    .actm-search-input:focus {
+      outline: none;
+      border-color: var(--accent-railway-blue);
+    }
+
+    .actm-search-icon {
+      position: absolute;
+      left: 0.6rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-subtle);
+      pointer-events: none;
+    }
+
+    .actm-records-stream {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .actm-record-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      position: relative;
+    }
+
+    .actm-record-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .actm-card-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 0.5rem;
+    }
+
+    .actm-card-title-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .actm-cs-badge {
+      font-size: 0.875rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--text-main);
+      background: var(--bg-inset);
+      border: 1px solid var(--border-subtle);
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .actm-date-tag {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .actm-series-tag {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--text-subtle);
+      background: var(--bg-inset);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .actm-status-pill {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      white-space: nowrap;
+    }
+
+    .actm-status-current {
+      background: rgba(16, 185, 129, 0.12);
+      color: #059669;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    [data-theme="dark"] .actm-status-current {
+      color: #34d399;
+      background: rgba(16, 185, 129, 0.2);
+    }
+
+    .actm-status-superseded {
+      background: rgba(239, 68, 68, 0.12);
+      color: #dc2626;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    [data-theme="dark"] .actm-status-superseded {
+      color: #f87171;
+      background: rgba(239, 68, 68, 0.2);
+    }
+
+    .actm-status-partial {
+      background: rgba(245, 158, 11, 0.12);
+      color: #d97706;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    [data-theme="dark"] .actm-status-partial {
+      color: #fbbf24;
+      background: rgba(245, 158, 11, 0.2);
+    }
+
+    .actm-status-historical {
+      background: var(--bg-inset);
+      color: var(--text-subtle);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .actm-scope-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    .actm-scope-pill {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--accent-railway-blue);
+      background: rgba(14, 165, 233, 0.08);
+      border: 1px solid rgba(14, 165, 233, 0.25);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      overflow-wrap: break-word;
+      word-break: normal;
+    }
+
+    .actm-type-chip {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg-inset);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .actm-letter-ref {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--text-subtle);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      overflow-wrap: break-word;
+      word-break: normal;
+    }
+
+    .actm-change-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      font-size: 0.875rem;
+      line-height: 1.55;
+    }
+
+    .actm-detail-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .actm-detail-heading {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-subtle);
+    }
+
+    .actm-detail-text {
+      color: var(--text-main);
+      overflow-wrap: break-word;
+      word-break: normal;
+    }
+
+    .actm-significance-box {
+      background: var(--bg-inset);
+      border: 1px solid var(--border-subtle);
+      border-left: 3px solid #10b981;
+      padding: 0.45rem 0.75rem;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      overflow-wrap: break-word;
+      word-break: normal;
+    }
+
+    .actm-card-footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    .actm-source-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--accent-railway-blue);
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.3rem 0.65rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(14, 165, 233, 0.25);
+      background: rgba(14, 165, 233, 0.05);
+      transition: background 0.15s ease, border-color 0.15s ease;
+      min-height: 32px;
+    }
+
+    .actm-source-link-btn:hover {
+      background: rgba(14, 165, 233, 0.15);
+      border-color: var(--accent-railway-blue);
+    }
+
+    .actm-hash-tag {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--text-subtle);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      cursor: pointer;
+      background: var(--bg-inset);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-subtle);
+      min-height: 30px;
+    }
+
+    .actm-hash-tag:hover {
+      color: var(--text-main);
+      border-color: var(--border-hover);
+    }
+
+    .actm-no-results {
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-subtle);
+      font-size: 0.875rem;
     }
 
   </style>
@@ -6852,7 +7297,7 @@
           <h1 class="brand-main-title">
             <span class="brand-title-primary-group">
               <span class="brand-title-primary">VisionSafe TRD</span>
-              <span class="brand-version-sub">V23.06</span>
+              <span class="brand-version-sub">V23.07</span>
             </span>
             <span class="brand-title-secondary">ENGINEERING DICTIONARY</span>
           </h1>
@@ -7033,7 +7478,7 @@
           </button>
         </div>
         <div class="safety-disclaimer-credit">
-          <span>VisionSafe TRD Engineering Dictionary V23.06 • Prepared by <strong>Nidhin&nbsp;Raj&nbsp;S&nbsp;R</strong></span>
+          <span>VisionSafe TRD Engineering Dictionary V23.07 • Prepared by <strong>Nidhin&nbsp;Raj&nbsp;S&nbsp;R</strong></span>
         </div>
       </div>
     </div>
@@ -7928,6 +8373,815 @@
       "governing_rules": [
         "RULE-ACSD-001 (ACS 1 / ACS 34 Equivalence)",
         "RULE-ACSD-002 (Cryptographic Hash Integrity)"
+      ]
+    }
+  },
+  {
+    "id": "actm-correction-slips-history",
+    "term": "ACTM Correction Slips History",
+    "acronym": "ACS-HIST",
+    "category": "Drawings & Terminology",
+    "aliases": [
+      "ACTM Amendment History",
+      "Advance Correction Slips Ledger",
+      "ACS Chronological Register",
+      "Correction Slips History",
+      "Railway Board ACTM Amendments"
+    ],
+    "is_ambiguity": false,
+    "simple_terms": "The ACTM Correction Slips History is the authoritative chronological and clause-by-clause amendment record of the Indian Railways AC Traction Manual. It documents every formal Advance Correction Slip (ACS) issued by the Ministry of Railways (Railway Board), reconciling what provision was altered, the exact nature of the change (added, deleted, substituted, modified, or clarified), why it was issued when established by source evidence, and whether subsequent amendments modify or supersede it. Under the Revised November-2022 ACTM statutory baseline promulgated on 02.03.2023, the active series comprises ACS No. 1 through ACS No. 22 (spanning December 2022 to July 2026). It also preserves the historical 1994 ACTM First Edition amendment series (ACS 12 to 34), providing instant technical visibility and source traceability without opening individual PDF scans.",
+    "engineering_spec": {
+      "statutory_baseline": "AC Traction Manual Revised November-2022 (promulgated 02-03-2023 via Railway Board Letter 2008/RE/170/3 E-3031421).",
+      "active_statutory_sequence": "ACS No. 1 (19-12-2022 / ratified 18-05-2023) through ACS No. 22 (30-07-2026). Exactly 22 unique current-sequence ACS documents verified.",
+      "historical_legacy_sequence": "1994 ACTM First Edition sequence comprising ACS 12 (03-05-2005) through ACS 34 (19-12-2022). ACS 1-11 pre-date digital portal uploads and are codified in 2022 ACTM.",
+      "issuing_authority": "Ministry of Railways (Railway Board), Government of India (Tier 1 Statutory Mandate).",
+      "primary_source_repositories": "Railway Board Traction Distribution (TRD) Section 703 (active series) and Railway Electrification (RE) Section 1223 (legacy historical series).",
+      "statutory_supersession_rules": "A newer ACS has immediate statutory force from its date of issuance. Where a later slip amends only part of a provision, unaffected clauses remain operative. Explicit supersessions: ACS 9 supersedes ACS 7; ACS 10 amends ACS 6; ACS 2 ratifies former ACS 34 as ACS 1.",
+      "verified_corpus_completeness": "Current 2022 sequence: 100% complete (22 of 22 verified against primary PDFs). Legacy sequence: ACS 12-33 verified; ACS 1-11 pre-date digital portals and are consolidated in 2022 ACTM; ACS 26 confirmed unissued/external gap."
+    },
+    "field_checks": [
+      {
+        "check": "Statutory ACS Currentness Verification",
+        "limit": "Latest operative ACS rule must be applied (ACS 1 to 22)",
+        "condition": "Applying superseded values (e.g. 200 m tower wagon spacing under ACS 7 instead of 250 m under ACS 9, or legacy 2.50 m mast setting instead of 2.80 m under ACS 5) is non-compliant.",
+        "severity": "STATUTORY_LIMIT"
+      },
+      {
+        "check": "Source Document Traceability",
+        "limit": "Every technical amendment traceable to Railway Board letter and SHA-256 hash",
+        "condition": "Engineering specifications must cite verified Railway Board letter numbers and promulgation dates; zero invented reasons permitted.",
+        "severity": "MANDATORY_INVARIANT"
+      }
+    ],
+    "citations": [
+      {
+        "source": "Railway Board TRD Repository (Section 703)",
+        "description": "Advance Correction Slips No. 1 to 22 to Revised November-2022 AC Traction Manual (2022\u20132026)"
+      },
+      {
+        "source": "Railway Board Letter No. 2008/RE/170/3 (02-03-2023)",
+        "description": "Formal Promulgation of Revised November-2022 AC Traction Manual (All Volumes)"
+      },
+      {
+        "source": "Railway Board RE Repository (Section 1223)",
+        "description": "Legacy Advance Correction Slips No. 12 to 24 to 1994 ACTM First Edition"
+      },
+      {
+        "source": "Railway Board Letter No. 2001/Elect(G)/170/1 (22-11-2016)",
+        "description": "Statutory Policy Directive on Contact Wire Gradient (2.0 mm/m), 1.1t Tension, 50 mm Pre-sag, and Structure Plates"
+      }
+    ],
+    "relationships": {
+      "part_of": [
+        "AC Traction Manual (ACTM)",
+        "Statutory Law",
+        "Indian Railways Regulatory Framework"
+      ],
+      "components": [
+        "ACS Number & Date",
+        "Affected Volume & Clause",
+        "Substance of Amendment",
+        "Documented Reason",
+        "Supersession Status",
+        "Primary Source PDF Link"
+      ],
+      "prerequisite_for": [
+        "TRD Engineering Dictionary V2.3",
+        "VisionSafe OHE Invariant Validator",
+        "Statutory Maintenance Compliance",
+        "Railway Electrification Commissioning"
+      ],
+      "contrasted_with": [
+        "RDSO Technical Circulars (Tier 2)",
+        "Local Divisional Working Rules",
+        "Uncodified Maintenance Practices"
+      ],
+      "governing_rules": [
+        "Railway Board Policy Letters",
+        "Indian Electricity Rules 1956 / CEA Regulations",
+        "IRSOD (BG) Revised 2022"
+      ]
+    },
+    "actm_cs_history": {
+      "summary": "Exhaustive verified ledger of 43 distinct Advance Correction Slips (22 active slips to Nov-2022 ACTM, 21 legacy slips to 1994 ACTM), 6 Statutory Directives/Policy Circulars, 1 Base Release promulgation letter, and 1 duplicate alias entry (ACS 34 / ACS 1). Total 51 inventory rows.",
+      "corpus_status": "Best Available Verified Corpus (ACS 1\u201322 Fully Verified Against Primary PDFs)",
+      "verified_active_count": 22,
+      "total_inventoried": 51,
+      "records": [
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "ACS No. 1",
+          "date": "19.12.2022",
+          "letter": "2021/EEM/148/3/ACTM",
+          "scope": "Vol. II Pt 2 App-I Para 18.11, Fig A1.10; Vol. II Pt 1 Ch-VII Para 20703(4)",
+          "type": "Substituted / Clarified",
+          "what": "Replaced longitudinal clear distance rules between traction masts and signal posts: mandated X >= 30 m when traction mast is located in front of signal post (approaching track), and Y >= 10 m when mast is located beyond signal post (ref Fig A1.10). Reduction in distance X and Y permitted only with joint dispensation from PCSTE and PCEE after ensuring signal visibility and safety. Primary text contains zero lateral setting dimensions (lateral implantation is governed by RDSO Drawing ETI/OHE/G/00112, not ACS 1).",
+          "why": "Prevent traction masts from obstructing driver line-of-sight of color light signals at speeds up to 160 km/h.",
+          "significance": "Mandatory S&T and TRD interface check: any mast within 30 m in front of signal post (approaching direction) or within 10 m beyond signal post requires joint PCSTE and PCEE dispensation ensuring signal sighting visibility.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/TRD_Circulars/Advance%20Correction%20Slip%20No_%2034%20to%20Railway%20Manual%20of%20AC%20traction%20(ACTM)%20%20with%20regard%20to%20distance%20between%20OHE%20structures%20and%20signal%20post_%20RB%20letter%20dt%2019_12_2022.pdf",
+          "sha256": "2d1e1a4efe26e08baf3b025722fe0a09aafc1906f62b43c366d37efb8f1c4a60"
+        },
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "Base Release",
+          "date": "02.03.2023",
+          "letter": "2008/RE/170/3 (E-3031421)",
+          "scope": "All Volumes (Vol I, Vol II Part 1, Vol II Part 2, Vol III)",
+          "type": "New Edition Promulgation",
+          "what": "Formally promulgated and standardized the Revised November-2022 AC Traction Manual across all Indian Railways zones, replacing the legacy 1994 ACTM First Edition.",
+          "why": "Modernize traction manual for 160 km/h operations, 2x25 kV systems, high-rise OHE, and modern safety guidelines.",
+          "significance": "Established frozen statutory baseline for modern Indian Railways traction distribution and maintenance.",
+          "status": "Current Statutory Baseline",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/TRD_Circulars/AC%20Traction%20Manual%20(All%20Volumes)%20Revised-2022%20and%20Electrical%20General%20Services%20Manual%20Vol%20I%20(Power%20Supply)_%20RB%20letter%20dt%2002_03_2023.pdf",
+          "sha256": "c67ded4709a51d77e2e0fea377150a3798dc2be37d9ae4c0702c6e0a1f259777"
+        },
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "ACS No. 2",
+          "date": "18.05.2023",
+          "letter": "2021/EEM/148/ACTM-Part(9) (E-3430744)",
+          "scope": "Vol. II Pt 2 App-I Para 18.12",
+          "type": "Substituted / Clarified",
+          "what": "Mandated minimum 10 m distance between traction masts and level crossings/back of bridge abutments. Permitted reduction down to 5 m by PCEE with CBE approval on case-specific basis to avoid masts on bridge piers, strictly provided the mast carries single cantilever only and is NEVER used for ATD or anti-creep anchor. Formally ratified ACS 34 (19.12.2022) as ACS 1 to Nov-2022 ACTM.",
+          "why": "Preserve structural integrity of bridge abutments under dynamic OHE tension and prevent road vehicle impact hazards at LC gates.",
+          "significance": "Hard topological invariant: flag any mast within 5 to 10 m of bridge abutment or LC gate hosting ATD or anchor; bridge abutment masts must be single cantilever only.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/mec_engg/downloads/Traction/2023/RB%20letter%20dt%2018_05_2023%20reg_%20Advance%20Correction%20Slip%20no_%202%20to%20Railway%20Manual%20of%20ACTM%20Vol-II%20%20part-II%20Appendix-I%20Para%2018_12%20with%20regard%20to%20arrangement%20of%20traction%20mast%20on%20abutments%20of%20bridges%20and%20level%20crossings.pdf",
+          "sha256": "70b77142946b92b52940975953fceaa54538a86bbe61dd80a67581b7937cd229"
+        },
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "ACS No. 3",
+          "date": "17.08.2023",
+          "letter": "2006/Elect(G)/170/2/Pt-II (E-3422660)",
+          "scope": "Vol. II Pt 1 Ch-3 Para 20317(2)",
+          "type": "Substituted",
+          "what": "Revised periodicity of mechanical examination (TXR inspection) of OHE Inspection Cars (Tower Wagons) from 30 days to 45 days or 4500 km, whichever is earlier.",
+          "why": "Harmonization of Tower Wagon maintenance periodicity with revised coaching stock standards (Board letter No. 2007/M(N)/951/67 dated 19.11.2008 and 18.06.2009).",
+          "significance": "Tower wagon mechanical depot schedules extended safely to 45 days / 4500 km, reducing depot block overhead while ensuring statutory rolling stock examination compliance.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/TRD_Circulars/ACS%20no%20_3%20to%20Railway%20Manual%20of%20ACTM%20Vol_-II%20Part%20I%2C%20Para%2020317%20(2)%20with%20regard%20to%20Periodicity%20of%20TXR%20inspection%20for%20TW_%20RB%20letter%20dt%2017_08_2023.pdf",
+          "sha256": "38a4401a77acb66596dbd8d9d6501a5ab002ac50e6d53bc5eafc73b9099176d0"
+        },
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "ACS No. 4",
+          "date": "30.11.2023",
+          "letter": "2021/EEM/148/3/ACTM-Part(3) E-3402261",
+          "scope": "Vol. II Pt 2 App-IV Para 17.3, Tables 17.3a & 17.3b, Para 21.2",
+          "type": "Substituted / Mandated",
+          "what": "Mandated that all new electrical power line crossings up to 66 kV must strictly be underground cables; existing overhead crossings up to 66 kV must be eliminated and converted to underground cables. Overhead crossings permitted only above 66 kV with revised vertical clearances (Table 17.3a for normal OHE, Table 17.3b for High Rise OHE). Guarding cradle deleted for <= 66 kV.",
+          "why": "Elimination of catastrophic 25 kV / state grid wire contact hazards, snap hazards, and high-voltage grid disruptions across electrified railway tracks.",
+          "significance": "Hard statutory design gate: any external power line crossing up to 66 kV designed as overhead wire is non-compliant; mandatory underground cable requirement.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/TRD_Circulars/RB%20letter%20dt%2030_11_2023%20reg_%20advance%20Correction%20Slip%20No_%204.pdf",
+          "sha256": "07729c39e03ed2c0597edb741d561ab97e13d6328475a579fcdfdacc5cf9ce08"
+        },
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "ACS No. 5",
+          "date": "06.12.2023",
+          "letter": "2021/EEM/148/3/ACTM-Part(2) E-3375993",
+          "scope": "Vol. II Pt 2 App-I Paras 20.1, 20.2, 20.9, 30.2, Table IV",
+          "type": "Substituted / Expanded",
+          "what": "Codified standard setting (implantation) distances: (1) Tangent track single mast standard setting 2.80 m on BG lines (relaxation to 2.575 m in embankment/2.585 m in yards; buried foundation 2.36 m; desirable 2.90 m standard originates from IRSOD baseline); (2) Portal uprights, multi-OHE masts, and head span masts >= 3.40 m (relaxed to 2.575 m / yards 3.185 m); (3) Replaced Table IV with curve setting matrix expanded for speeds up to 160 km/h; (4) Minimum horizontal distance from track center to face of foundation (Para 20.9): 2575 mm (2.575 m) for straight and curves >= 875 m, 2725 mm (2.725 m) for curves < 875 m (yards 2360 mm / 2510 mm); (5) Desirable distance between stop signal and sectioning point/overlap codified as 120 m (reduction permitted with PCEE approval).",
+          "why": "Compliance with revised IRSOD (BG) 2004 Schedule I Chapter II and high-speed train operations up to 160 km/h (Mission Raftaar / Vande Bharat).",
+          "significance": "Fundamental structural design rule: 2.80 m tangent implantation and 3.40 m portal upright setting are mandatory baselines for all new railway electrification, doubling, and yard remodeling projects.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/2023/RB%20letter%20dt%2006_12_2023%20reg_%20advance%20Correction%20Slip%20No_%205%20to%20Railway%20Manual%20of%20AC%20traction%20(ACTM%20Revised%202022)%20Vol_%20II%20Part%20II%20Appendix-I%20Para%2020_1%2C%2020_2%2C%2020_9%20%26%2030_2.pdf",
+          "sha256": "58ac3539db4d726bf5f0bd540895ccbeb0d7bf0b59fd0b611b432e8b2efd1776"
+        },
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "ACS No. 6",
+          "date": "28.05.2024",
+          "letter": "2021/EEM/148/3/ACTM-Part(9) E-3430744",
+          "scope": "Vol. II Pt 2 App-VI Annexure A6.01 (Item 83) & Annexure A6.02 (Item 74)",
+          "type": "Substituted",
+          "what": "Mandated provision of electrical insulating Hand Gloves of Class 4 (36 kV working voltage) conforming to IEC 60903:2014 across OHE and PSI depots for staff working near 25 kV equipment.",
+          "why": "Linemen safety and electrocution hazard prevention during live line proximity and earthing discharges.",
+          "significance": "Standardized personal protective equipment (PPE) for 25 kV electrical work; eliminated ambiguous lower-voltage gloves.",
+          "status": "Partially superseded (Amended by ACS 10 to include IS 13774:2021 as alternate standard)",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/TRD_Circulars/Advance%20Correction%20Slip%20no_%206%20to%20Railway%20Manual%20of%20ACTM%20regard%20Hand%20Gloves%20used%20in%2025%20kV%20electrified.pdf",
+          "sha256": "23dd4600dc9e90d0451b45e9e185e33375528381e811f5ad522015f22b428bb2"
+        },
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "ACS No. 7",
+          "date": "16.12.2024",
+          "letter": "2006/Elect(G)/170/2/Pt-II-Part(3) E-3479317",
+          "scope": "Vol. II Pt 1 Ch-3 Para 20319 Sub Para 1(c)",
+          "type": "Substituted",
+          "what": "Authorized convoy movement of multiple Tower Wagons in a single block section with minimum 200 m separation at maximum speed of 40 km/h.",
+          "why": "Maximize maintenance output during scarce traffic block windows by permitting simultaneous multi-point OHE work.",
+          "significance": "Operational maintenance rule; established precedent for convoy working of self-propelled maintenance vehicles.",
+          "status": "Superseded (Formally superseded by ACS No. 9)",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/2024/RB%20letter.pdf",
+          "sha256": "8b2ec5e9bfeb8098db1c49a3d0ac07af38902c7ee497e4b36157cb01a72b8206"
+        },
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "ACS No. 8",
+          "date": "25.06.2025",
+          "letter": "2021/EEM/148/3/ ACTM (E-office-3368798)",
+          "scope": "Vol. II Pt 1 Ch-10 Paras 21001, 21002, 21005, 21007, 21008, 21009, 21010, 21011, 21013, 21018",
+          "type": "Substituted / Statutory Delegation",
+          "what": "Delegated statutory sanction for commissioning of electric traction from Commissioner of Railway Safety (CRS) to Principal Chief Electrical Engineer (PCEE). Introduced Proforma 10-02 (HR) for High Rise OHE (codifying 7184 mm contact wire height at level crossing gates).",
+          "why": "Accelerated commissioning of 100% railway electrification target and standardization of High Rise OHE for double-stack container corridors.",
+          "significance": "Major statutory governance realignment: PCEE empowered to sanction energization; High Rise OHE parameters formally codified into ACTM Chapter 10.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/2025/ACS%20No_%208%20(dtd_%2025_06_2025)%20to%20ACTM%20Vol_%20II%20Part%20I%2C%20Chapter-10%20paras%20with%20regard%20to%20Commissioning%20of%20Electric%20Traction%20(2).pdf",
+          "sha256": "5b8ca4ba4433f6cb425d0a49041b431138b829c5504b76d59563deb0406cbb7a"
+        },
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "ACS No. 9",
+          "date": "25.06.2025",
+          "letter": "2006/Elect(G)/170/2/Pt-II-Part(3) E-3479317",
+          "scope": "Vol. II Pt 1 Ch-3 Para 20319 Sub Para 1(c)",
+          "type": "Substituted",
+          "what": "Increased minimum convoy separation between consecutive Tower Wagons in a block section from 200 m to 250 m at maximum speed of 40 km/h. Formally superseded ACS No. 7.",
+          "why": "Enhanced braking distance buffer under emergency stops, particularly on steep falling gradients.",
+          "significance": "Operational safety rule: all TRD tower wagon operations must enforce 250 m separation.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/2025/ACS%20No_%209%20(dtd_%2025_06_2025)%20to%20ACTM%20Vol_%20II%20Part%20I%2C%20Chapter-3%20Para%2020319%20Sub%20Para%20(c_)%20with%20regard%20to%20movement%20of%20Tower%20wagon%20(1).pdf",
+          "sha256": "68f620180da48c9b7d19a3e1a2c121609961d9d99d7d99d0dc81b061b2bb1217"
+        },
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "ACS No. 10",
+          "date": "27.08.2025",
+          "letter": "2021/EEM/148/3/ACTM-Part(9) E-343074",
+          "scope": "Vol. II Pt 2 App-VI Annexure A6.01 & Annexure A6.02",
+          "type": "Substituted / Harmonized",
+          "what": "Amended ACS No. 6 to permit dual certification for Class 4 (36 kV) electrical hand gloves: gloves may conform to either IEC 60903:2014 OR indigenous standard IS 13774:2021 (Revision-2).",
+          "why": "Facilitate indigenous procurement under Make-in-India policy and ease zonal procurement bottlenecks.",
+          "significance": "T&P procurement teams can source certified gloves manufactured to IS 13774:2021 (Rev-2) without needing imported IEC certified gloves.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/TRD_Circulars/RB%20letter%20dtd%2027_08_2025%20(ACS%20no_%2010)%20to%20ACTM%20reg%20Hand%20gloves.pdf",
+          "sha256": "b68021b5c9c20726e8bb2798ce8a2be6c274640bc12e8f07110a38d76c2d941b"
+        },
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "ACS No. 11",
+          "date": "02.12.2025",
+          "letter": "2021/EEM/148/3/ACTM- (E-Office- 3368798)",
+          "scope": "Vol. II Pt 2 App-10 Page 298, Drg ETI/OHE/G/03121 Mod F",
+          "type": "Substituted / Standardized",
+          "what": "Mandated use of 9-tonne turnbuckle adjusters on BOTH contact wire and catenary wire terminations in 3-pulley ATD assemblies (per RDSO Drg ETI/OHE/G/03121 Mod F).",
+          "why": "Equalize mechanical adjustment capacity, prevent unequal tension distribution, and standardize maintenance hardware.",
+          "significance": "CAD and field verification rule: ATD termination assemblies must depict and install 9-tonne turnbuckles on both wires.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/TRD_Circulars/RBs%20letter%20dt%2002_12_2025%20regarding%20(ACS%20No_%2011)%20with%20regard%20to%20use%20of%209-tonne%20adjusters%20on%20both%20contact%20and%20catenary.pdf",
+          "sha256": "496ef40b7a5cfd34b86c7ffb10bcaf7811134b449a43938352ca5192140834fc"
+        },
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "ACS No. 12",
+          "date": "11.12.2025",
+          "letter": "2021/EEM/148/3/ACTM-Part.(3)",
+          "scope": "Vol. II Pt 2 App-I Clause 6.2",
+          "type": "Substituted / Invariant",
+          "what": "Strictly restricted use of Two Track Cantilever (TTC) masts to turnouts and crossovers where both tracks belong to the SAME elementary section. Strictly prohibited TTC masts across two independent running lines of different elementary sections; permanent portals mandated.",
+          "why": "Prevent simultaneous tripping and total section isolation of multiple independent lines during a single-line insulator flashover or bird hit.",
+          "significance": "Hard topological electrical invariant: TTC tracks must belong to identical elementary electrical section.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/TRD_Circulars/RB%20letter%20dtd_%2011_12_2025%20reg%20ACS%20no_%2012%20to%20ACTM%20regarding%20use%20of%20TTC%20masts.pdf",
+          "sha256": "0a2b5aff75103c9d55a4493d76b707107a0ff1e8ff004c25b4f604bd6622f0cc"
+        },
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "ACS No. 13",
+          "date": "15.12.2025",
+          "letter": "2022/EEM/161//8/Punct-Part(4)-Part(1) E-3433453",
+          "scope": "Vol. II Pt 1 Ch-6 & Ann-2.04 Paras 20611, 20611(b), Ann-2.04 Para 6.1",
+          "type": "Substituted / Mandated",
+          "what": "Codified 52-week Rolling Block Programme under Para 20611(b) for planned maintenance. Corrected longstanding drafting typographical error in Annexure-2.04 Para 6.1 from 'irregularly once a year' to 'regularly once a year' for traction transformer DGA testing schedules (once/yr <= 4 yrs, twice/yr <= 10 yrs, thrice/yr > 10 yrs).",
+          "why": "Maintenance window predictability via Rolling Block Programme and correction of manual typographical drafting error regarding statutory DGA periodicity.",
+          "significance": "Operations and PSI maintenance invariant: power blocks planned 52 weeks in advance; transformer DGA testing verified as regular statutory schedule.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/TRD_Circulars/RB%20letter%20dtd_%2015_12_2025%20%20ACS%20No_%2013%20to%20ACTM%20with%20regard%20to%20Rolling%20Block%20programme%20and%20DGA%20test.pdf",
+          "sha256": "94e837bc47774dab7c39fb1b9a10b2472324a3c48ca97a4305cf7ff8f8b61662"
+        },
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "ACS No. 14",
+          "date": "09.01.2026",
+          "letter": "2021/EEM/148/3/ACTM-Part(9) E-3430744",
+          "scope": "Vol. II Pt 2 App-VI Annexure A6.02 Item 85",
+          "type": "Added",
+          "what": "Added High Voltage Vacuum Bottle Tester (Qty 1 per PSI Depot) to mandatory Tool and Plant scale.",
+          "why": "Rapid testing of vacuum interrupter dielectric integrity without dismantling circuit breakers.",
+          "significance": "PSI depot equipment scale requirement; guarantees in-house test capability for vacuum circuit breakers.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/TRD_Circulars/ACS%20no_%2014%20to%20ACTM%20Vol_%20II%20Part%20II%2C%20Appendix-6%2C%20Annexure%20A6_02%20with%20regard%20to%20TP%20for%20PSI%20Depots.pdf",
+          "sha256": "b79ab1779b2a3dcae63074a843fdc193bd19036565c9d90f9964bbf58eb757b8"
+        },
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "ACS No. 15",
+          "date": "06.05.2026",
+          "letter": "2021/EEM/148/3/ACTM-Part.(3)",
+          "scope": "Vol. II Pt 1 Ch-12 Paras 21203, 21215; Certificate TR-4",
+          "type": "Substituted / Standardized",
+          "what": "Established standardized training syllabus and mandatory 4-week centralized training, simulator driving test, and formal certification for Competency Certificate TR-4 for Tower Wagon Drivers.",
+          "why": "Operational safety and prevention of tower wagon derailments and signal passes at danger (SPAD).",
+          "significance": "Driver qualification standard: only drivers possessing valid centralized TR-4 certificate permitted to operate tower wagons.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/2026/RB%20letter%20dtd_%2006_05_2026%20regarding%20ACS%20no_%2015%20to%20ACTM%20regarding%20Training%20and%20Competency%20Certificate%20TR-4%20for%20OHE%20Inspection%20Car%20Driver.pdf",
+          "sha256": "bdc9bb98bf3f50014e5beb3a9b9fe7e85e31a65db50962b08a008fd1ae8d7415"
+        },
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "ACS No. 16",
+          "date": "21.05.2026",
+          "letter": "2022/EEM/161//8/Punct-Part(2)",
+          "scope": "Vol. II Pt 1 Ch-3 Para 20322, Annexures 3.01 & 3.03",
+          "type": "Added / Codified",
+          "what": "Formally codified Drone Patrolling for OHE line inspections: authorized optical and thermal infrared drone flights; defined inspection schedules, defect classifications, and reporting templates.",
+          "why": "Detect thermography hotspots, loose fasteners, damaged insulators, and bird nests on multi-track corridors without needing power blocks.",
+          "significance": "Inspection method modernization: drone inspection legally recognized alongside manual foot patrol and tower wagon patrol.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/2026/RB%20letter%20dtd_%2021_05_2026%20regarding%20%20ACS%20no_%2016%20%20to%20ACTM%20%20Vol%20II%20Part%20I%20%20with%20regard%20to%20incorporation%20of%20provision%20of%20Drone%20patrolling.pdf",
+          "sha256": "ef039264c97e6bea7443dbae64da0452c6919289c1df830573f9cf6f5ef41774"
+        },
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "ACS No. 17",
+          "date": "21.05.2026",
+          "letter": "2021/EEM/148/3/ACTM-Part.(3)",
+          "scope": "Vol. II Pt 1 Ch-3 Para 20321",
+          "type": "Added / Mandated",
+          "what": "Statutory adoption of advanced diagnostic tools: mandated deployment of Live Line OHE Measuring Gauge (LLOMG), NETRA recording car, or MRI system provided over Tower Wagon (e.g. optical measurement systems) into statutory inspection schedules (Para 20321(5)); mandatory defect data logging into TDMS (Para 20321(6)).",
+          "why": "Continuous millimeter-precision dynamic recording of contact wire height, stagger, and wear without disrupting train operations.",
+          "significance": "Diagnostics instrumentation codified: LLOMG dynamic measurements satisfy periodic statutory geometry checking requirements.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/2026/RB%20letter%20dtd_%2021_05_2026%20regarding%20ACS%20no_%2017%20to%20ACTM%20Vol%20II%20Part%20I%20for%20incorporation%20of%20provision%20regarding%20LLOMG.pdf",
+          "sha256": "24bd8016f1f76a68c0c967687157357bcda47d258ef0e5b73fae055d2f593432"
+        },
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "ACS No. 18",
+          "date": "22.05.2026",
+          "letter": "2021/EEM/148/3/ACTM-Part(9) E-3430744",
+          "scope": "Vol. II Pt 1 Ch-3 Para 20313; Vol. II Pt 2 App-10 Page 302",
+          "type": "Substituted / Standardized",
+          "what": "Upgraded standard jumper cross-section to 160 mm\u00b2 copper; mandated THREE (3) Parallel Groove (PG) clamps on continuity jumpers in first sub-sectors and isolator jumpers.",
+          "why": "Prevent burnt jumpers and hotspots resulting from increased tractive currents under heavy haul freight acceleration and high-speed passenger trains.",
+          "significance": "Drawing and maintenance verification: continuity and isolator jumpers must be 160 mm\u00b2 Cu with 3 PG clamps.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/2026/RB%20letter%20dtd_%2022_05_2026%20regarding%20ACS%20no_%2018%20to%20ACTM%20with%20regards%20to%20sizes%20of%20Jumpers%20and%20use%20of%203%20PG%20clamps.pdf",
+          "sha256": "348de56dfd2b1e23cdc279cedc20b711074b1d69d6e0a78b3978f3cc5efbf912"
+        },
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "ACS No. 19",
+          "date": "29.05.2026",
+          "letter": "2021/EEM/148/3/ACTM-Part(8)",
+          "scope": "Vol. I Paras 10103, 10107; Vol. II Pt 1 Paras 20202\u201320832",
+          "type": "Added / Statutory Duties",
+          "what": "Mandated online digital data logging and asset tracking in Traction Distribution Management System (TDMS) portal across all TRD supervisor and officer duty lists.",
+          "why": "Real-time centralized asset intelligence, breakdown trend analytics, and end-to-end digital auditability.",
+          "significance": "Administrative and legal shift: paper registers augmented/replaced by mandatory TDMS digital logging.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/2026/RB%20letter%20dated%2029_05_2026%20regarding%20Advance%20Correction%20Slip%20No_%2019%20to%20Railway%20regarding%20to%20incorporation%20of%20duties%20regarding%20mandatory.pdf",
+          "sha256": "ac0c45c87720feffcff0f1078ee12be79ffe4c4351f6357167b56c2175235f87"
+        },
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "ACS No. 20",
+          "date": "08.07.2026",
+          "letter": "2022/EEM/161//8/Punct-Part(2)",
+          "scope": "Vol. II Pt 2 App-VI Paras 3.0, 4.0; Annexures A6.01 & A6.02",
+          "type": "Substituted / Overhauled",
+          "what": "Comprehensive modernization and overhaul of Tool & Plant (T&P) equipment scales for TRD maintenance depots: introduced cordless torque wrenches, digital contact wire height gauges, hydraulic crimpers, and precision micro-ohmmeters.",
+          "why": "Improve maintenance precision, reduce block duration, and ensure calibrated mechanical torquing.",
+          "significance": "TRD depot infrastructure standard: depots must be equipped according to modernized scale.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/TRD_Circulars/RB%20letter%20dtd_%2008_07_2026%20for%20ACS%20no_%2020%20to%20ACTM%20regarding%20revision%20of%20TP%20items%20lists_%20(1).pdf",
+          "sha256": "b851527b7992ea101359c25fb6be4f0735702aa879d261d9d135e5134a22a905"
+        },
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "ACS No. 21",
+          "date": "30.07.2026",
+          "letter": "2021/EEM/148/3/ACTM-Part(9) E-3430744",
+          "scope": "Vol. II Pt 2 App-I Paras 19.6 & 20.8",
+          "type": "Prohibition Invariant",
+          "what": "Strict statutory ban on two non-standard configurations: (1) Inverted bracket fitting swivels (mast bracket fitting 3073/3074) strictly banned; bottom swivel must carry compressive loads in upright position only. (2) Temporary H-portals strictly prohibited as permanent structures in new electrification or remodeling.",
+          "why": "Eliminate fatigue fracture of swivel bolts under cantilever dynamic uplift and prevent structural collapse of non-standard H-portals under high wind loading.",
+          "significance": "Hard structural invariant: inverted bracket swivel is a critical safety defect; H-portals must be permanent standard portals.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/irpersonel/Promotion_Posting/2026/RB%20letter%20dtd%2030_07_2026%20regarding%20ACS%20no_%2021%20to%20ACTM.pdf",
+          "sha256": "36666f618f313c00c54cab8cd729c021b5f00aeca45a19b9128a471d2d2bb54a"
+        },
+        {
+          "series": "Current (Nov-2022 ACTM)",
+          "cs_no": "ACS No. 22",
+          "date": "30.07.2026",
+          "letter": "2021/EEM/148/3/ACTM-Part.(3)",
+          "scope": "Vol. II Pt 1 Paras 20241, 20247, 20326, 20909",
+          "type": "Added / Testing Protocol",
+          "what": "Mandated measurement of contact resistance of isolator switch blades and earthing heel contacts using a calibrated 100A DC micro-ohmmeter during annual maintenance schedules. Numerical pass/fail threshold quarantined pending OEM baseline.",
+          "why": "Prevent thermal runaway, contact welding, and catenary burning at isolator contact junctions under high tractive current.",
+          "significance": "Electrical maintenance invariant: isolators must be tested with 100A DC constant current source; visual inspection alone is insufficient.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/irpersonel/Promotion_Posting/2026/RB%20letter%20dtd_%2030_07_2026%20regarding%20ACS%20no_%2022%20to%20ACTM.pdf",
+          "sha256": "72b1b1b2e00c7250c4237f31bd9c91d1bad06a0868032b078b317ca8016a9f67"
+        },
+        {
+          "series": "Statutory Directives & Policies",
+          "cs_no": "Statutory Directive",
+          "date": "22.11.2016",
+          "letter": "2001/Elect(G)/170/1",
+          "scope": "ACTM Vol. II Pt 2 App-I Cl 7.4 (Gradient), Cl 5.0 (Span), Tension 1.1t",
+          "type": "Statutory Directive",
+          "what": "Mandated maximum contact wire gradient of 2.0 mm/m (relative 1.0 mm/m) for all new electrification works. Standardized 1.1t conductor tension for contact and catenary wires. Mandated 50 mm pre-sag for spans >= 54 m. Capped maximum span at 67.5 m. Mandated retro-reflective structure number plates.",
+          "why": "Modernize Indian Railways OHE parameters for high-speed operation (up to 160 km/h) and heavy freight corridors.",
+          "significance": "Core statutory design parameters: 2.0 mm/m max gradient and 1.1t tension govern all modern electrification designs.",
+          "status": "Current Statutory Directive",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/pdf/22-11-2016.pdf",
+          "sha256": "69f3af9fb13207b313902cd1efad375fe0f753dc865437c7513d0acbaed48b76"
+        },
+        {
+          "series": "Statutory Directives & Policies",
+          "cs_no": "Policy Circular",
+          "date": "07.03.2024",
+          "letter": "2012/Infra/18/1Pt-III (3352046)",
+          "scope": "Vol. II Pt 1 Private Sidings",
+          "type": "Commercial Standardization",
+          "what": "Codified standardized per-kilometer formula for recovery of OHE maintenance and inspection charges on private sidings.",
+          "why": "Commercial standardization across zonal railways.",
+          "significance": "Commercial fee calculation for siding agreements.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/TRS_2024/RB%20policy%20letter%20dtd_%2007_03_2024%20reg%20Recovery%20of%20OHE%20Maintenance%20Charges%20and%20Inspection%20Charges%20for%20private%20siding.pdf",
+          "sha256": "a69a77db264670bc6018930ec4cbeb0c6aeee1ae09e8bb82ce860fbf0e9fbab4"
+        },
+        {
+          "series": "Statutory Directives & Policies",
+          "cs_no": "Policy Circular",
+          "date": "03.09.2024",
+          "letter": "2022/TC(FM)/18/07- Part 2",
+          "scope": "Vol. II Pt 1 Gati Shakti Cargo Terminals",
+          "type": "Infrastructure Policy",
+          "what": "Mandated minimum infrastructure guidelines for Gati Shakti Cargo Terminals: wiring height >= 5.50 m, isolator at terminal boundary, and boundary sectioning.",
+          "why": "Seamless freight loading/unloading safety under 25 kV wires.",
+          "significance": "GCT design specifications for terminal electrification.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/TRD_Circulars/RB%20letter%20dt%2003_09_24%20reg_%20guidelines%20for%20provision%20of%20minimum%20infrastructure.pdf",
+          "sha256": "66b9d4f814c61c5fad2b17fff5232858b247d18c5da0f4716ee1c416007cfa5e"
+        },
+        {
+          "series": "Statutory Directives & Policies",
+          "cs_no": "JPO Circular",
+          "date": "11.03.2025",
+          "letter": "2010/Elect(G)/148/6",
+          "scope": "Vols I & II LC Operations",
+          "type": "Safety JPO",
+          "what": "Standardized procedure for multi-axle road trailers crossing LC gates under 25 kV OHE: written clearance, height gauges, and presence of TRD staff if vehicle height > 4.67 m.",
+          "why": "Prevent road vehicle contact with live 25 kV contact wire at road-rail crossings.",
+          "significance": "Operational safety protocol at level crossings.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/2025/JPO%20for%20ODC%20movement%20through%20LC%20Gates%20dated%2011_03_2025.pdf",
+          "sha256": "d1c344bf13d0689d88fd706da75b9fff11c39568f96f6038e1531764bb2c6200"
+        },
+        {
+          "series": "Statutory Directives & Policies",
+          "cs_no": "Policy Circular",
+          "date": "22.09.2025",
+          "letter": "2003/Elect(G)/161/Vol III/Pt. E-3260334",
+          "scope": "Vol. II Pt 1 Ch-2 TSS Maintenance",
+          "type": "Maintenance SOP",
+          "what": "Standard Operating Procedure for TSS power transformer repairs: mandatory factory refurbishment, core loss testing, and vacuum drying protocols.",
+          "why": "Prevent premature catastrophic failures of 54/60 MVA traction power transformers.",
+          "significance": "PSI transformer maintenance protocol.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/TRD_Circulars/RB%20letter%20dtd_%2022_09_2025%20regarding%20repairs%20of%20Traction%20Sub%20Station%20equipments.pdf",
+          "sha256": "1ce447804bbb0171168f14e8270a70f6213bdea3c43bea1c7692f5cb68712b78"
+        },
+        {
+          "series": "Statutory Directives & Policies",
+          "cs_no": "Policy Circular",
+          "date": "16.12.2025",
+          "letter": "2025/EEM/148/2/Misc.-Part(1) E-3518466",
+          "scope": "Vol. II Pt 1 Ch-3 Safety Instructions",
+          "type": "Safety Directive",
+          "what": "Mandated pre-run and post-run Breath Analyzer (BA) testing for all Tower Wagon Drivers and Loco Pilots operating maintenance vehicles.",
+          "why": "Zero-tolerance policy for intoxication during track and OHE occupancy.",
+          "significance": "Operational safety protocol for maintenance drivers.",
+          "status": "Current",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/TRD_Circulars/RB%20letter%20dtd_%2016_12_2025%20regarding%20Breath%20Analyser%20(BA)%20test%20of%20TWDs_LPGs%20engaged%20in%20Tower%20Wagon%20driving.pdf",
+          "sha256": "79be894a95f5e82e400efddd7d94a82fa6f8f7cae0bfb20bc0fe6f4d420cd211"
+        },
+        {
+          "series": "Legacy (1994 ACTM)",
+          "cs_no": "Legacy ACS No. 12",
+          "date": "03.05.2005",
+          "letter": "2004/RE/161/1 Pt-III(ACTM)",
+          "scope": "Vol. II Pt 1 Paras 20830(a), 21009",
+          "type": "Substituted / Added",
+          "what": "Updated temporary speed restriction rules and added proformas in conformity with Railways (Opening for Public Carriage of Passengers) Rules 2000.",
+          "why": "Alignment with statutory Opening Rules 2000.",
+          "significance": "",
+          "status": "Historical Superseded",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/RE/ACTM_CS12.pdf",
+          "sha256": "0f58b7f470152ba5d643066e009c5f682f0fdaa473ea0a21b99f76d47247e915"
+        },
+        {
+          "series": "Legacy (1994 ACTM)",
+          "cs_no": "Legacy ACS No. 13",
+          "date": "01.07.2005",
+          "letter": "2004/RE/161/1 Pt-III(ACTM)",
+          "scope": "Vol. II Pt 1 Para 20349",
+          "type": "Substituted",
+          "what": "Streamlined maintenance proformae: reduced number of proformae from 15 to 13 per 25th MSG (TRD) recommendations to fix staff monitoring responsibility.",
+          "why": "Recommendations of 25th MSG (TRD) committee held at Chennai.",
+          "significance": "",
+          "status": "Historical Superseded",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/RE/ACTM_CS13.pdf",
+          "sha256": "b186f05d179885bfabb4f4f4de3efcf980aee4b86045af0660ded5c2054a2c16"
+        },
+        {
+          "series": "Legacy (1994 ACTM)",
+          "cs_no": "Legacy ACS No. 14",
+          "date": "24.05.2006",
+          "letter": "2004/RE/161/1 Pt-III(ACTM)",
+          "scope": "Vol. II Pt 2 Para 3.0 & Appendix IV",
+          "type": "Substituted",
+          "what": "Modified Regulations for Power Line Crossings of Railway Tracks: administrative procedures and approvals.",
+          "why": "Streamline power line crossing sanction procedures.",
+          "significance": "",
+          "status": "Historical Superseded",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/RE/ACTM_CS14.pdf",
+          "sha256": "f5ed34c16ee55417a6d3ce96d6279d42ef39d976954b87d577ae59805ae89caf"
+        },
+        {
+          "series": "Legacy (1994 ACTM)",
+          "cs_no": "Legacy ACS No. 15",
+          "date": "24.05.2006",
+          "letter": "2004/RE/161/1 Pt-III(ACTM)",
+          "scope": "Vol. II Pt 2 Appendix IV Clause 17",
+          "type": "Substituted",
+          "what": "Revised vertical clearance table in Clause 17 of Power Line Crossing Regulations.",
+          "why": "Harmonization with CEA regulations.",
+          "significance": "",
+          "status": "Historical Superseded",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/RE/ACTM_CS15.pdf",
+          "sha256": "a1396a98352058402242dbd1d5ed054443a7424a97e488fae328b26f10b29c0e"
+        },
+        {
+          "series": "Legacy (1994 ACTM)",
+          "cs_no": "Legacy ACS No. 16",
+          "date": "18.09.2006",
+          "letter": "2004/RE/161/1 Pt-III(ACTM)",
+          "scope": "Vol. II Pt 2 Appendix IV Clause 17",
+          "type": "Substituted",
+          "what": "Further modification to clearance table in Clause 17 of Power Line Crossing regulations.",
+          "why": "Clearance revisions.",
+          "significance": "",
+          "status": "Historical Superseded",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/RE/ACTM_CS16.pdf",
+          "sha256": "ec543dd96ea9dcdc4d37e6f9932d4645276c005fd53af7aa2089272d41e69040"
+        },
+        {
+          "series": "Legacy (1994 ACTM)",
+          "cs_no": "Legacy ACS No. 17",
+          "date": "12.08.2008",
+          "letter": "2000/RE/161/1 Pt III",
+          "scope": "Vol. II Pt 1 Paras 21005 (item 6), 21007 (item 2(i)), 21009 (Sub-para 1(c)), 21010 (Sub-paras 1(a), 1(b), 1(c), 3(f))",
+          "type": "Substituted / Simplified",
+          "what": "Simplification and revision of 25 kV AC commissioning procedures and documentation.",
+          "why": "Streamlining railway electrification opening paperwork.",
+          "significance": "",
+          "status": "Historical Superseded",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/RE/ACTM_CS17.pdf",
+          "sha256": "cdb3b45f71ada7f61ef8a0ddda3115e9f949e1aaa22a0222dfa5ecdf588e16b5"
+        },
+        {
+          "series": "Legacy (1994 ACTM)",
+          "cs_no": "Legacy ACS No. 18",
+          "date": "19.01.2009",
+          "letter": "2000/Elect(G)/161/1 Pt. III",
+          "scope": "Vol. II Pt 2 Appendix IV Clause 17.3 & Clause 21.0",
+          "type": "Substituted",
+          "what": "Overhaul of Table 17.3 and Clause 21.0 for Power Line Crossings of railway tracks.",
+          "why": "Modernization of crossing standards.",
+          "significance": "",
+          "status": "Historical Superseded (Amended by ACS 27)",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/RE/Correction_slip_18.PDF",
+          "sha256": "dd8d9ed554317e5a18d9285119329e78b94fcbbb7f6e2ebfd0a6d841e7529537"
+        },
+        {
+          "series": "Legacy (1994 ACTM)",
+          "cs_no": "Legacy ACS No. 19",
+          "date": "31.03.2010",
+          "letter": "2000/RE/161/1/Pt-III(ACTM)",
+          "scope": "Vol. II Pt 2 Appendix VII Item 1",
+          "type": "Substituted",
+          "what": "Revised rules governing anti-theft energisation duration prior to formal commissioning.",
+          "why": "Theft protection of completed OHE conductors.",
+          "significance": "",
+          "status": "Historical Superseded",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/RE/correction_slip_19.PDF",
+          "sha256": "20e1a74fc7639539b6c28fbc8fa82b3d1f5197d9aa588fbac36cd6a1240be52b"
+        },
+        {
+          "series": "Legacy (1994 ACTM)",
+          "cs_no": "Legacy ACS No. 20",
+          "date": "03.11.2010",
+          "letter": "2000/RE/161/1 Pt.III",
+          "scope": "Vol. II Pt 1 Para 20830",
+          "type": "Substituted",
+          "what": "Revision of temporary speed restrictions and precautions during OHE work.",
+          "why": "Track safety during electrification execution.",
+          "significance": "",
+          "status": "Historical Superseded",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/RE/Correction_slip_20.PDF",
+          "sha256": "fe5b597dd2fae34dfa2f2784eaaff697f1b9f6ab2d690a3787d788767f7e5c1a"
+        },
+        {
+          "series": "Legacy (1994 ACTM)",
+          "cs_no": "Legacy ACS No. 21",
+          "date": "10.11.2010",
+          "letter": "2000/RE/161/1 Pt. III/ACTM",
+          "scope": "Vol. II Pt 1 Paras 21007 to 21013",
+          "type": "Substituted",
+          "what": "Updated statutory regulations for 25 kV energisation and introduction of commercial electric train running.",
+          "why": "Safety protocols for high-voltage energisation.",
+          "significance": "",
+          "status": "Historical Superseded",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/RE/correction_slip21.PDF",
+          "sha256": "929b90b5d67f3acf63445af61b5e0f9a6ecc528afd53c534d6c9687b099bc469"
+        },
+        {
+          "series": "Legacy (1994 ACTM)",
+          "cs_no": "Legacy ACS No. 22",
+          "date": "24.01.2011",
+          "letter": "2000/RE/161/1 Pt. III/ACTM",
+          "scope": "Vol. II Pt 1 Para 21009 Sub-para 1",
+          "type": "Substituted",
+          "what": "Public notifications and statutory notices before 25 kV traction energisation.",
+          "why": "Public safety notifications in regional media.",
+          "significance": "",
+          "status": "Historical Superseded",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/RE/correction_slip_22.PDF",
+          "sha256": "72f0e1b032acdaa8861f3128f1ae6c166dad56e5d7bc89783cc4f11530989444"
+        },
+        {
+          "series": "Legacy (1994 ACTM)",
+          "cs_no": "Legacy ACS No. 23",
+          "date": "28.08.2012",
+          "letter": "2000/RE/161/1 Pt. III",
+          "scope": "Vol. II Pt 1 Para 20830",
+          "type": "Substituted",
+          "what": "Further update on temporary speed restrictions and caution orders during electrification works.",
+          "why": "Operational coordination.",
+          "significance": "",
+          "status": "Historical Superseded",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/RE/correction_slip_23.PDF",
+          "sha256": "4a5cbe2556d21ffd0046c393849305e2f841b1df97f65286dd456420181cebd4"
+        },
+        {
+          "series": "Legacy (1994 ACTM)",
+          "cs_no": "Legacy ACS No. 24",
+          "date": "10.01.2013",
+          "letter": "2001/Elect(G)/ 138/4 Pt.-I",
+          "scope": "Vol. III Pt 1 Para 20970-05 (and Vol. II)",
+          "type": "Substituted",
+          "what": "Authorized issuance of competency certificates to Pointsmen (in addition to Station Masters and ASMs) after practical training to operate specific isolators in emergencies under TPC instructions.",
+          "why": "Approval of Board (ML) in consultation with Traffic Transportation Directorate to expedite emergency section isolation.",
+          "significance": "",
+          "status": "Historical Superseded",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/RE/ACTM_CS24.pdf",
+          "sha256": "385a5b1c07867873ad3c5f068554b93b6b312695e0a4d25105e218362921afe7"
+        },
+        {
+          "series": "Legacy (1994 ACTM)",
+          "cs_no": "Legacy ACS No. 25",
+          "date": "20.10.2014",
+          "letter": "2013/RE/161/22 (FTS-82011)",
+          "scope": "Vol. II Pt 2 Appendix-I Para 33",
+          "type": "Added",
+          "what": "Inserted new Para 33 governing temporary and permanent arrangements for DC to AC 25 kV traction conversion in Mumbai area (Central / Western Railways).",
+          "why": "Facilitate DC-to-AC conversion works.",
+          "significance": "",
+          "status": "Superseded by Legacy ACS No. 28",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/downloads/ACTM%20no_%2025.pdf",
+          "sha256": "69f8ca9811a667f9dc1e8c86d950e5a88277956c9ddcf2a7302b66e7e99c6aee"
+        },
+        {
+          "series": "Legacy (1994 ACTM)",
+          "cs_no": "Legacy ACS No. 27",
+          "date": "06.05.2016",
+          "letter": "2015/RE/138/4 (FTS-137487)",
+          "scope": "Vol. II Pt 2 Appendix IV Clause 17.3 & Clause 21.0",
+          "type": "Substituted",
+          "what": "Replaced Table 17.3(a) of ACS 18: mandated underground cable for crossings up to 11 kV; defined vertical clearances from rail level for 33 kV (14.66 m), 66 kV (14.96 m), 132 kV (15.56 m), 220 kV (16.46 m), 400 kV (18.26 m), 500 kV (19.16 m), and 800 kV (21.86 m).",
+          "why": "Approval of Board (ML) to update vertical clearances and align with CEA regulations.",
+          "significance": "",
+          "status": "Historical Superseded (Replaced by Nov-2022 ACTM App-IV and ACS No. 4)",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/downloads/ACTM%20no_%2027.pdf",
+          "sha256": "e6fca3ce2a2a23309bbd65c6426fe1e400766c2e71fb43e2ec41a8ff1b8186b2"
+        },
+        {
+          "series": "Legacy (1994 ACTM)",
+          "cs_no": "Legacy ACS No. 28",
+          "date": "28.12.2015",
+          "letter": "2013/RE/161/22 (FTS-82011)",
+          "scope": "Vol. II Pt 2 Appendix-I Para 33",
+          "type": "Substituted",
+          "what": "Substituted and replaced Para 33 on DC to AC conversion provisions, superseding Legacy ACS No. 25.",
+          "why": "Refinement of DC to AC conversion guidelines.",
+          "significance": "",
+          "status": "Historical Superseded (DC traction eliminated on Indian Railways)",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/downloads/ACTM%20no_%2028.pdf",
+          "sha256": "5ac17af8054a4c6e2d92582a011d1c29b7b0e5cf4fdf8dfd53a37af4d66c1677"
+        },
+        {
+          "series": "Legacy (1994 ACTM)",
+          "cs_no": "Legacy ACS No. 29",
+          "date": "25.10.2018",
+          "letter": "2013/RE/161/22 (3226774)",
+          "scope": "Vol. I Ch-IV Para 10436 Sub-paras 3(a), 3(b), 3(c)",
+          "type": "Substituted",
+          "what": "Revised precautions for Over Dimensioned Consignment (ODC) movement in 25 kV sections: gross clearance >= 390 mm allowed at up to 40 km/h; clearance 340 mm to 390 mm restricted to 15 km/h with authorized escort; clearance < 340 mm strictly power off.",
+          "why": "Safe movement of heavy oversize consignments without flashovers.",
+          "significance": "",
+          "status": "Historical Superseded (Codified in 2022 ACTM Vol. I)",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/downloads/ACTM%20no_%2029.pdf",
+          "sha256": "96cca99be0964bff982fb8b1387aaa6009f9b6531df2ad48bbf798870de6a2b5"
+        },
+        {
+          "series": "Legacy (1994 ACTM)",
+          "cs_no": "Legacy ACS No. 30",
+          "date": "22.10.2019",
+          "letter": "2005/Elect(G)/161/8/Punct/Pt-III",
+          "scope": "Vol. II Pt 1 Para 21020 (Proforma 10-02) & Vol. II Pt 2 App-VIII Para 11.2(e)",
+          "type": "Substituted",
+          "what": "Modified Proforma 10-02 regarding LC gate height gauge dimensions and inspections.",
+          "why": "Safety at level crossings.",
+          "significance": "",
+          "status": "Superseded by Legacy ACS No. 32",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/pdf/22-10-2019.pdf",
+          "sha256": "9fbb07c71635bc085c655c7eaf6a915cf424c2bf7dcb5cddcaab9bbac43ee56c"
+        },
+        {
+          "series": "Legacy (1994 ACTM)",
+          "cs_no": "Legacy ACS No. 31",
+          "date": "20.01.2020",
+          "letter": "2008/RE/170/3",
+          "scope": "Vol. I Para 10413 Sub-para 1 & Annexure 12.01 (Certificate TR-1)",
+          "type": "Substituted",
+          "what": "Mandated that Competency Certificate TR-1 can be issued to Khalasi only if literate, has >= 3 years working experience, understands Elementary sections/sub-sectors, and is able to operate isolators in writing with private numbers.",
+          "why": "Approved by Board (Member Traction) to prevent unauthorized or dangerous manual isolator operations.",
+          "significance": "",
+          "status": "Historical Superseded (Codified in 2022 ACTM Vol. I)",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/pdf/20-01-2020.pdf",
+          "sha256": "df5ce9b3c24816d213ab1e0b9007396bf07ef7090867a5fd1ff78c4fac82a194"
+        },
+        {
+          "series": "Legacy (1994 ACTM)",
+          "cs_no": "Legacy ACS No. 32",
+          "date": "09.10.2020",
+          "letter": "2005/Elect(G)/161/8 Punct/Pt-III",
+          "scope": "Vol. II Pt 1 Para 21020 (Proforma 10-02) & Vol. II Pt 2 App-VIII Para 11.2(e)",
+          "type": "Substituted / In Supersession",
+          "what": "Modified Proforma 10-02 and LC Gate provisions; formally in suppression (supersession) of ACS No. 30 dated 22.10.2019.",
+          "why": "Refinement of LC gate safety compliance proforma.",
+          "significance": "",
+          "status": "Historical Superseded (Replaced by Nov-2022 ACTM and ACS No. 8)",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/2020/ACTM%20Correction%20slip%2032%20modification%20LC%20gate%20letter%20dt%2009-10-2020.pdf",
+          "sha256": "7a7a425994db423f757849f0a4acd73b0c13b374538e3f32587d8f9017bc2e63"
+        },
+        {
+          "series": "Legacy (1994 ACTM)",
+          "cs_no": "Legacy ACS No. 33",
+          "date": "27.10.2021",
+          "letter": "2021/EEM/148/3/ACTM",
+          "scope": "Vol. II Pt 2 App-I Para 18.12",
+          "type": "Substituted",
+          "what": "Masts near level crossings and bridge abutments: standard >= 10 m; reduction to 5 m permitted by PCEE with CBE approval on case specific basis to avoid pier masts, single cantilever only, no ATD or anti-creep anchor.",
+          "why": "Bridge safety and avoiding difficult pier mast installations.",
+          "significance": "",
+          "status": "Historical Superseded (Re-enacted as ACS No. 2 to Nov-2022 ACTM)",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/TRD_Circulars/Advance%20correction%20slip%20no%2033%20%20to%20railway%20manual%20of%20ACTM%20with%20regard%20to%20arrangment%20of%20traction%20masts%20near%20level%20crossing%20and%20abutments%20of%20bridg%20RB%20letter%20dt%2027-10-21.pdf",
+          "sha256": "c6d3a8ef4197ea2bfc40764fe67bcf3754b7c31f69a5a80b57e9cb07481b85f1"
+        },
+        {
+          "series": "Legacy (1994 ACTM)",
+          "cs_no": "Legacy ACS No. 34",
+          "date": "19.12.2022",
+          "letter": "2021/EEM/148/3/ACTM",
+          "scope": "Vol. II Pt 2 App-I Para 18.11, Fig A1.10; Vol. II Pt 1 Para 20703(4)",
+          "type": "Substituted",
+          "what": "Distance between OHE structures and signal posts: X >= 30 m when mast is in front of signal post, Y >= 10 m when mast is beyond signal post (Fig A1.10). Dispensation for reduction empowered jointly to PCSTE and PCEE. Statutorily ratified by ACS No. 2 (18.05.2023) as ACS No. 1 to the November-2022 ACTM.",
+          "why": "Driver signal visibility up to 160 km/h.",
+          "significance": "",
+          "status": "Current Verified (as ACS No. 1 to Nov-2022 ACTM)",
+          "url": "https://indianrailways.gov.in/railwayboard/uploads/directorate/ele_engg/Circulars/TRD_Circulars/Advance%20Correction%20Slip%20No_%2034%20to%20Railway%20Manual%20of%20AC%20traction%20(ACTM)%20%20with%20regard%20to%20distance%20between%20OHE%20structures%20and%20signal%20post_%20RB%20letter%20dt%2019_12_2022.pdf",
+          "sha256": "2d1e1a4efe26e08baf3b025722fe0a09aafc1906f62b43c366d37efb8f1c4a60"
+        }
       ]
     }
   },
@@ -76949,6 +78203,14 @@ function switchTier(newTier, updateUrl = true) {
             parts.push(s.title || "", s.description || "");
           }
         }
+        if (e.actm_cs_history) {
+          parts.push(e.actm_cs_history.summary || "", e.actm_cs_history.corpus_status || "");
+          if (e.actm_cs_history.records) {
+            for (const r of e.actm_cs_history.records) {
+              parts.push(r.cs_no || "", r.letter || "", r.scope || "", r.what || "", r.why || "", r.significance || "");
+            }
+          }
+        }
         e._globalSearchText = parts.join(" ").toLowerCase();
         return e._globalSearchText;
       }
@@ -77598,6 +78860,11 @@ function switchTier(newTier, updateUrl = true) {
         }
 
         detailViewportEl.scrollTop = 0;
+        if (detailContentEl && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          detailContentEl.classList.remove('detail-entering');
+          void detailContentEl.offsetWidth;
+          detailContentEl.classList.add('detail-entering');
+        }
       }
 
       // Render Detail Pane
@@ -78169,10 +79436,6 @@ function switchTier(newTier, updateUrl = true) {
           if (header) {
             header.setAttribute('aria-expanded', isCollapsed ? 'false' : 'true');
           }
-          const icon = document.getElementById(`groupIcon-${slug}`);
-          if (icon) {
-            icon.textContent = isCollapsed ? '▶' : '▼';
-          }
         }
       };
 
@@ -78183,10 +79446,6 @@ function switchTier(newTier, updateUrl = true) {
           const header = s.querySelector('.periodicity-group-header');
           if (header) {
             header.setAttribute('aria-expanded', expand ? 'true' : 'false');
-          }
-          const icon = s.querySelector('.group-collapse-icon');
-          if (icon) {
-            icon.textContent = expand ? '▼' : '▶';
           }
         });
       };
@@ -78590,6 +79849,187 @@ function switchTier(newTier, updateUrl = true) {
         }
       }
 
+
+      // ============================================================
+      // ACTM CORRECTION SLIPS CHRONOLOGICAL LEDGER CONTROLLER (V23.07)
+      // ============================================================
+      function getActmStatusPill(status) {
+        const s = status || '';
+        let pillClass = 'actm-status-historical';
+        if (s.includes('Current')) pillClass = 'actm-status-current';
+        else if (s.includes('Partially')) pillClass = 'actm-status-partial';
+        else if (s.includes('Superseded')) pillClass = 'actm-status-superseded';
+        return `<span class="actm-status-pill ${pillClass}">${escapeHtml(s)}</span>`;
+      }
+
+      function renderActmRecordCard(r) {
+        return `
+          <div class="actm-record-card" data-series="${escapeHtml(r.series || '')}" data-status="${escapeHtml(r.status || '')}">
+            <div class="actm-card-header">
+              <div class="actm-card-title-group">
+                <span class="actm-cs-badge">${escapeHtml(r.cs_no)}</span>
+                <span class="actm-date-tag">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  ${escapeHtml(r.date)}
+                </span>
+                ${r.series ? `<span class="actm-series-tag">${escapeHtml(r.series)}</span>` : ''}
+              </div>
+              <div>
+                ${getActmStatusPill(r.status)}
+              </div>
+            </div>
+
+            <div class="actm-scope-bar">
+              <span class="actm-scope-pill" title="Affected statutory manual clause">${escapeHtml(r.scope)}</span>
+              ${r.type ? `<span class="actm-type-chip">${escapeHtml(r.type)}</span>` : ''}
+              <span class="actm-letter-ref" title="Railway Board reference letter">
+                <span>Letter:</span>
+                <strong>${escapeHtml(r.letter)}</strong>
+              </span>
+            </div>
+
+            <div class="actm-change-details">
+              <div class="actm-detail-section">
+                <span class="actm-detail-heading">Substance of Amendment</span>
+                <div class="actm-detail-text">${escapeHtml(r.what)}</div>
+              </div>
+              ${r.why ? `
+              <div class="actm-detail-section">
+                <span class="actm-detail-heading">Documented Rationale / Technical Driver</span>
+                <div class="actm-detail-text" style="color: var(--text-muted);">${escapeHtml(r.why)}</div>
+              </div>
+              ` : ''}
+              ${r.significance ? `
+              <div class="actm-significance-box">
+                <strong style="color: var(--text-main);">Practical Field Significance:</strong> ${escapeHtml(r.significance)}
+              </div>
+              ` : ''}
+            </div>
+
+            <div class="actm-card-footer">
+              <div>
+                ${r.url ? `
+                <a href="${escapeHtml(r.url)}" target="_blank" rel="noopener noreferrer" class="actm-source-link-btn" title="View official primary PDF document on Indian Railways portal">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                  Official Railway Board PDF &rarr;
+                </a>
+                ` : `
+                <span style="font-size: 0.7rem; color: var(--text-subtle);">Direct link archived</span>
+                `}
+              </div>
+              ${r.sha256 && r.sha256 !== 'FILE_NOT_FOUND' ? `
+              <button type="button" class="actm-hash-tag copy-actm-hash-btn" data-hash="${escapeHtml(r.sha256)}" title="Click to copy full SHA-256 checksum">
+                <span>SHA: ${escapeHtml(r.sha256.substring(0, 10))}…</span>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }
+
+      function wireActmLedgerController(historyData) {
+        const streamEl = document.getElementById("actmRecordsStream");
+        const tabsContainer = document.getElementById("actmFilterTabs");
+        const searchInput = document.getElementById("actmSearchInput");
+        if (!streamEl || !historyData || !historyData.records) return;
+
+        let activeFilter = "ALL";
+        let searchQuery = "";
+
+        function filterAndRender() {
+          const q = searchQuery.trim().toLowerCase();
+          const filtered = historyData.records.filter(r => {
+            // Series / category filter
+            if (activeFilter === "CURRENT") {
+              if (!r.series.includes("Current")) return false;
+            } else if (activeFilter === "POLICY") {
+              if (!r.series.includes("Directive") && !r.series.includes("Circular")) return false;
+            } else if (activeFilter === "LEGACY") {
+              if (!r.series.includes("Legacy")) return false;
+            }
+
+            // Text search filter
+            if (q) {
+              const text = [
+                r.cs_no || "",
+                r.letter || "",
+                r.scope || "",
+                r.type || "",
+                r.what || "",
+                r.why || "",
+                r.significance || "",
+                r.status || "",
+                r.date || ""
+              ].join(" ").toLowerCase();
+              if (!matchesQueryGlobal(text, q)) return false;
+            }
+
+            return true;
+          });
+
+          if (filtered.length === 0) {
+            streamEl.innerHTML = `
+              <div class="actm-no-results">
+                <p>No correction slips match the current filter criteria ("${escapeHtml(searchQuery)}").</p>
+              </div>
+            `;
+            return;
+          }
+
+          streamEl.innerHTML = filtered.map(r => renderActmRecordCard(r)).join("");
+
+          // Wire up SHA copy buttons
+          streamEl.querySelectorAll(".copy-actm-hash-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+              const hash = btn.getAttribute("data-hash");
+              if (hash && navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(hash).then(() => {
+                  showToast("Copied verification SHA-256 to clipboard!");
+                }).catch(() => {
+                  showToast(hash);
+                });
+              }
+            });
+          });
+        }
+
+        // Initial render
+        filterAndRender();
+
+        // Wire tabs
+        if (tabsContainer) {
+          tabsContainer.querySelectorAll(".actm-tab-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+              tabsContainer.querySelectorAll(".actm-tab-btn").forEach(b => b.classList.remove("active"));
+              btn.classList.add("active");
+              activeFilter = btn.getAttribute("data-filter") || "ALL";
+              filterAndRender();
+            });
+          });
+        }
+
+        // Wire search input
+        if (searchInput) {
+          searchInput.addEventListener("input", (e) => {
+            searchQuery = e.target.value || "";
+            filterAndRender();
+          });
+        }
+      }
+
       function renderStandardDetail(entry) {
         const aliasesStr = (entry.aliases || []).join(", ");
         
@@ -78820,6 +80260,82 @@ function switchTier(newTier, updateUrl = true) {
             </div>
           </div>
 
+          ${entry.actm_cs_history ? `
+          <!-- Section: ACTM Correction Slips Chronological Ledger -->
+          <div class="epistemic-card actm-ledger-card">
+            <div class="section-badge-bar">
+              <span class="epistemic-badge badge-statutory">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                ACTM Correction Slips Ledger
+              </span>
+              <span class="section-heading-title">Chronological &amp; Clause-by-Clause Statutory Amendments</span>
+            </div>
+
+            <div class="actm-ledger-container">
+              <!-- Metrics Strip -->
+              <div class="actm-metrics-strip">
+                <div class="actm-metric-box">
+                  <span class="actm-metric-num">22</span>
+                  <span class="actm-metric-lbl">Active Slips (ACS 1–22)</span>
+                </div>
+                <div class="actm-metric-box">
+                  <span class="actm-metric-num">51</span>
+                  <span class="actm-metric-lbl">Total Inventoried</span>
+                </div>
+                <div class="actm-metric-box">
+                  <span class="actm-metric-num">100%</span>
+                  <span class="actm-metric-lbl">Primary Verified</span>
+                </div>
+                <div class="actm-metric-box">
+                  <span class="actm-metric-num" style="font-size: 0.95rem;">Nov-2022</span>
+                  <span class="actm-metric-lbl">Statutory Baseline</span>
+                </div>
+              </div>
+
+              <!-- Census Statement / Disclosure -->
+              <div class="actm-census-note">
+                <strong>Corpus Scope:</strong> ${escapeHtml(entry.actm_cs_history.summary)}
+              </div>
+
+              <!-- Controls: Filter Tabs & Search -->
+              <div class="actm-controls-row">
+                <div class="actm-filter-tabs" id="actmFilterTabs">
+                  <button type="button" class="actm-tab-btn active" data-filter="ALL">
+                    All <span class="actm-tab-badge">51</span>
+                  </button>
+                  <button type="button" class="actm-tab-btn" data-filter="CURRENT">
+                    Active (Nov-2022) <span class="actm-tab-badge">23</span>
+                  </button>
+                  <button type="button" class="actm-tab-btn" data-filter="POLICY">
+                    Policy Circulars <span class="actm-tab-badge">6</span>
+                  </button>
+                  <button type="button" class="actm-tab-btn" data-filter="LEGACY">
+                    Legacy (1994) <span class="actm-tab-badge">22</span>
+                  </button>
+                </div>
+                <div class="actm-search-box">
+                  <svg class="actm-search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                  <input type="text" class="actm-search-input" id="actmSearchInput" placeholder="Filter clauses, slips, topics..." aria-label="Filter correction slips">
+                </div>
+              </div>
+
+              <!-- Records Stream -->
+              <div class="actm-records-stream" id="actmRecordsStream">
+                <!-- Dynamically populated by wireActmLedgerController -->
+              </div>
+            </div>
+          </div>
+          ` : ''}
+
           ${entry.visual_reference ? `
           <!-- Section 6: Verified Technical Visual Reference -->
           <div class="epistemic-card">
@@ -78863,6 +80379,11 @@ function switchTier(newTier, updateUrl = true) {
 
         `;
 
+
+        // Wire up ACTM Ledger Controller if present
+        if (entry.actm_cs_history) {
+          wireActmLedgerController(entry.actm_cs_history);
+        }
 
         // Wire up detail buttons
         document.getElementById("copyCitationBtn").addEventListener("click", () => {
@@ -79047,12 +80568,14 @@ function switchTier(newTier, updateUrl = true) {
 
       function _executeSearchChange() {
         searchQuery = searchInputEl.value;
-        if (searchQuery.trim().length > 0) {
-          searchClearBtnEl.style.display = "flex";
-          shortcutBadgeEl.style.display = "none";
-        } else {
-          searchClearBtnEl.style.display = "none";
-          shortcutBadgeEl.style.display = "block";
+        const hasSearchText = searchQuery.trim().length > 0;
+        if (searchClearBtnEl) {
+          searchClearBtnEl.style.display = "";
+          searchClearBtnEl.classList.toggle("visible", hasSearchText);
+        }
+        if (shortcutBadgeEl) {
+          shortcutBadgeEl.style.display = "";
+          shortcutBadgeEl.classList.toggle("hidden", hasSearchText);
         }
 
         const q = searchQuery.toLowerCase().trim();
@@ -79399,12 +80922,12 @@ function switchTier(newTier, updateUrl = true) {
       }
 
       // ============================================================
-      // APPLICATION SETTINGS & READING ACCESSIBILITY CONTROLLER (V23.06)
+      // APPLICATION SETTINGS & READING ACCESSIBILITY CONTROLLER (V23.07)
       // ============================================================
       const VS_RELEASE_METADATA = {
-        version: "V23.06",
-        next_release: "V23.07",
-        last_updated: "11 Oct 2026"
+        version: "V23.07",
+        next_release: "V23.08",
+        last_updated: "12 Oct 2026"
       };
 
       const READING_PRESETS = {
@@ -80012,7 +81535,7 @@ function switchTier(newTier, updateUrl = true) {
         }
       }
 
-      // Subtle OxygenOS Elastic Rubberband Overscroll Effect
+      // Subtle Fluid Elastic Rubberband Overscroll Effect
       function initRubberbandEffect(scrollContainer, targetContent) {
         if (!scrollContainer || !targetContent) return;
         let startY = 0;
@@ -80021,7 +81544,10 @@ function switchTier(newTier, updateUrl = true) {
         let canPullUp = false;
 
         scrollContainer.addEventListener("touchstart", (e) => {
+          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
           if (e.touches.length !== 1) return;
+          const isScrollable = scrollContainer.scrollHeight > scrollContainer.clientHeight + 2;
+          if (!isScrollable) return;
           startY = e.touches[0].clientY;
           isTouching = true;
           canPullDown = scrollContainer.scrollTop <= 0;
@@ -80035,10 +81561,10 @@ function switchTier(newTier, updateUrl = true) {
           const deltaY = currentY - startY;
 
           if (canPullDown && deltaY > 0 && scrollContainer.scrollTop <= 0) {
-            const pull = Math.min(Math.pow(deltaY, 0.78) * 1.1, 32);
+            const pull = Math.min(Math.pow(deltaY, 0.75) * 0.9, 24);
             targetContent.style.transform = `translate3d(0, ${pull}px, 0)`;
           } else if (canPullUp && deltaY < 0 && (scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight - 1)) {
-            const pull = -Math.min(Math.pow(Math.abs(deltaY), 0.78) * 1.1, 32);
+            const pull = -Math.min(Math.pow(Math.abs(deltaY), 0.75) * 0.9, 24);
             targetContent.style.transform = `translate3d(0, ${pull}px, 0)`;
           }
         }, { passive: true });
@@ -80046,8 +81572,19 @@ function switchTier(newTier, updateUrl = true) {
         const endTouch = () => {
           if (!isTouching) return;
           isTouching = false;
-          targetContent.style.transition = "transform 0.32s cubic-bezier(0.16, 1, 0.3, 1)";
+          targetContent.style.transition = "transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)";
           targetContent.style.transform = "translate3d(0, 0, 0)";
+
+          let cleaned = false;
+          const cleanup = () => {
+            if (cleaned) return;
+            cleaned = true;
+            targetContent.style.transform = "";
+            targetContent.style.transition = "";
+            targetContent.removeEventListener("transitionend", cleanup);
+          };
+          targetContent.addEventListener("transitionend", cleanup, { once: true });
+          setTimeout(cleanup, 260);
         };
 
         scrollContainer.addEventListener("touchend", endTouch, { passive: true });
@@ -80062,7 +81599,10 @@ function switchTier(newTier, updateUrl = true) {
         let canPullRight = false;
 
         scrollContainer.addEventListener("touchstart", (e) => {
+          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
           if (e.touches.length !== 1) return;
+          const isScrollable = scrollContainer.scrollWidth > scrollContainer.clientWidth + 2;
+          if (!isScrollable) return;
           startX = e.touches[0].clientX;
           isTouching = true;
           canPullLeft = scrollContainer.scrollLeft <= 0;
@@ -80076,10 +81616,10 @@ function switchTier(newTier, updateUrl = true) {
           const deltaX = currentX - startX;
 
           if (canPullLeft && deltaX > 0 && scrollContainer.scrollLeft <= 0) {
-            const pull = Math.min(Math.pow(deltaX, 0.78) * 1.0, 24);
+            const pull = Math.min(Math.pow(deltaX, 0.75) * 0.85, 20);
             scrollContainer.style.transform = `translate3d(${pull}px, 0, 0)`;
           } else if (canPullRight && deltaX < 0 && (scrollContainer.scrollLeft + scrollContainer.clientWidth >= scrollContainer.scrollWidth - 1)) {
-            const pull = -Math.min(Math.pow(Math.abs(deltaX), 0.78) * 1.0, 24);
+            const pull = -Math.min(Math.pow(Math.abs(deltaX), 0.75) * 0.85, 20);
             scrollContainer.style.transform = `translate3d(${pull}px, 0, 0)`;
           }
         }, { passive: true });
@@ -80087,8 +81627,19 @@ function switchTier(newTier, updateUrl = true) {
         const endTouch = () => {
           if (!isTouching) return;
           isTouching = false;
-          scrollContainer.style.transition = "transform 0.32s cubic-bezier(0.16, 1, 0.3, 1)";
+          scrollContainer.style.transition = "transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)";
           scrollContainer.style.transform = "translate3d(0, 0, 0)";
+
+          let cleaned = false;
+          const cleanup = () => {
+            if (cleaned) return;
+            cleaned = true;
+            scrollContainer.style.transform = "";
+            scrollContainer.style.transition = "";
+            scrollContainer.removeEventListener("transitionend", cleanup);
+          };
+          scrollContainer.addEventListener("transitionend", cleanup, { once: true });
+          setTimeout(cleanup, 260);
         };
 
         scrollContainer.addEventListener("touchend", endTouch, { passive: true });
