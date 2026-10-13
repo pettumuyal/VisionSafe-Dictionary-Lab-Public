@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>VisionSafe TRD Engineering Dictionary</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self';">
   
   <!-- PWA & Mobile Web App Meta -->
   <link rel="manifest" href="./manifest.webmanifest">
@@ -81,6 +82,10 @@
       --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
       --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
       --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-indicator: 0 2px 6px rgba(15, 23, 42, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      --shadow-glass: 0 10px 30px -4px rgba(15, 23, 42, 0.12), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95);
+      --neumorphic-inset: inset 0 2px 4px rgba(15, 23, 42, 0.08), inset 0 0 0 1px rgba(15, 23, 42, 0.04), 0 1px 0 rgba(255, 255, 255, 0.9);
+      --neumorphic-raised: 0 2px 4px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95);
       
       --radius-sm: 4px;
       --radius-md: 8px;
@@ -88,16 +93,41 @@
       --radius-full: 9999px;
       --app-header-height: 52px;
 
-      /* Motion & Transition System (Restrained Fluidity) */
+      /* Motion & Transition System (Calibrated ~0.85× Speed Fluidity) */
       --ease-fluid: cubic-bezier(0.16, 1, 0.3, 1);
       --ease-standard: cubic-bezier(0.2, 0, 0, 1);
       --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-      --transition-instant: 80ms ease;
-      --transition-fast: 140ms cubic-bezier(0.16, 1, 0.3, 1);
-      --transition-normal: 180ms cubic-bezier(0.16, 1, 0.3, 1);
-      --transition-med: 220ms cubic-bezier(0.16, 1, 0.3, 1);
-      --transition-overlay: 200ms cubic-bezier(0.16, 1, 0.3, 1);
-      --transition-slow: 320ms cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-spring: cubic-bezier(0.34, 1.15, 0.64, 1);
+      --ease-spring-press: cubic-bezier(0.2, 0, 0, 1);
+
+      --duration-press: 80ms;
+      --duration-fast: 165ms;
+      --duration-normal: 212ms;
+      --duration-med: 258ms;
+      --duration-overlay: 235ms;
+      --duration-tab: 282ms;
+      --duration-drawer: 306ms;
+      --duration-slow: 376ms;
+
+      --transition-instant: var(--duration-press) var(--ease-spring-press);
+      --transition-fast: var(--duration-fast) var(--ease-fluid);
+      --transition-normal: var(--duration-normal) var(--ease-fluid);
+      --transition-med: var(--duration-med) var(--ease-fluid);
+      --transition-overlay: var(--duration-overlay) var(--ease-fluid);
+      --transition-slow: var(--duration-slow) var(--ease-fluid);
+      --transition-spring-tab: var(--duration-tab) var(--ease-spring);
+      --transition-spring-press: var(--duration-press) var(--ease-spring-press);
+      --transition-drawer: var(--duration-drawer) var(--ease-fluid);
+    }
+
+    @supports (transition-timing-function: linear(0, 1)) {
+      :root {
+        --ease-spring: linear(
+          0, 0.007, 0.029 2.2%, 0.117 4.9%, 0.525 15.2%,
+          0.711 20.9%, 0.849 26.8%, 0.938 33.1%, 0.985 39.8%,
+          1.007 46.8%, 1.014 54.1%, 1.009 63.2%, 1.002 74.8%, 1
+        );
+      }
     }
 
     [data-theme="dark"] {
@@ -145,6 +175,10 @@
       --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
       --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
       --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4);
+      --shadow-indicator: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.55), inset 0 1px 1px 0 rgba(255, 255, 255, 0.14);
+      --neumorphic-inset: inset 0 2px 4px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.05);
+      --neumorphic-raised: 0 2px 4px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
     /* Dark Theme B - Alternate Dark (Restrained Burgundy / Dark Neutral Engineering Palette) */
@@ -194,6 +228,10 @@
       --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
       --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(139, 46, 62, 0.15);
       --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(139, 46, 62, 0.2);
+      --shadow-indicator: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.55), inset 0 1px 1px 0 rgba(226, 192, 197, 0.1);
+      --neumorphic-inset: inset 0 2px 4px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(226, 192, 197, 0.05);
+      --neumorphic-raised: 0 2px 4px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(226, 192, 197, 0.1);
     }
 
     [data-theme="alternate-dark"] .brand-logo {
@@ -406,7 +444,7 @@
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
-      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+      transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform var(--transition-fast);
       white-space: nowrap;
     }
 
@@ -504,7 +542,7 @@
       padding: 0.4rem 0.75rem;
       border-radius: var(--radius-sm);
       text-decoration: none;
-      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+      transition: background-color 0.15s ease;
       white-space: nowrap;
     }
 
@@ -623,7 +661,7 @@
       color: var(--text-main);
       outline: none;
       font-family: inherit;
-      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
     .search-input:focus {
@@ -711,7 +749,7 @@
       font-weight: 500;
       cursor: pointer;
       white-space: nowrap;
-      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform var(--transition-fast);
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
@@ -809,10 +847,10 @@
       border-radius: var(--radius-md);
       cursor: pointer;
       border: 1px solid transparent;
-      transition: transform 0.15s ease-out,
-                  background-color 0.15s ease,
-                  border-color 0.15s ease,
-                  box-shadow 0.18s ease;
+      transition: transform var(--transition-fast),
+                  background-color var(--transition-fast),
+                  border-color var(--transition-fast),
+                  box-shadow var(--transition-fast);
       background-color: transparent;
     }
 
@@ -820,14 +858,14 @@
       .entry-card:hover {
         background-color: var(--bg-hover);
         border-color: var(--border-subtle);
-        transform: translateY(-1.5px);
-        box-shadow: var(--shadow-sm);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
       }
     }
 
     .entry-card:active {
       transform: scale(0.985);
-      transition: transform 0.08s ease;
+      transition: transform var(--transition-spring-press);
     }
 
     .entry-card.active {
@@ -1034,7 +1072,7 @@
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
-      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform var(--transition-fast);
       font-family: inherit;
     }
 
@@ -1044,29 +1082,26 @@
       border-color: var(--border-strong);
     }
 
-    /* Spring Entrance Micro-animation */
+    /* Spring Entrance Micro-animation handled via compositor WAAPI on parent container */
     @keyframes cardSpring {
-      0% { opacity: 0; transform: translateY(4px); }
+      0% { opacity: 0.88; transform: translateY(2px); }
       100% { opacity: 1; transform: translateY(0); }
-    }
-
-    .detail-header,
-    .epistemic-card,
-    .ambiguity-notice-box {
-      animation: cardSpring 0.18s ease-out;
     }
 
     /* Button Press Tactile Response */
     button:active,
     .action-btn:active,
     .discover-btn:active,
+    .concept-discovery-btn:active,
     .theme-seg-btn:active,
     .category-pill:active,
     .rel-term-pill:active,
     .visual-ref-btn:active,
-    .learning-btn:active {
+    .learning-btn:active,
+    .header-settings-btn:active {
       transform: translateY(1px);
-      transition: transform 0.08s ease;
+      box-shadow: var(--neumorphic-inset);
+      transition: transform var(--transition-spring-press);
     }
 
     /* Epistemic Section Cards */
@@ -1369,7 +1404,7 @@
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
-      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+      transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform var(--transition-fast);
       text-decoration: none;
     }
 
@@ -1404,7 +1439,7 @@
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
-      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+      transition: filter 0.15s ease, box-shadow 0.15s ease;
     }
 
     .rel-rule-badge:hover {
@@ -1619,7 +1654,7 @@
       align-items: center;
       justify-content: center;
       padding: 1.25rem;
-      animation: fadeIn 0.2s ease-out;
+      animation: fadeIn var(--duration-normal) var(--ease-out-smooth);
     }
 
     @keyframes fadeIn {
@@ -1638,12 +1673,12 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      animation: modalSpring 0.18s ease-out;
+      animation: modalSpring var(--duration-modal) var(--ease-spring-tab);
     }
 
     @keyframes modalSpring {
-      0% { opacity: 0; transform: translateY(-8px); }
-      100% { opacity: 1; transform: translateY(0); }
+      0% { opacity: 0; transform: translateY(-8px) scale(0.985); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .learning-modal-header {
@@ -1860,7 +1895,7 @@
       align-items: center;
       justify-content: center;
       gap: 0.45rem;
-      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
       font-family: inherit;
       min-height: 42px;
     }
@@ -1960,7 +1995,7 @@
       font-size: 0.75rem;
       font-weight: 600;
       cursor: pointer;
-      transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast), transform 80ms ease;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
       white-space: nowrap;
     }
 
@@ -2110,8 +2145,9 @@
       }
 
       .category-pill:active {
-        transform: scale(0.95);
-        transition: transform 0.08s ease;
+        transform: translateY(1px);
+        box-shadow: var(--neumorphic-inset);
+        transition: transform var(--transition-spring-press);
       }
     }
 
@@ -2186,9 +2222,11 @@
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
-        transition: opacity 0.22s ease-out,
-                    visibility 0.22s;
-        will-change: opacity;
+        transition: opacity var(--duration-state, 280ms) var(--ease-fluid),
+                    transform var(--duration-state, 280ms) var(--ease-fluid),
+                    visibility var(--duration-state, 280ms);
+        transform: translateY(12px);
+        will-change: opacity, transform;
       }
 
       .detail-viewport.mobile-active {
@@ -2226,39 +2264,22 @@
         cursor: pointer;
         padding: 0.25rem 0.5rem;
         border-radius: var(--radius-sm);
-        transition: transform 0.15s ease-out,
-                    color 0.15s ease,
-                    background-color 0.15s ease;
+        transition: transform var(--transition-fast),
+                    color var(--transition-fast),
+                    background-color var(--transition-fast);
         -webkit-tap-highlight-color: transparent;
       }
 
       .mobile-back-btn:active {
-        transform: scale(0.94);
+        transform: scale(0.96);
         background: var(--bg-hover);
-        transition: transform 0.08s ease;
+        transition: transform var(--transition-spring-press);
       }
 
       #detailContent {
         padding: 0.75rem 0.85rem 2.5rem 0.85rem;
         overscroll-behavior-y: auto;
         -webkit-overflow-scrolling: touch;
-      }
-
-      .field-compact-header,
-      .field-process-navigator,
-      .field-card,
-      .detail-header,
-      .epistemic-card {
-        animation: oxyFadeIn 0.2s ease-out both;
-      }
-
-      @keyframes oxyFadeIn {
-        from {
-          opacity: 0.4;
-        }
-        to {
-          opacity: 1;
-        }
       }
 
       .detail-header {
@@ -2871,7 +2892,7 @@
       background: transparent;
       color: var(--text-muted);
       cursor: pointer;
-      transition: background-color 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.18s cubic-bezier(0.16, 1, 0.3, 1), color 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s cubic-bezier(0.16, 1, 0.3, 1), transform 0.08s ease;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-spring-press);
       user-select: none;
       position: relative;
       text-align: left;
@@ -2886,7 +2907,7 @@
 
     .tier-nav-btn:active {
       transform: translateY(1px);
-      transition: transform 0.08s ease;
+      transition: transform var(--transition-spring-press);
     }
 
     /* SELECTED TAB — One Clean Selected Outline (Zero Duplicate Rings, Zero Glow) */
@@ -2963,7 +2984,7 @@
       background: var(--bg-inset);
       color: var(--text-subtle);
       border: 1px solid var(--border-subtle);
-      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
       line-height: 1.2;
     }
 
@@ -3033,7 +3054,7 @@
       display: flex;
       flex-direction: column;
       box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
-      animation: modalFadeIn var(--transition-overlay, 200ms) cubic-bezier(0.16, 1, 0.3, 1);
+      animation: modalFadeIn var(--transition-overlay, 200ms);
       overflow: hidden;
       box-sizing: border-box;
     }
@@ -3420,7 +3441,7 @@
       padding: 0.35rem 0.65rem;
       border-radius: var(--radius-sm);
       cursor: pointer;
-      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+      transition: background-color 0.15s ease;
     }
 
     .learning-safety-link:hover {
@@ -3555,7 +3576,7 @@
       border: 1px solid var(--border-subtle);
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
       letter-spacing: 0.01em;
-      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
       white-space: nowrap;
     }
 
@@ -3861,7 +3882,7 @@
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
       font-weight: 600;
     }
 
@@ -3923,7 +3944,7 @@
       gap: 6px;
       cursor: pointer;
       text-decoration: none;
-      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-spring-press);
     }
 
     .proc-step-btn:hover:not(:disabled) {
@@ -3933,8 +3954,8 @@
     }
 
     .proc-step-btn:active:not(:disabled) {
-      transform: scale(0.94);
-      transition: transform 0.08s ease;
+      transform: scale(0.96);
+      transition: transform var(--transition-spring-press);
     }
 
     .proc-step-btn.active {
@@ -4457,7 +4478,7 @@
       background-repeat: no-repeat;
       background-position: right 10px center;
       box-sizing: border-box;
-      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
     .process-filter-select:focus {
@@ -5010,7 +5031,7 @@
       border-radius: var(--radius-sm);
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
-      transition: transform var(--transition-normal, 180ms) cubic-bezier(0.16, 1, 0.3, 1), background var(--transition-fast, 140ms) ease;
+      transition: transform var(--transition-normal, 180ms), background var(--transition-fast, 140ms);
     }
 
     .periodicity-group-section.collapsed .group-collapse-icon {
@@ -5619,7 +5640,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 80ms ease, box-shadow 150ms ease;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-spring-press), box-shadow var(--transition-fast);
     }
     .header-settings-btn:hover {
       background: var(--bg-hover);
@@ -5628,6 +5649,8 @@
     }
     .header-settings-btn:active {
       transform: translateY(1px);
+      box-shadow: var(--neumorphic-inset);
+      transition: transform var(--transition-spring-press);
     }
     .header-settings-btn.active {
       background: var(--bg-hover);
@@ -5655,7 +5678,7 @@
       z-index: 1200;
       display: flex;
       flex-direction: column;
-      animation: popoverFadeIn 160ms cubic-bezier(0.16, 1, 0.3, 1);
+      animation: popoverFadeIn var(--duration-normal) var(--ease-out-smooth);
       transform-origin: top right;
       color: var(--text-main);
     }
@@ -5667,7 +5690,7 @@
     @keyframes popoverFadeIn {
       from {
         opacity: 0;
-        transform: translateY(-6px) scale(0.97);
+        transform: translateY(-6px) scale(0.98);
       }
       to {
         opacity: 1;
@@ -5710,12 +5733,16 @@
       color: var(--text-subtle);
       cursor: pointer;
       margin: -6px -8px -6px 0;
-      transition: background-color 150ms ease, color 150ms ease;
+      transition: background-color var(--duration-fast) ease, color var(--duration-fast) ease, transform var(--duration-fast) var(--ease-spring-press);
     }
 
     .settings-popover-close-btn:hover {
       background: var(--bg-hover);
       color: var(--text-main);
+    }
+
+    .settings-popover-close-btn:active {
+      transform: scale(0.94);
     }
 
     .settings-popover-close-btn:focus-visible {
@@ -5783,13 +5810,17 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
+      transition: background-color var(--duration-fast) ease, border-color var(--duration-fast) ease, color var(--duration-fast) ease, box-shadow var(--duration-fast) ease, transform var(--duration-fast) var(--ease-spring-press);
     }
 
     .reading-preset-btn:hover {
       background: var(--bg-hover);
       color: var(--text-main);
       border-color: var(--border-strong);
+    }
+
+    .reading-preset-btn:active {
+      transform: translateY(1px) scale(0.98);
     }
 
     .reading-preset-btn.active {
@@ -5947,12 +5978,16 @@
       align-items: center;
       justify-content: center;
       gap: 4px;
-      transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+      transition: background-color var(--duration-fast) ease, border-color var(--duration-fast) ease, color var(--duration-fast) ease, transform var(--duration-fast) var(--ease-spring-press);
     }
 
     .settings-theme-btn:hover {
       background: var(--bg-hover);
       color: var(--text-main);
+    }
+
+    .settings-theme-btn:active {
+      transform: translateY(1px) scale(0.98);
     }
 
     .settings-theme-btn.active {
@@ -5992,13 +6027,17 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+      transition: background-color var(--duration-fast) ease, color var(--duration-fast) ease, border-color var(--duration-fast) ease, transform var(--duration-fast) var(--ease-spring-press);
     }
 
     .settings-reset-btn:hover {
       background: var(--bg-hover);
       color: var(--text-main);
       border-color: var(--border-strong);
+    }
+
+    .settings-reset-btn:active {
+      transform: translateY(1px) scale(0.98);
     }
 
     .settings-reset-btn:focus-visible {
@@ -6020,12 +6059,8 @@
 
     /* ============================================================ */
     /* USER READING ACCESSIBILITY TYPOGRAPHY SCALING SYSTEM        */
+    /* Note: typography scaling applies discretely to prevent layout thrashing */
     /* ============================================================ */
-    #detailContent,
-    .learning-modal-card,
-    .entries-list {
-      transition: font-size 150ms ease;
-    }
 
     /* Knowledge Titles & Primary Headings */
     .detail-title-group h2,
@@ -6108,6 +6143,7 @@
       max-width: 960px;
       margin: 0 auto;
       box-sizing: border-box;
+      box-shadow: var(--neumorphic-inset);
     }
 
     .tier-nav-indicator {
@@ -6119,11 +6155,12 @@
       background: var(--bg-surface-elevated);
       border: 1.5px solid var(--accent-railway-blue);
       border-radius: var(--radius-sm);
-      box-shadow: none;
+      box-shadow: var(--shadow-indicator);
       pointer-events: none;
       z-index: 2;
       transform: translateX(0%);
-      transition: transform var(--transition-normal, 180ms) cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform;
+      transition: transform var(--transition-spring-tab);
       box-sizing: border-box;
     }
 
@@ -6284,11 +6321,11 @@
     @keyframes discoveryEntrance {
       0% {
         opacity: 0;
-        transform: translateY(-8px);
+        transform: translateY(-8px) scale(0.985);
       }
       100% {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
       }
     }
 
@@ -6303,13 +6340,13 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      animation: discoveryEntrance 180ms ease-out;
+      animation: discoveryEntrance var(--duration-modal) var(--ease-spring-tab);
     }
 
     @keyframes detailFadeSlide {
       0% {
-        opacity: 0.85;
-        transform: translateY(2px);
+        opacity: 0.65;
+        transform: translateY(4px);
       }
       100% {
         opacity: 1;
@@ -6318,11 +6355,7 @@
     }
 
     #detailContent {
-      animation: detailFadeSlide var(--transition-fast, 140ms) cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    #detailContent.detail-entering {
-      animation: detailFadeSlide var(--transition-fast, 140ms) cubic-bezier(0.16, 1, 0.3, 1);
+      /* Transitions driven via Web Animations API for zero main-thread layout thrashing */
     }
 
     /* Global Sidebar Footer */
@@ -6559,8 +6592,8 @@
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
-        transform: translateY(4px);
-        transition: opacity 180ms ease-out, transform 180ms ease-out, visibility 180ms;
+        transform: translateY(12px);
+        transition: opacity var(--duration-state, 280ms) var(--ease-fluid), transform var(--duration-state, 280ms) var(--ease-fluid), visibility var(--duration-state, 280ms);
         will-change: opacity, transform;
       }
 
@@ -6690,11 +6723,16 @@
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
       }
-      .entry-card, .proc-step-btn, .rel-term-pill, .btn, button, .tier-nav-btn, .theme-seg-btn, .category-pill {
+      .entry-card, .concept-card, .field-item-card, .proc-step-btn, .rel-term-pill, .btn, button, .tier-nav-btn, .theme-seg-btn, .category-pill, .filter-chip, .concept-discovery-btn, .settings-preset-chip, .reading-preset-btn, .settings-theme-btn, .settings-reset-btn, .settings-popover-close-btn, .detail-close-btn {
         transform: none !important;
         transition: none !important;
       }
       .tier-nav-indicator {
+        transition: none !important;
+      }
+      .settings-popover, .learning-modal-card, .learning-modal-overlay, .safety-notice-card, .safety-notice-overlay, .detail-viewport, #detailContent {
+        animation: none !important;
+        transform: none !important;
         transition: none !important;
       }
     }
@@ -6857,10 +6895,7 @@
 
     /* Animation Responsiveness Enhancements */
     .settings-popover {
-      animation: popoverFadeIn var(--transition-fast, 140ms) cubic-bezier(0.16, 1, 0.3, 1) !important;
-    }
-    #detailContent {
-      animation: detailFadeSlide var(--transition-fast, 140ms) cubic-bezier(0.16, 1, 0.3, 1);
+      animation: popoverFadeIn var(--duration-normal, 188ms) var(--ease-out-smooth) !important;
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -6868,6 +6903,18 @@
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
+      }
+      .entry-card, .concept-card, .field-item-card, .proc-step-btn, .rel-term-pill, .btn, button, .tier-nav-btn, .theme-seg-btn, .category-pill, .filter-chip, .concept-discovery-btn, .settings-preset-chip, .reading-preset-btn, .settings-theme-btn, .settings-reset-btn, .settings-popover-close-btn, .detail-close-btn {
+        transform: none !important;
+        transition: none !important;
+      }
+      .tier-nav-indicator {
+        transition: none !important;
+      }
+      .settings-popover, .learning-modal-card, .learning-modal-overlay, .safety-notice-card, .safety-notice-overlay, .detail-viewport, #detailContent {
+        animation: none !important;
+        transform: none !important;
+        transition: none !important;
       }
     }
 
@@ -6955,7 +7002,7 @@
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
-      transition: all 0.15s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
       user-select: none;
       min-height: 34px;
     }
@@ -77772,8 +77819,15 @@ function switchTier(newTier, updateUrl = true) {
         
         // If already on this tier, but mobile detail is open, close mobile detail to return to list
         if (currentTier === newTier) {
-          if (typeof closeMobileDetail === "function") {
+          if (updateUrl && typeof closeMobileDetail === "function") {
             closeMobileDetail();
+            if (window.innerWidth <= 840 && window.location.hash) {
+              try {
+                history.replaceState(null, "", window.location.pathname + window.location.search);
+              } catch (e) {
+                window.location.hash = "";
+              }
+            }
           }
           return;
         }
@@ -77810,16 +77864,26 @@ function switchTier(newTier, updateUrl = true) {
           else if (newTier === "REGISTERS") sidebarTitle.textContent = "Statutory Registers";
         }
 
-        if (typeof closeMobileDetail === "function") {
+        if (updateUrl && typeof closeMobileDetail === "function") {
           closeMobileDetail();
+          if (window.innerWidth <= 840 && window.location.hash) {
+            try {
+              history.replaceState(null, "", window.location.pathname + window.location.search);
+            } catch (e) {
+              window.location.hash = "";
+            }
+          }
         }
 
+        if (entriesListEl) {
+          entriesListEl.scrollTop = 0;
+        }
         initCategoryPills();
         renderEntriesList();
 
         const filtered = getFilteredEntries();
         if (filtered.length > 0) {
-          selectEntry(filtered[0].id, !updateUrl);
+          selectEntry(filtered[0].id, !updateUrl, true);
         }
       }
       window.switchTier = switchTier;
@@ -77979,7 +78043,7 @@ function switchTier(newTier, updateUrl = true) {
                 renderEntriesList();
                 const filtered = getFilteredEntries();
                 if (filtered.length > 0) {
-                  selectEntry(filtered[0].id);
+                  selectEntry(filtered[0].id, window.innerWidth <= 840);
                 }
               });
             }
@@ -78012,7 +78076,7 @@ function switchTier(newTier, updateUrl = true) {
               renderEntriesList();
               const filtered = getFilteredEntries();
               if (filtered.length > 0) {
-                selectEntry(filtered[0].id);
+                selectEntry(filtered[0].id, window.innerWidth <= 840);
               }
             });
           });
@@ -78054,7 +78118,7 @@ function switchTier(newTier, updateUrl = true) {
               renderEntriesList();
               const filtered = getFilteredEntries();
               if (filtered.length > 0) {
-                selectEntry(filtered[0].id);
+                selectEntry(filtered[0].id, window.innerWidth <= 840);
               }
             });
           });
@@ -78069,7 +78133,7 @@ function switchTier(newTier, updateUrl = true) {
             renderEntriesList();
             const filtered = getFilteredEntries();
             if (filtered.length > 0) {
-              selectEntry(filtered[0].id);
+              selectEntry(filtered[0].id, window.innerWidth <= 840);
             }
           });
         });
@@ -78459,6 +78523,83 @@ function switchTier(newTier, updateUrl = true) {
         return baseScore + boost;
       }
 
+      // Query matching helpers synchronized across tier badge counts and list filtering
+      function matchesConceptQuery(entry, q, isGlobal) {
+        if (!q) return true;
+        if (isGlobal) return matchesQueryGlobal(getConceptSearchableText(entry), q);
+        const isShort = q.length >= 2 && q.length <= 4;
+        const wordRegex = isShort ? new RegExp(`\\b${q}\\b`, "i") : null;
+
+        const acronymExact = (entry.acronym || "").toLowerCase() === q;
+        const acronymStart = (entry.acronym || "").toLowerCase().startsWith(q);
+        const termMatch = isShort ? (wordRegex ? wordRegex.test(entry.term) : false) : (entry.term || "").toLowerCase().includes(q);
+        const aliasMatch = (entry.aliases || []).some(a => isShort ? (wordRegex ? wordRegex.test(a) : false) : a.toLowerCase().includes(q));
+        const simpleMatch = isShort ? (wordRegex ? wordRegex.test(entry.simple_terms || "") : false) : (entry.simple_terms || "").toLowerCase().includes(q);
+        const citationMatch = (entry.citations || []).some(c => 
+          (c.source || "").toLowerCase().includes(q) || (c.description || "").toLowerCase().includes(q)
+        );
+        let specMatch = false;
+        if (entry.engineering_spec) {
+          specMatch = Object.entries(entry.engineering_spec).some(([k, v]) => 
+            isShort ? false : (k.toLowerCase().includes(q) || String(v).toLowerCase().includes(q))
+          );
+        }
+        let invariantMatch = false;
+        if (entry.field_checks) {
+          invariantMatch = entry.field_checks.some(fc => 
+            isShort ? ((fc.check || "").toLowerCase() === q || (fc.limit || "").toLowerCase() === q) : ((fc.check || "").toLowerCase().includes(q) || (fc.limit || "").toLowerCase().includes(q) || (fc.condition || "").toLowerCase().includes(q))
+          );
+        }
+        let senseMatch = false;
+        if (entry.senses) {
+          senseMatch = entry.senses.some(s => 
+            isShort ? (wordRegex ? wordRegex.test(s.title) : false) : ((s.title || "").toLowerCase().includes(q) || (s.description || "").toLowerCase().includes(q))
+          );
+        }
+        return acronymExact || acronymStart || termMatch || aliasMatch || simpleMatch || citationMatch || specMatch || invariantMatch || senseMatch;
+      }
+
+      function matchesFieldQuery(f, q, isGlobal) {
+        if (!q) return true;
+        if (isGlobal) return matchesQueryGlobal(getFieldSearchableText(f), q);
+        const idMatch = (f.id || "").toLowerCase().includes(q);
+        const titleMatch = ((f.displayName || f.title) || "").toLowerCase().includes(q);
+        const origTitleMatch = (f.title || "").toLowerCase().includes(q);
+        const equipMatch = (f.equipment || "").toLowerCase().includes(q);
+        const subMatch = (f.subsystem || "").toLowerCase().includes(q);
+        const domMatch = (f.domain || "").toLowerCase().includes(q);
+        const procMatch = (f.parent_process_name || f.parent_process || "").toLowerCase().includes(q);
+        const whatMatch = (f.what_to_check || "").toLowerCase().includes(q);
+        const howMatch = (f.how_to_check || "").toLowerCase().includes(q);
+        const critMatch = (f.acceptance_criteria || "").toLowerCase().includes(q);
+        const abnMatch = (f.abnormal_condition || "").toLowerCase().includes(q);
+        const actMatch = (f.action_if_abnormal || "").toLowerCase().includes(q);
+        const actionClassMatch = (f.action_classification || "").toLowerCase().includes(q);
+        return idMatch || titleMatch || origTitleMatch || equipMatch || subMatch || domMatch || procMatch || whatMatch || howMatch || critMatch || abnMatch || actMatch || actionClassMatch;
+      }
+
+      function matchesRegisterQuery(r, q, isGlobal) {
+        if (!q) return true;
+        if (isGlobal) return matchesQueryGlobal(getRegisterSearchableText(r), q);
+        const idMatch = (r.id || "").toLowerCase().includes(q);
+        const codeMatch = (r.code || "").toLowerCase().includes(q);
+        const titleMatch = (r.title || "").toLowerCase().includes(q);
+        const catMatch = (r.category || "").toLowerCase().includes(q);
+        const authMatch = (r.governing_authority || "").toLowerCase().includes(q);
+        const equipMatch = (r.target_equipment || "").toLowerCase().includes(q);
+        const profMatch = (r.statutory_proforma || "").toLowerCase().includes(q);
+        const fieldMatch = (r.required_fields || []).some(f => {
+          if (!f) return false;
+          if (typeof f === "string") return f.toLowerCase().includes(q);
+          return (f.field_name || "").toLowerCase().includes(q) ||
+                 (f.raw || "").toLowerCase().includes(q) ||
+                 (f.acceptance_limit || "").toLowerCase().includes(q) ||
+                 (f.normal_range || "").toLowerCase().includes(q) ||
+                 (f.expected_condition || "").toLowerCase().includes(q);
+        });
+        return idMatch || codeMatch || titleMatch || catMatch || authMatch || equipMatch || profMatch || fieldMatch;
+      }
+
       // Filter entries based on search query and category with deterministic relevance scoring
       function getFilteredEntries() {
         const q = searchQuery.toLowerCase().trim();
@@ -78470,43 +78611,7 @@ function switchTier(newTier, updateUrl = true) {
             } else if (currentCategory !== "ALL") {
               if (entry.category !== currentCategory) return false;
             }
-
-            if (!q) return true;
-
-            if (isGlobalSearch) {
-              return matchesQueryGlobal(getConceptSearchableText(entry), q);
-            }
-
-            const isShort = q.length >= 2 && q.length <= 4;
-            const wordRegex = isShort ? new RegExp(`\\b${q}\\b`, "i") : null;
-
-            const acronymExact = (entry.acronym || "").toLowerCase() === q;
-            const acronymStart = (entry.acronym || "").toLowerCase().startsWith(q);
-            const termMatch = isShort ? (wordRegex ? wordRegex.test(entry.term) : false) : entry.term.toLowerCase().includes(q);
-            const aliasMatch = (entry.aliases || []).some(a => isShort ? (wordRegex ? wordRegex.test(a) : false) : a.toLowerCase().includes(q));
-            const simpleMatch = isShort ? (wordRegex ? wordRegex.test(entry.simple_terms || "") : false) : (entry.simple_terms || "").toLowerCase().includes(q);
-            const citationMatch = (entry.citations || []).some(c => 
-              c.source.toLowerCase().includes(q) || c.description.toLowerCase().includes(q)
-            );
-            let specMatch = false;
-            if (entry.engineering_spec) {
-              specMatch = Object.entries(entry.engineering_spec).some(([k, v]) => 
-                isShort ? false : (k.toLowerCase().includes(q) || String(v).toLowerCase().includes(q))
-              );
-            }
-            let invariantMatch = false;
-            if (entry.field_checks) {
-              invariantMatch = entry.field_checks.some(fc => 
-                isShort ? (fc.check.toLowerCase() === q || fc.limit.toLowerCase() === q) : (fc.check.toLowerCase().includes(q) || fc.limit.toLowerCase().includes(q) || fc.condition.toLowerCase().includes(q))
-              );
-            }
-            let senseMatch = false;
-            if (entry.senses) {
-              senseMatch = entry.senses.some(s => 
-                isShort ? (wordRegex ? wordRegex.test(s.title) : false) : (s.title.toLowerCase().includes(q) || s.description.toLowerCase().includes(q))
-              );
-            }
-            return acronymExact || acronymStart || termMatch || aliasMatch || simpleMatch || citationMatch || specMatch || invariantMatch || senseMatch;
+            return matchesConceptQuery(entry, q, isGlobalSearch);
           });
 
           if (!q) {
@@ -78563,31 +78668,15 @@ function switchTier(newTier, updateUrl = true) {
           }
           if (!q) return list;
 
+          const matched = list.filter(f => matchesFieldQuery(f, q, isGlobalSearch));
           if (isGlobalSearch) {
-            const matched = list.filter(f => matchesQueryGlobal(getFieldSearchableText(f), q));
             return matched.sort((a, b) => {
               const diff = scoreFieldGlobal(b, q) - scoreFieldGlobal(a, q);
               if (diff !== 0) return diff;
               return a.id.localeCompare(b.id);
             });
           }
-
-          return list.filter(f => {
-            const idMatch = (f.id || "").toLowerCase().includes(q);
-            const titleMatch = ((f.displayName || f.title) || "").toLowerCase().includes(q);
-            const origTitleMatch = (f.title || "").toLowerCase().includes(q);
-            const equipMatch = (f.equipment || "").toLowerCase().includes(q);
-            const subMatch = (f.subsystem || "").toLowerCase().includes(q);
-            const domMatch = (f.domain || "").toLowerCase().includes(q);
-            const procMatch = (f.parent_process_name || f.parent_process || "").toLowerCase().includes(q);
-            const whatMatch = (f.what_to_check || "").toLowerCase().includes(q);
-            const howMatch = (f.how_to_check || "").toLowerCase().includes(q);
-            const critMatch = (f.acceptance_criteria || "").toLowerCase().includes(q);
-            const abnMatch = (f.abnormal_condition || "").toLowerCase().includes(q);
-            const actMatch = (f.action_if_abnormal || "").toLowerCase().includes(q);
-            const actionClassMatch = (f.action_classification || "").toLowerCase().includes(q);
-            return idMatch || titleMatch || origTitleMatch || equipMatch || subMatch || domMatch || procMatch || whatMatch || howMatch || critMatch || abnMatch || actMatch || actionClassMatch;
-          });
+          return matched;
         } else if (currentTier === "REGISTERS") {
           let list = TRD_REGISTERS || [];
           if (currentCategory !== "ALL") {
@@ -78595,40 +78684,21 @@ function switchTier(newTier, updateUrl = true) {
           }
           if (!q) return list;
 
+          const matched = list.filter(r => matchesRegisterQuery(r, q, isGlobalSearch));
           if (isGlobalSearch) {
-            const matched = list.filter(r => matchesQueryGlobal(getRegisterSearchableText(r), q));
             return matched.sort((a, b) => {
               const diff = scoreRegisterGlobal(b, q) - scoreRegisterGlobal(a, q);
               if (diff !== 0) return diff;
               return a.id.localeCompare(b.id);
             });
           }
-
-          return list.filter(r => {
-            const idMatch = (r.id || "").toLowerCase().includes(q);
-            const codeMatch = (r.code || "").toLowerCase().includes(q);
-            const titleMatch = (r.title || "").toLowerCase().includes(q);
-            const catMatch = (r.category || "").toLowerCase().includes(q);
-            const authMatch = (r.governing_authority || "").toLowerCase().includes(q);
-            const equipMatch = (r.target_equipment || "").toLowerCase().includes(q);
-            const profMatch = (r.statutory_proforma || "").toLowerCase().includes(q);
-            const fieldMatch = (r.required_fields || []).some(f => {
-              if (!f) return false;
-              if (typeof f === 'string') return f.toLowerCase().includes(q);
-              return (f.field_name || "").toLowerCase().includes(q) ||
-                     (f.raw || "").toLowerCase().includes(q) ||
-                     (f.acceptance_limit || "").toLowerCase().includes(q) ||
-                     (f.normal_range || "").toLowerCase().includes(q) ||
-                     (f.expected_condition || "").toLowerCase().includes(q);
-            });
-            return idMatch || codeMatch || titleMatch || catMatch || authMatch || equipMatch || profMatch || fieldMatch;
-          });
+          return matched;
         }
         return [];
       }
 
-      function renderEntriesList() {
-        const filtered = getFilteredEntries();
+      function renderEntriesList(providedFiltered) {
+        const filtered = providedFiltered || getFilteredEntries();
         matchCountEl.textContent = `${filtered.length} result${filtered.length === 1 ? '' : 's'}`;
 
         if (filtered.length === 0) {
@@ -78740,20 +78810,6 @@ function switchTier(newTier, updateUrl = true) {
           }).join("");
         }
 
-        // Attach click and keyboard listeners to cards
-        entriesListEl.querySelectorAll(".entry-card").forEach(card => {
-          card.addEventListener("click", () => {
-            selectEntry(card.getAttribute("data-id"));
-            openMobileDetail();
-          });
-          card.addEventListener("keydown", (e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              selectEntry(card.getAttribute("data-id"));
-              openMobileDetail();
-            }
-          });
-        });
       }
 
       function updateMobileBackButtonText() {
@@ -78769,6 +78825,7 @@ function switchTier(newTier, updateUrl = true) {
       }
 
       function openMobileDetail() {
+        if (window.innerWidth > 840) return;
         detailViewportEl.classList.add("mobile-active");
         document.body.classList.add("mobile-detail-open");
         updateMobileBackButtonText();
@@ -78776,34 +78833,78 @@ function switchTier(newTier, updateUrl = true) {
       }
 
       function closeMobileDetail() {
+        if (window._activeDetailAnimation) {
+          try { window._activeDetailAnimation.cancel(); } catch (e) {}
+          window._activeDetailAnimation = null;
+        }
+        if (detailContentEl) {
+          detailContentEl.style.opacity = "";
+          detailContentEl.style.transform = "";
+        }
         detailViewportEl.classList.remove("mobile-active");
         document.body.classList.remove("mobile-detail-open");
       }
 
+      function handleMobileBack() {
+        closeMobileDetail();
+        if (history.state && history.state.hasAppHistoryEntry) {
+          history.back();
+        } else {
+          try {
+            history.replaceState(null, "", window.location.pathname + window.location.search);
+          } catch (e) {
+            window.location.hash = "";
+          }
+        }
+      }
+
+      function updateHistoryHash(id) {
+        const isMobile = window.innerWidth <= 840;
+        const isDetailAlreadyActive = detailViewportEl && (
+          detailViewportEl.classList.contains("mobile-active") ||
+          document.body.classList.contains("mobile-detail-open")
+        );
+        const hasAppHistoryEntry = isMobile && isDetailAlreadyActive
+          ? !!(history.state && history.state.hasAppHistoryEntry)
+          : isMobile;
+        const stateObj = { vsMobileDetail: isMobile, hasAppHistoryEntry: hasAppHistoryEntry, id: id };
+        try {
+          if (isMobile && isDetailAlreadyActive) {
+            history.replaceState(stateObj, "", `#${id}`);
+          } else {
+            history.pushState(stateObj, "", `#${id}`);
+          }
+        } catch (e) {
+          window.location.hash = `#${id}`;
+        }
+      }
+
       // Select an entry and update detail view + URL hash
-      function selectEntry(id, skipHashUpdate = false) {
+      function selectEntry(id, skipHashUpdate = false, isTierSwitch = false) {
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
         if (currentTier === "CONCEPTS") {
           const entry = TRD_DICTIONARY.find(e => e.id === id);
           if (!entry) return;
           activeEntryId = id;
 
-          entriesListEl.querySelectorAll(".entry-card").forEach(c => {
+          const cards = entriesListEl.children;
+          for (let i = 0; i < cards.length; i++) {
+            const c = cards[i];
             if (c.getAttribute("data-id") === id) {
               c.classList.add("active");
-              if (typeof c.scrollIntoView === "function") {
-                c.scrollIntoView({ block: "nearest", behavior: "smooth" });
+              c.setAttribute("aria-selected", "true");
+              if (!isTierSwitch && typeof c.scrollIntoView === "function") {
+                c.scrollIntoView({ block: "nearest", behavior: prefersReduced ? "auto" : "smooth" });
               }
-            } else {
+            } else if (c.classList.contains("active")) {
               c.classList.remove("active");
+              c.setAttribute("aria-selected", "false");
             }
-          });
+          }
 
-          if (!skipHashUpdate) {
-            try {
-              history.pushState(null, "", `#${id}`);
-            } catch (e) {
-              window.location.hash = `#${id}`;
-            }
+          if (!skipHashUpdate && !(window.innerWidth <= 840 && isTierSwitch)) {
+            updateHistoryHash(id);
           }
 
           renderDetail(entry);
@@ -78812,23 +78913,23 @@ function switchTier(newTier, updateUrl = true) {
           if (!item) return;
           activeFieldId = item.id;
 
-          entriesListEl.querySelectorAll(".entry-card").forEach(c => {
+          const cards = entriesListEl.children;
+          for (let i = 0; i < cards.length; i++) {
+            const c = cards[i];
             if (c.getAttribute("data-id") === item.id) {
               c.classList.add("active");
-              if (typeof c.scrollIntoView === "function") {
-                c.scrollIntoView({ block: "nearest", behavior: "smooth" });
+              c.setAttribute("aria-selected", "true");
+              if (!isTierSwitch && typeof c.scrollIntoView === "function") {
+                c.scrollIntoView({ block: "nearest", behavior: prefersReduced ? "auto" : "smooth" });
               }
-            } else {
+            } else if (c.classList.contains("active")) {
               c.classList.remove("active");
+              c.setAttribute("aria-selected", "false");
             }
-          });
+          }
 
-          if (!skipHashUpdate) {
-            try {
-              history.pushState(null, "", `#${item.id}`);
-            } catch (e) {
-              window.location.hash = `#${item.id}`;
-            }
+          if (!skipHashUpdate && !(window.innerWidth <= 840 && isTierSwitch)) {
+            updateHistoryHash(item.id);
           }
 
           renderFieldDetail(item);
@@ -78837,33 +78938,68 @@ function switchTier(newTier, updateUrl = true) {
           if (!reg) return;
           activeRegisterId = reg.id;
 
-          entriesListEl.querySelectorAll(".entry-card").forEach(c => {
-            if (c.getAttribute("data-id") === reg.id || c.getAttribute("data-id") === reg.code) {
+          const cards = entriesListEl.children;
+          for (let i = 0; i < cards.length; i++) {
+            const c = cards[i];
+            const isMatch = c.getAttribute("data-id") === reg.id || c.getAttribute("data-id") === reg.code;
+            if (isMatch) {
               c.classList.add("active");
-              if (typeof c.scrollIntoView === "function") {
-                c.scrollIntoView({ block: "nearest", behavior: "smooth" });
+              c.setAttribute("aria-selected", "true");
+              if (!isTierSwitch && typeof c.scrollIntoView === "function") {
+                c.scrollIntoView({ block: "nearest", behavior: prefersReduced ? "auto" : "smooth" });
               }
-            } else {
+            } else if (c.classList.contains("active")) {
               c.classList.remove("active");
+              c.setAttribute("aria-selected", "false");
             }
-          });
+          }
 
-          if (!skipHashUpdate) {
-            try {
-              history.pushState(null, "", `#${reg.id}`);
-            } catch (e) {
-              window.location.hash = `#${reg.id}`;
-            }
+          if (!skipHashUpdate && !(window.innerWidth <= 840 && isTierSwitch)) {
+            updateHistoryHash(reg.id);
           }
 
           renderRegisterDetail(reg);
         }
 
         detailViewportEl.scrollTop = 0;
-        if (detailContentEl && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          detailContentEl.classList.remove('detail-entering');
-          void detailContentEl.offsetWidth;
-          detailContentEl.classList.add('detail-entering');
+        if (detailContentEl && !prefersReduced) {
+          if (window._activeDetailAnimation) {
+            try { window._activeDetailAnimation.cancel(); } catch (e) {}
+            window._activeDetailAnimation = null;
+          }
+          detailContentEl.style.opacity = "";
+          detailContentEl.style.transform = "";
+          try {
+            const isMobile = window.innerWidth <= 840;
+            window._activeDetailAnimation = detailContentEl.animate([
+              { opacity: 0.05, transform: isMobile ? "none" : "translateY(12px)" },
+              { opacity: 1, transform: isMobile ? "none" : "translateY(0)" }
+            ], {
+              duration: 280,
+              easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+              fill: "none"
+            });
+            window._activeDetailAnimation.onfinish = () => {
+              window._activeDetailAnimation = null;
+              if (detailContentEl) {
+                detailContentEl.style.opacity = "";
+                detailContentEl.style.transform = "";
+              }
+            };
+            window._activeDetailAnimation.oncancel = () => {
+              window._activeDetailAnimation = null;
+              if (detailContentEl) {
+                detailContentEl.style.opacity = "";
+                detailContentEl.style.transform = "";
+              }
+            };
+          } catch (e) {
+            // Safe fallback if WAAPI unsupported
+            if (detailContentEl) {
+              detailContentEl.style.opacity = "";
+              detailContentEl.style.transform = "";
+            }
+          }
         }
       }
 
@@ -79133,7 +79269,7 @@ function switchTier(newTier, updateUrl = true) {
 
         const linkedProcsHtml = linkedProcs.length > 0
           ? linkedProcs.map(p => `
-              <div class="citation-item" style="cursor: pointer;" onclick="filterByProcess('${escapeHtml(p.id)}')">
+              <div class="citation-item" style="cursor: pointer;" data-action="filter-process" data-process-id="${escapeHtml(p.id)}">
                 <div class="citation-info">
                   <span class="citation-source-name">⚡ ${escapeHtml(p.title || p.name)}</span>
                   <span class="citation-source-desc">${escapeHtml(p.domain || "TRD")} • ${escapeHtml(p.subsystem || "")} • ${(p.ordered_steps || []).length} steps</span>
@@ -79147,7 +79283,7 @@ function switchTier(newTier, updateUrl = true) {
 
         const linkedFieldHtml = linkedField.length > 0 
           ? linkedField.map(f => `
-              <div class="citation-item" style="cursor: pointer;" onclick="switchToField('${escapeHtml(f.id)}')">
+              <div class="citation-item" style="cursor: pointer;" data-action="switch-field" data-field-id="${escapeHtml(f.id)}">
                 <div class="citation-info">
                   <span class="citation-source-name">${escapeHtml(f.displayName || f.title)}</span>
                   <span class="citation-source-desc">${escapeHtml(f.domain || f.subsystem)} • ${escapeHtml(f.equipment)}</span>
@@ -79184,13 +79320,13 @@ function switchTier(newTier, updateUrl = true) {
           tabNavHtml = `
             <div class="periodicity-nav-container">
               <div class="periodicity-tab-bar" role="tablist" aria-label="Maintenance Periodicities">
-                <button type="button" class="periodicity-tab-btn active" role="tab" id="periodTab-ALL" aria-selected="true" aria-controls="periodPanel-ALL" data-period="ALL" onclick="switchRegisterPeriodicity('ALL')">
+                <button type="button" class="periodicity-tab-btn active" role="tab" id="periodTab-ALL" aria-selected="true" aria-controls="periodPanel-ALL" data-period="ALL">
                   ALL <span class="tab-count-badge">${allFields.length}</span>
                 </button>
                 ${activePeriods.map(p => {
                   const slug = p.replace(/[^A-Za-z0-9]/g, '_');
                   return `
-                    <button type="button" class="periodicity-tab-btn" role="tab" id="periodTab-${slug}" aria-selected="false" aria-controls="periodPanel-${slug}" data-period="${escapeHtml(p)}" onclick="switchRegisterPeriodicity('${escapeHtml(p)}')">
+                    <button type="button" class="periodicity-tab-btn" role="tab" id="periodTab-${slug}" aria-selected="false" aria-controls="periodPanel-${slug}" data-period="${escapeHtml(p)}">
                       ${escapeHtml(p)} <span class="tab-count-badge">${periodsMap[p].length}</span>
                     </button>
                   `;
@@ -79199,8 +79335,8 @@ function switchTier(newTier, updateUrl = true) {
               <div class="periodicity-filter-summary">
                 <span id="periodicitySummaryText">Showing all ${allFields.length} statutory checks organized by maintenance schedule</span>
                 <div id="periodicityGroupControls" style="display: flex; gap: 8px;">
-                  <button type="button" class="group-toggle-btn" onclick="toggleAllPeriodGroups(true)" title="Expand all schedule sections">Expand All</button>
-                  <button type="button" class="group-toggle-btn" onclick="toggleAllPeriodGroups(false)" title="Collapse all schedule sections">Collapse All</button>
+                  <button type="button" class="group-toggle-btn" data-action="expand-all-periods" title="Expand all schedule sections">Expand All</button>
+                  <button type="button" class="group-toggle-btn" data-action="collapse-all-periods" title="Collapse all schedule sections">Collapse All</button>
                 </div>
               </div>
             </div>
@@ -79215,7 +79351,7 @@ function switchTier(newTier, updateUrl = true) {
 
           return `
             <div class="periodicity-group-section" id="periodGroup-${slug}">
-              <div class="periodicity-group-header" onclick="togglePeriodGroup('${slug}')" role="button" tabindex="0" aria-expanded="true" aria-controls="periodGroupBody-${slug}">
+              <div class="periodicity-group-header" data-action="toggle-period-group" data-slug="${slug}" role="button" tabindex="0" aria-expanded="true" aria-controls="periodGroupBody-${slug}">
                 <div class="periodicity-group-title">
                   <span class="reg-periodicity-pill ${pMeta.pillClass}">${escapeHtml(p)}</span>
                   <span class="periodicity-group-name">${escapeHtml(pMeta.title)}</span>
@@ -79496,7 +79632,7 @@ function switchTier(newTier, updateUrl = true) {
         const relatedConcepts = item.related_concepts || [];
         const relatedConceptsHtml = relatedConcepts.length > 0
           ? relatedConcepts.map(cId => `
-              <button class="cross-link-btn" onclick="switchToConcept('${escapeHtml(cId)}')">
+              <button class="cross-link-btn" data-action="switch-concept" data-concept-id="${escapeHtml(cId)}">
                 <span>📘 ${escapeHtml(cId)}</span>
               </button>
             `).join(" ")
@@ -79913,8 +80049,8 @@ function switchTier(newTier, updateUrl = true) {
 
             <div class="actm-card-footer">
               <div>
-                ${r.url ? `
-                <a href="${escapeHtml(r.url)}" target="_blank" rel="noopener noreferrer" class="actm-source-link-btn" title="View official primary PDF document on Indian Railways portal">
+                ${sanitizeExternalUrl(r.url) ? `
+                <a href="${escapeHtml(sanitizeExternalUrl(r.url))}" target="_blank" rel="noopener noreferrer" class="actm-source-link-btn" title="View official primary PDF document on Indian Railways portal">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                     <polyline points="15 3 21 3 21 9"></polyline>
@@ -80359,8 +80495,8 @@ function switchTier(newTier, updateUrl = true) {
                 <div class="visual-ref-caption">${escapeHtml(entry.visual_reference.caption)}</div>
               </div>
               <div class="visual-ref-action">
-                ${entry.visual_reference.url ? `
-                  <a class="visual-ref-btn" href="${escapeHtml(entry.visual_reference.url)}" target="_blank" rel="noopener noreferrer">
+                ${entry.visual_reference.url && sanitizeExternalUrl(entry.visual_reference.url) ? `
+                  <a class="visual-ref-btn" href="${escapeHtml(sanitizeExternalUrl(entry.visual_reference.url))}" target="_blank" rel="noopener noreferrer">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                     View Reference Drawing &rarr;
                   </a>
@@ -80557,13 +80693,17 @@ function switchTier(newTier, updateUrl = true) {
         `;
       }
 
-      // Search input debouncing via requestAnimationFrame for 60fps responsiveness
+      // Search input debouncing with micro-timer & requestAnimationFrame for fluid 60fps responsiveness
+      let searchTimerId = null;
       let searchRafId = null;
       function handleSearchChange() {
+        if (searchTimerId) clearTimeout(searchTimerId);
         if (searchRafId) cancelAnimationFrame(searchRafId);
-        searchRafId = requestAnimationFrame(() => {
-          _executeSearchChange();
-        });
+        searchTimerId = setTimeout(() => {
+          searchRafId = requestAnimationFrame(() => {
+            _executeSearchChange();
+          });
+        }, 50);
       }
 
       function _executeSearchChange() {
@@ -80646,7 +80786,11 @@ function switchTier(newTier, updateUrl = true) {
         renderEntriesList();
         const filtered = getFilteredEntries();
         if (filtered.length > 0) {
-          selectEntry(filtered[0].id);
+          const currentId = currentTier === "CONCEPTS" ? activeEntryId : currentTier === "FIELD" ? activeFieldId : activeRegisterId;
+          const currentVisible = filtered.some(item => item.id === currentId || (currentTier === "REGISTERS" && item.code === currentId));
+          if (!currentVisible) {
+            selectEntry(filtered[0].id, true);
+          }
         }
       }
 
@@ -80654,13 +80798,15 @@ function switchTier(newTier, updateUrl = true) {
 
       searchClearBtnEl.addEventListener("click", () => {
         searchInputEl.value = "";
-        handleSearchChange();
+        if (searchTimerId) clearTimeout(searchTimerId);
+        if (searchRafId) cancelAnimationFrame(searchRafId);
+        _executeSearchChange();
         searchInputEl.focus();
       });
 
       // Mobile Back Button
       mobileBackBtnEl.addEventListener("click", () => {
-        closeMobileDetail();
+        handleMobileBack();
       });
 
       // Keyboard Shortcuts
@@ -80676,7 +80822,7 @@ function switchTier(newTier, updateUrl = true) {
             handleSearchChange();
             searchInputEl.blur();
           } else if (detailViewportEl.classList.contains("mobile-active")) {
-            closeMobileDetail();
+            handleMobileBack();
           }
         } else if ((e.key === "/" || (e.ctrlKey && e.key.toLowerCase() === "k")) && document.activeElement !== searchInputEl) {
           if (!learningOverlay || learningOverlay.style.display === "none") {
@@ -81440,6 +81586,10 @@ function switchTier(newTier, updateUrl = true) {
       function handleHashChange() {
         const rawHash = window.location.hash.replace("#", "").trim();
         if (!rawHash) {
+          if (window.innerWidth <= 840) {
+            closeMobileDetail();
+            return;
+          }
           if (currentTier === "CONCEPTS") {
             selectEntry(TRD_DICTIONARY[0]?.id || "atd", true);
           } else if (currentTier === "REGISTERS") {
@@ -81518,12 +81668,168 @@ function switchTier(newTier, updateUrl = true) {
           .replace(/'/g, "&#039;");
       }
 
+      // Utility: Safe External URL validation (HTTP/HTTPS only)
+      function sanitizeExternalUrl(url) {
+        if (!url || typeof url !== "string") return "";
+        const trimmed = url.trim();
+        try {
+          const parsed = new URL(trimmed);
+          if (parsed.protocol === "https:" || parsed.protocol === "http:") {
+            return parsed.href;
+          }
+        } catch (e) {}
+        return "";
+      }
+
       // Tier Nav Bar Event Bindings
       document.querySelectorAll(".tier-nav-btn").forEach(btn => {
         btn.addEventListener("click", () => {
           const t = btn.getAttribute("data-tier");
           switchTier(t);
         });
+      });
+
+      // Delegated Events for Entries List Cards (Click & Keyboard Selection)
+      entriesListEl.addEventListener("click", (e) => {
+        const card = e.target.closest(".entry-card");
+        if (!card) return;
+        const id = card.getAttribute("data-id");
+        if (id) {
+          selectEntry(id);
+          openMobileDetail();
+        }
+      });
+
+      entriesListEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          const card = e.target.closest(".entry-card");
+          if (!card) return;
+          e.preventDefault();
+          const id = card.getAttribute("data-id");
+          if (id) {
+            selectEntry(id);
+            openMobileDetail();
+          }
+        }
+      });
+
+      // Delegated Events for Detail Content Interactive Elements
+      detailContentEl.addEventListener("click", (e) => {
+        // 1. Filter Process
+        const filterProc = e.target.closest('[data-action="filter-process"]');
+        if (filterProc) {
+          const procId = filterProc.getAttribute("data-process-id");
+          if (procId && typeof window.filterByProcess === "function") {
+            window.filterByProcess(procId);
+          }
+          return;
+        }
+
+        // 2. Switch Field
+        const switchField = e.target.closest('[data-action="switch-field"]');
+        if (switchField) {
+          const fieldId = switchField.getAttribute("data-field-id");
+          if (fieldId && typeof window.switchToField === "function") {
+            window.switchToField(fieldId);
+          }
+          return;
+        }
+
+        // 3. Switch Concept
+        const switchConcept = e.target.closest('[data-action="switch-concept"]');
+        if (switchConcept) {
+          const conceptId = switchConcept.getAttribute("data-concept-id");
+          if (conceptId && typeof window.switchToConcept === "function") {
+            window.switchToConcept(conceptId);
+          }
+          return;
+        }
+
+        // 4. Periodicity Tab Switch
+        const periodTab = e.target.closest('.periodicity-tab-btn[data-period]');
+        if (periodTab) {
+          const period = periodTab.getAttribute("data-period");
+          if (period && typeof window.switchRegisterPeriodicity === "function") {
+            window.switchRegisterPeriodicity(period);
+          }
+          return;
+        }
+
+        // 5. Expand All Periods
+        const expandBtn = e.target.closest('[data-action="expand-all-periods"]');
+        if (expandBtn) {
+          if (typeof window.toggleAllPeriodGroups === "function") {
+            window.toggleAllPeriodGroups(true);
+          }
+          return;
+        }
+
+        // 6. Collapse All Periods
+        const collapseBtn = e.target.closest('[data-action="collapse-all-periods"]');
+        if (collapseBtn) {
+          if (typeof window.toggleAllPeriodGroups === "function") {
+            window.toggleAllPeriodGroups(false);
+          }
+          return;
+        }
+
+        // 7. Toggle Single Period Group
+        const toggleGroup = e.target.closest('[data-action="toggle-period-group"]');
+        if (toggleGroup) {
+          const slug = toggleGroup.getAttribute("data-slug");
+          if (slug && typeof window.togglePeriodGroup === "function") {
+            window.togglePeriodGroup(slug);
+          }
+          return;
+        }
+
+        // 8. Field Process Navigator step button
+        const navFieldBtn = e.target.closest('[data-nav-field-id]');
+        if (navFieldBtn) {
+          const fId = navFieldBtn.getAttribute("data-nav-field-id");
+          if (fId && typeof window.switchToField === "function") {
+            window.switchToField(fId);
+          }
+          return;
+        }
+
+        // 9. Copy Citation Icon Button
+        const copyCitationIcon = e.target.closest('.copy-citation-icon-btn[data-citation]');
+        if (copyCitationIcon) {
+          const text = copyCitationIcon.getAttribute("data-citation");
+          if (text) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(text).then(() => showToast("Copied citation!")).catch(() => showToast(text));
+            } else {
+              showToast(text);
+            }
+          }
+          return;
+        }
+
+        // 10. Copy ACTM SHA-256 Hash Button
+        const copyHashBtn = e.target.closest('.copy-actm-hash-btn[data-hash]');
+        if (copyHashBtn) {
+          const hash = copyHashBtn.getAttribute("data-hash");
+          if (hash) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(hash).then(() => showToast("Copied verification SHA-256 to clipboard!")).catch(() => showToast(hash));
+            } else {
+              showToast(hash);
+            }
+          }
+          return;
+        }
+      });
+
+      detailContentEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          const interactive = e.target.closest('[data-action="toggle-period-group"], [data-action="filter-process"], [data-action="switch-field"], [data-action="switch-concept"], [data-action="expand-all-periods"], [data-action="collapse-all-periods"], [data-nav-field-id], .periodicity-tab-btn[data-period]');
+          if (interactive) {
+            e.preventDefault();
+            interactive.click();
+          }
+        }
       });
 
       // Dynamic Header Height for Mobile Detail Viewport Offset
