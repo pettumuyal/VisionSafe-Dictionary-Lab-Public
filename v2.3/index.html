@@ -6957,7 +6957,7 @@
 
 
     /* ============================================================
-       ACTM CORRECTION SLIPS HISTORY CHRONOLOGICAL LEDGER (V23.08)
+       ACTM CORRECTION SLIPS HISTORY CHRONOLOGICAL LEDGER (V23.09)
        ============================================================ */
     .actm-ledger-container {
       display: flex;
@@ -7381,7 +7381,7 @@
           <h1 class="brand-main-title">
             <span class="brand-title-primary-group">
               <span class="brand-title-primary">VisionSafe TRD</span>
-              <span class="brand-version-sub">V23.08</span>
+              <span class="brand-version-sub">V23.09</span>
             </span>
             <span class="brand-title-secondary">ENGINEERING DICTIONARY</span>
           </h1>
@@ -7562,7 +7562,7 @@
           </button>
         </div>
         <div class="safety-disclaimer-credit">
-          <span>VisionSafe TRD Engineering Dictionary V23.08 • Prepared by <strong>Nidhin&nbsp;Raj&nbsp;S&nbsp;R</strong></span>
+          <span>VisionSafe TRD Engineering Dictionary V23.09 • Prepared by <strong>Nidhin&nbsp;Raj&nbsp;S&nbsp;R</strong></span>
         </div>
       </div>
     </div>
@@ -80024,7 +80024,7 @@ function switchTier(newTier, updateUrl = true) {
 
 
       // ============================================================
-      // ACTM CORRECTION SLIPS CHRONOLOGICAL LEDGER CONTROLLER (V23.08)
+      // ACTM CORRECTION SLIPS CHRONOLOGICAL LEDGER CONTROLLER (V23.09)
       // ============================================================
       function getActmStatusPill(status) {
         const s = status || '';
@@ -81105,11 +81105,11 @@ function switchTier(newTier, updateUrl = true) {
       }
 
       // ============================================================
-      // APPLICATION SETTINGS & READING ACCESSIBILITY CONTROLLER (V23.08)
+      // APPLICATION SETTINGS & READING ACCESSIBILITY CONTROLLER (V23.09)
       // ============================================================
       const VS_RELEASE_METADATA = {
-        version: "V23.08",
-        next_release: "V23.09",
+        version: "V23.09",
+        next_release: "V23.10",
         last_updated: "17 Oct 2026"
       };
 
@@ -81302,11 +81302,50 @@ function switchTier(newTier, updateUrl = true) {
       }
 
       // =========================================================================
-      // MANDATORY OPERATIONAL SAFETY NOTICE: ACKNOWLEDGEMENT GATE
+      // MANDATORY OPERATIONAL SAFETY NOTICE: DAILY IST ACKNOWLEDGEMENT GATE
       // =========================================================================
+      const SAFETY_ACK_STORAGE_KEY = "visionsafe_safety_ack_date_ist";
+      let sessionSafetyAckDate = null;
       let isStartupSafetyFlow = true;
       let hasReachedBottom = false;
       let isEntering = false;
+
+      function getISTCalendarDate(date = new Date()) {
+        try {
+          const formatter = new Intl.DateTimeFormat("en-US", {
+            timeZone: "Asia/Kolkata",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit"
+          });
+          const parts = formatter.formatToParts(date);
+          const year = parts.find(p => p.type === "year").value;
+          const month = parts.find(p => p.type === "month").value;
+          const day = parts.find(p => p.type === "day").value;
+          return `${year}-${month}-${day}`;
+        } catch (e) {
+          // Mathematically correct UTC+05:30 fallback (+19,800,000 ms)
+          const istMs = date.getTime() + (330 * 60 * 1000);
+          const istDate = new Date(istMs);
+          const y = istDate.getUTCFullYear();
+          const m = String(istDate.getUTCMonth() + 1).padStart(2, "0");
+          const d = String(istDate.getUTCDate()).padStart(2, "0");
+          return `${y}-${m}-${d}`;
+        }
+      }
+
+      function hasValidDailySafetyAck() {
+        const todayIST = getISTCalendarDate();
+        try {
+          const stored = localStorage.getItem(SAFETY_ACK_STORAGE_KEY);
+          if (typeof stored === "string" && /^\d{4}-\d{2}-\d{2}$/.test(stored) && stored === todayIST) {
+            return true;
+          }
+        } catch (err) {
+          // localStorage unavailable or blocked
+        }
+        return sessionSafetyAckDate === todayIST;
+      }
 
       const safetyNoticeOverlay = document.getElementById("safetyNoticeOverlay");
       const safetyNoticeContent = document.getElementById("safetyNoticeContent");
@@ -81439,6 +81478,22 @@ function switchTier(newTier, updateUrl = true) {
         isEntering = true;
         closeSafetyNoticeOverlay();
 
+        // Persist Daily Acceptance in IST with honest write verification
+        const todayIST = getISTCalendarDate();
+        let writeVerified = false;
+        try {
+          localStorage.setItem(SAFETY_ACK_STORAGE_KEY, todayIST);
+          writeVerified = (localStorage.getItem(SAFETY_ACK_STORAGE_KEY) === todayIST);
+        } catch (err) {
+          writeVerified = false;
+          console.warn("[VisionSafe] Persistent storage write failed; continuing in current session only.", err);
+        }
+
+        if (!writeVerified) {
+          // Never claim persistent acceptance if write failed; allow session-only continuation
+          sessionSafetyAckDate = todayIST;
+        }
+
         // Startup Flow: Acknowledging Safety Notice transitions to Concept Discovery (if not deep linked and not suppressed by user)
         if (isStartupSafetyFlow) {
           isStartupSafetyFlow = false;
@@ -81545,6 +81600,58 @@ function switchTier(newTier, updateUrl = true) {
         });
       }
 
+      // Cross-tab synchronization: Dismiss disclaimer if accepted in another tab
+      window.addEventListener("storage", (e) => {
+        if (e.key === SAFETY_ACK_STORAGE_KEY) {
+          const todayIST = getISTCalendarDate();
+          if (e.newValue === todayIST) {
+            const overlay = document.getElementById("safetyNoticeOverlay");
+            if (overlay && overlay.style.display !== "none") {
+              closeSafetyNoticeOverlay();
+              if (isStartupSafetyFlow) {
+                isStartupSafetyFlow = false;
+                try {
+                  const hasSpecificHash = window.location.hash && window.location.hash.length > 1;
+                  let hideDiscovery = false;
+                  try {
+                    hideDiscovery = localStorage.getItem("visionsafe_hide_learning_startup") === "true" ||
+                                    localStorage.getItem("visionsafe_hide_discovery_startup") === "true";
+                  } catch (err) {}
+
+                  if (!hasSpecificHash && !hideDiscovery) {
+                    setTimeout(() => {
+                      openLearningModal();
+                    }, 160);
+                  }
+                } catch (err) {}
+              }
+            }
+          }
+        }
+      });
+
+      // Resume Date Recheck: Check IST calendar date when returning after midnight or becoming visible
+      function checkDailySafetyOnResume() {
+        if (!hasValidDailySafetyAck()) {
+          const overlay = document.getElementById("safetyNoticeOverlay");
+          if (overlay && overlay.style.display === "none") {
+            // Present safety notice without resetting user state or active selection
+            isStartupSafetyFlow = false;
+            openSafetyNoticeOverlay();
+          }
+        }
+      }
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") {
+          checkDailySafetyOnResume();
+        }
+      });
+
+      window.addEventListener("focus", () => {
+        checkDailySafetyOnResume();
+      });
+
       // Concept Discovery Startup Preference (Independent of mandatory safety notice)
       const learningStartupCheck = document.getElementById("learningStartupCheck") || document.getElementById("discoveryStartupCheck");
       if (learningStartupCheck) {
@@ -81576,13 +81683,31 @@ function switchTier(newTier, updateUrl = true) {
       window.addEventListener("resize", updateSearchPlaceholder);
       updateSearchPlaceholder();
 
-      // Master Startup Orchestrator: Mandatory Safety Notice ALWAYS triggers on startup
+      // Master Startup Orchestrator: Daily IST Safety Notice Gate
       function checkStartupExperience() {
         try {
-          // Present Mandatory Operational Safety Notice on startup (regardless of URL hash)
-          setTimeout(() => {
-            openSafetyNoticeOverlay();
-          }, 150);
+          if (hasValidDailySafetyAck()) {
+            // Already acknowledged for today in IST: suppress disclaimer
+            isStartupSafetyFlow = false;
+            // Respect Concept Discovery startup preference directly
+            const hasSpecificHash = window.location.hash && window.location.hash.length > 1;
+            let hideDiscovery = false;
+            try {
+              hideDiscovery = localStorage.getItem("visionsafe_hide_learning_startup") === "true" ||
+                              localStorage.getItem("visionsafe_hide_discovery_startup") === "true";
+            } catch (err) {}
+
+            if (!hasSpecificHash && !hideDiscovery) {
+              setTimeout(() => {
+                openLearningModal();
+              }, 160);
+            }
+          } else {
+            // Present Mandatory Operational Safety Notice on first visit of IST calendar day
+            setTimeout(() => {
+              openSafetyNoticeOverlay();
+            }, 150);
+          }
         } catch (e) {
           isStartupSafetyFlow = false;
         }
