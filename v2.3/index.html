@@ -480,12 +480,14 @@
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       margin-top: 0.5rem;
+      flex-wrap: wrap;
     }
 
     .visual-ref-info {
       display: flex;
       flex-direction: column;
       gap: 0.35rem;
+      min-width: 0;
     }
 
     .visual-ref-drg-row {
@@ -938,6 +940,7 @@
     /* Right Detail Viewport */
     .detail-viewport {
       flex: 1;
+      min-width: 0;
       overflow-y: auto;
       background-color: var(--bg-canvas);
       padding: 1.5rem 2rem;
@@ -1124,6 +1127,7 @@
       padding-bottom: 0.5rem;
       flex-wrap: wrap;
       gap: 0.45rem;
+      min-width: 0;
     }
 
     .epistemic-badge {
@@ -1140,6 +1144,8 @@
       white-space: normal;
       line-height: 1.35;
       flex-shrink: 0;
+      max-width: 100%;
+      overflow-wrap: break-word;
     }
 
 
@@ -1189,7 +1195,7 @@
     /* Section 2: Technical Specifications */
     .specs-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
       gap: 0.75rem;
     }
 
@@ -1201,6 +1207,7 @@
       display: flex;
       flex-direction: column;
       gap: 0.25rem;
+      min-width: 0;
     }
 
     .spec-item.full-width {
@@ -1220,6 +1227,9 @@
       color: var(--text-main);
       font-family: var(--font-sans);
       line-height: 1.45;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      min-width: 0;
     }
 
     /* Section 3: Invariants Table */
@@ -1333,6 +1343,8 @@
       display: flex;
       flex-direction: column;
       gap: 0.15rem;
+      min-width: 0;
+      flex: 1 1 auto;
     }
 
     .citation-source-name {
@@ -1340,11 +1352,15 @@
       font-size: 0.75rem;
       font-weight: 700;
       color: var(--text-main);
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     .citation-source-desc {
       font-size: 0.8125rem;
       color: var(--text-muted);
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     .copy-citation-icon-btn {
@@ -1367,7 +1383,7 @@
     /* Section 5: Relationships & Cross References */
     .relationships-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
       gap: 0.85rem;
     }
 
@@ -1375,6 +1391,7 @@
       display: flex;
       flex-direction: column;
       gap: 0.35rem;
+      min-width: 0;
     }
 
     .rel-group-title {
@@ -1389,6 +1406,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 0.4rem;
+      min-width: 0;
     }
 
     /* 1. Direct Entry Jump Pill */
@@ -1555,18 +1573,23 @@
 
     .sense-meta-row {
       display: flex;
-      gap: 0.5rem;
+      flex-wrap: wrap;
+      gap: 0.25rem 0.5rem;
     }
 
     .sense-meta-key {
       font-weight: 600;
       color: var(--text-subtle);
       min-width: 140px;
+      flex-shrink: 0;
     }
 
     .sense-meta-val {
       color: var(--text-main);
       font-family: var(--font-mono);
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      min-width: 0;
     }
 
     /* Mobile Back Button */
@@ -2162,6 +2185,7 @@
 
       .detail-viewport {
         flex: 1;
+        min-width: 0;
         position: static;
         display: flex;
         opacity: 1;
@@ -2216,6 +2240,7 @@
         gap: 0;
         max-width: 100%;
         overflow-y: auto;
+        overflow-x: hidden;
         overscroll-behavior-y: auto;
         -webkit-overflow-scrolling: touch;
         scroll-behavior: smooth;
@@ -2360,6 +2385,16 @@
         padding: 0.3rem 0.6rem;
         white-space: normal;
         overflow-wrap: break-word;
+      }
+
+      .sense-meta-row {
+        flex-wrap: wrap;
+        gap: 0.2rem 0.5rem;
+      }
+
+      .sense-meta-key {
+        min-width: 0;
+        flex: 1 1 120px;
       }
     }
 
@@ -2669,6 +2704,8 @@
 
       .field-meta-item {
         font-size: 0.78rem;
+        max-width: 100%;
+        flex-wrap: wrap;
       }
 
       .field-meta-source {
@@ -2731,26 +2768,26 @@
       }
 
       .condition-strip-2col {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         gap: 8px;
       }
 
       .criteria-action-compact-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         gap: 8px;
       }
 
       .safety-recording-2col {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         gap: 8px;
       }
 
       .specs-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
       }
 
       .relationships-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
       }
 
       .invariants-table-wrap,
