@@ -1,4 +1,4 @@
-// VisionSafe TRD Engineering Dictionary V23.07 Service Worker
+// VisionSafe TRD Engineering Dictionary V23.08 Service Worker
 // Internal Incremental Release Cache: visionsafe-v2307-002
 const CACHE_NAME = 'visionsafe-v2307-002';
 
